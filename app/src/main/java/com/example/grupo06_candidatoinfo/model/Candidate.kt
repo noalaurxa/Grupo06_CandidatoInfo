@@ -6,5 +6,6 @@ data class Candidate(
     val party: String,
     val position: String,
     val photoUrl: String,
-    val isSelected: Boolean = false
+    val isSelected: Boolean = false,
+    val profileDetails: CandidateProfile?
 )
