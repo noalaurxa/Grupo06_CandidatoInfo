@@ -60,6 +60,7 @@ dependencies {
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:3.0.0")
     implementation("com.squareup.retrofit2:converter-gson:3.0.0")
+    implementation(libs.androidx.compose.foundation)
 
     // Testing
     testImplementation(libs.junit)
@@ -76,5 +77,5 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.7.0")
 
     //
-    implementation("androidx.compose.material:material-icons-extended-android:1.6.8") 
+    implementation("androidx.compose.material:material-icons-extended-android:1.6.8")
 }
