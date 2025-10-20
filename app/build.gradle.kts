@@ -61,6 +61,8 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:3.0.0")
     implementation("com.squareup.retrofit2:converter-gson:3.0.0")
     implementation(libs.androidx.compose.foundation)
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.3")
+
 
     // Testing
     testImplementation(libs.junit)
@@ -78,4 +80,9 @@ dependencies {
 
     //
     implementation("androidx.compose.material:material-icons-extended-android:1.6.8")
+
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+
+
 }
