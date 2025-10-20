@@ -4,7 +4,8 @@ data class CandidateProfile(
     val basicInfo: BasicInfo,
     val assetDeclaration: AssetDeclaration,
     val governmentPlan: GovernmentPlan,
-    val academicFormation: AcademicFormation
+    val academicFormation: AcademicFormation,
+    val careerHistory: CareerHistory
 )
 
 data class BasicInfo(
@@ -45,4 +46,15 @@ data class AcademicFormation(
 data class AcademicDegree(
     val title: String,
     val institutionAndPeriod: String
+)
+
+// TRAYECTORIA
+data class CareerHistory(
+    val items: List<CareerItem>
+)
+
+data class CareerItem(
+    val position: String,
+    val period: String,
+    val description: String
 )
