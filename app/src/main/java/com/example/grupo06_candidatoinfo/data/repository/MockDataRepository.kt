@@ -7,6 +7,8 @@ import com.example.grupo06_candidatoinfo.model.AssetItem
 import com.example.grupo06_candidatoinfo.model.BasicInfo
 import com.example.grupo06_candidatoinfo.model.Candidate
 import com.example.grupo06_candidatoinfo.model.CandidateProfile
+import com.example.grupo06_candidatoinfo.model.CareerHistory
+import com.example.grupo06_candidatoinfo.model.CareerItem
 import com.example.grupo06_candidatoinfo.model.ElectionType
 import com.example.grupo06_candidatoinfo.model.GovernmentPlan
 import com.example.grupo06_candidatoinfo.model.ProposalItem
@@ -59,7 +61,12 @@ object MockDataRepository {
                             AcademicDegree("Ingeniería Industrial", "Universidad de Piura (1979-1984)")
                         ),
                         documentId = "sunedu_1"
-                    )
+                    ),
+                    careerHistory = CareerHistory(items = listOf(
+                        CareerItem("Alcalde de Lima", "2023-Presente", "Gestión municipal enfocada en seguridad, transporte y programas sociales."),
+                        CareerItem("Regidor de Lima", "2007-2010", "Participó en comisiones de desarrollo urbano y transporte."),
+                        CareerItem("Presidente del Directorio", "1996-Presente", "Fundador y líder de PeruRail, impulsando el turismo en Cusco.")
+                    ))
                 )
             ),
             // --- CANDIDATO 2 ---
@@ -100,7 +107,11 @@ object MockDataRepository {
                             AcademicDegree("Bachelor of Science", "Boston University (1993-1997)")
                         ),
                         documentId = "sunedu_2"
-                    )
+                    ),
+                    careerHistory = CareerHistory(items = listOf(
+                        CareerItem("Candidata a la Presidencia", "2011, 2016, 2021", "Lideró el partido Fuerza Popular en tres elecciones generales."),
+                        CareerItem("Congresista de la República", "2006-2011", "Fue la congresista más votada en las elecciones de 2006.")
+                    ))
                 )
             ),
             // --- CANDIDATO 3 ---
@@ -141,7 +152,12 @@ object MockDataRepository {
                             AcademicDegree("Ingeniería Química", "Universidad Nacional de Trujillo (1970-1975)")
                         ),
                         documentId = "sunedu_3"
-                    )
+                    ),
+                    careerHistory = CareerHistory(items = listOf(
+                        CareerItem("Gobernador Regional de La Libertad", "2015-2018", "Impulsó proyectos de infraestructura y educación en la región."),
+                        CareerItem("Alcalde de Trujillo", "2007-2014", "Realizó dos gestiones consecutivas en la alcaldía provincial."),
+                        CareerItem("Congresista de la República", "2000-2001", "Participó en el Congreso durante el periodo de transición.")
+                    ))
                 )
             ),
             // --- CANDIDATO 4 ---
@@ -151,12 +167,12 @@ object MockDataRepository {
                 party = "País para Todos",
                 position = "Presidencia",
                 photoUrl = "https://statics.exitosanoticias.pe/2023/10/653bc125b24b1.png",
-                profileDetails = null // Ejemplo de candidato sin data detallada
+                profileDetails = null // Este candidato sigue sin datos detallados
             ),
             // --- CANDIDATO 5 ---
             Candidate(
                 id = 5,
-                name = "Mario Vizcarra", // Sigo tu mock data, aunque sea Martín Vizcarra
+                name = "Mario Vizcarra",
                 party = "Perú Primero",
                 position = "Presidencia",
                 photoUrl = "https://tse2.mm.bing.net/th/id/OIP.rEIcUIfKg887VmAIBBNYLwHaE8?rs=1&pid=ImgDetMain&o=7&rm=3",
@@ -189,7 +205,12 @@ object MockDataRepository {
                             AcademicDegree("Ingeniería Civil", "Universidad Nacional de Ingeniería (1980-1985)")
                         ),
                         documentId = "sunedu_5"
-                    )
+                    ),
+                    careerHistory = CareerHistory(items = listOf(
+                        CareerItem("Presidente de la República", "2018-2020", "Asumió la presidencia tras la renuncia de Pedro Pablo Kuczynski."),
+                        CareerItem("Primer Vicepresidente", "2016-2018", "Electo en la plancha presidencial de Peruanos por el Kambio."),
+                        CareerItem("Gobernador Regional de Moquegua", "2011-2014", "Reconocido por su gestión en el sector educativo de la región.")
+                    ))
                 )
             )
         )
@@ -210,3 +231,4 @@ object MockDataRepository {
         )
     }
 }
+
