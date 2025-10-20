@@ -74,4 +74,7 @@ dependencies {
 
     // Coil – carga y visualización de imágenes
     implementation("io.coil-kt:coil-compose:2.7.0")
+
+    //
+    implementation("androidx.compose.material:material-icons-extended-android:1.6.8") 
 }
