@@ -408,3 +408,160 @@ fun ExpandableInfoCard(
         }
     }
 }
+
+
+@Composable
+fun GovernmentPlanCard(
+    plan: GovernmentPlan,
+    onDocumentClick: (documentId: String) -> Unit // RECIBE la función
+) {
+    DocumentSectionCard(
+        title = "Plan de Gobierno",
+        subtitle = "Documento oficial del plan de gestión",
+        icon = Icons.Default.MenuBook,
+        documentId = plan.documentId,
+        onDocumentClick = onDocumentClick // Pasa la acción al Composable clickable
+    ) {
+        // Contenido del resumen del plan
+        Text(
+            text = plan.summary,
+            fontSize = 14.sp,
+            color = Color(0xFF555555),
+            lineHeight = 20.sp,
+            maxLines = 4,
+        )
+        // Puedes listar algunas propuestas clave si quieres
+        plan.proposals.take(2).forEach { proposal ->
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                // Pequeño círculo como viñeta
+                Box(
+                    modifier = Modifier
+                        .size(6.dp)
+                        .clip(RoundedCornerShape(3.dp))
+                        .background(ProfileMainPurple)
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = proposal.title,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.Black
+                )
+            }
+        }
+    }
+}
+
+// ==================== FORMACIÓN ACADÉMICA ====================
+@Composable
+fun AcademicFormationCard(
+    academicFormation: AcademicFormation,
+    onDocumentClick: (documentId: String) -> Unit // RECIBE la función
+) {
+    DocumentSectionCard(
+        title = "Formación Académica",
+        subtitle = "Títulos registrados ante SUNEDU",
+        icon = Icons.Default.School,
+        documentId = academicFormation.documentId,
+        onDocumentClick = onDocumentClick // Pasa la acción al Composable clickable
+    ) {
+        // Contenido de la formación académica
+        academicFormation.degrees.forEach { degree ->
+            Column(modifier = Modifier.padding(bottom = 8.dp)) {
+                Text(
+                    text = degree.title,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 14.sp,
+                    color = Color.Black
+                )
+                Text(
+                    text = degree.institutionAndPeriod,
+                    fontSize = 13.sp,
+                    color = Color.Gray
+                )
+            }
+        }
+    }
+}
+
+
+// ==================== COMPOSABLE REUTILIZABLE (CLICKEABLE) ====================
+@Composable
+fun DocumentSectionCard(
+    title: String,
+    subtitle: String,
+    icon: ImageVector,
+    documentId: String,
+    onDocumentClick: (documentId: String) -> Unit, // NUEVO: Función de click
+    content: @Composable () -> Unit // Contenido principal de la tarjeta
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+    ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            // Título de la sección
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = title,
+                    tint = ProfileMainPurple,
+                    modifier = Modifier.size(24.dp)
+                )
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = title,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = ProfileMainPurple
+                    )
+                    Text(
+                        text = subtitle,
+                        fontSize = 12.sp,
+                        color = Color.Gray
+                    )
+                }
+            }
+
+            // Contenido
+            Box(modifier = Modifier.padding(horizontal = 16.dp)) {
+                content()
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+
+
+            // Botón de VER DOCUMENTO
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onDocumentClick(documentId) } // <--- ¡LA ACCIÓN DE NAVEGACIÓN!
+                    .background(Color.Transparent)
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "Ver Documento Completo",
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 14.sp,
+                    color = ProfileMainPurple
+                )
+                Icon(
+                    imageVector = Icons.Default.ChevronRight,
+                    contentDescription = "Ver Detalle",
+                    tint = ProfileMainPurple,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+        }
+    }
+}
