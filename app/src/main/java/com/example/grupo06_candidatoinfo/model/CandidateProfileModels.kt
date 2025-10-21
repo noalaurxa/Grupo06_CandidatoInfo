@@ -5,7 +5,8 @@ data class CandidateProfile(
     val assetDeclaration: AssetDeclaration,
     val governmentPlan: GovernmentPlan,
     val academicFormation: AcademicFormation,
-    val careerHistory: CareerHistory
+    val careerHistory: CareerHistory?, // Hacemos nullable por si no hay data
+    val backgroundReport: BackgroundReport? // Hacemos nullable por si no hay data
 )
 
 data class BasicInfo(
@@ -53,8 +54,25 @@ data class CareerHistory(
     val items: List<CareerItem>
 )
 
+// --- MODELO DE TRAYECTORIA CORREGIDO ---
+// Se añade 'description' para que coincida con la vista.
 data class CareerItem(
     val position: String,
     val period: String,
     val description: String
 )
+
+// --- MODELOS PARA ANTECEDENTES ---
+data class BackgroundReport(
+    val records: List<BackgroundRecord>
+)
+
+data class BackgroundRecord(
+    val title: String,
+    val entity: String,
+    val date: String,
+    val description: String,
+    val tags: List<String>,
+    val documentId: String
+)
+

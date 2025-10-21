@@ -35,6 +35,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = "11"
+        freeCompilerArgs += "-Xopt-in=androidx.compose.animation.ExperimentalAnimationApi"
     }
     buildFeatures {
         compose = true
@@ -78,4 +79,12 @@ dependencies {
 
     //
     implementation("androidx.compose.material:material-icons-extended-android:1.6.8")
+    implementation("androidx.compose.animation:animation:1.7.3")
+    implementation("androidx.compose.material3:material3:1.3.0")
+    implementation(platform("androidx.compose:compose-bom:2024.09.01"))
+    implementation("androidx.compose.animation:animation")
+    implementation("androidx.compose.material3:material3")
+
+
+
 }

@@ -17,8 +17,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.grupo06_candidatoinfo.model.CareerHistory
 import com.example.grupo06_candidatoinfo.model.CareerItem
-import com.example.grupo06_candidatoinfo.ui.theme.ProfileLightPurpleBackground
-import com.example.grupo06_candidatoinfo.ui.theme.ProfileMainPurple
+// --- IMPORTS DE COLOR CORREGIDOS ---
+import com.example.grupo06_candidatoinfo.ui.theme.lightPurpleCard
+import com.example.grupo06_candidatoinfo.ui.theme.mainPurple
 
 // ==================== TAB TRAYECTORIA ====================
 @Composable
@@ -50,7 +51,8 @@ fun CareerItemCard(careerItem: CareerItem, isLastItem: Boolean) {
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .background(ProfileMainPurple.copy(alpha = 0.8f)),
+                    // --- COLOR CORREGIDO ---
+                    .background(mainPurple.copy(alpha = 0.8f)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
@@ -62,7 +64,8 @@ fun CareerItemCard(careerItem: CareerItem, isLastItem: Boolean) {
             }
             if (!isLastItem) {
                 Divider(
-                    color = ProfileMainPurple.copy(alpha = 0.5f),
+                    // --- COLOR CORREGIDO ---
+                    color = mainPurple.copy(alpha = 0.5f),
                     modifier = Modifier
                         .width(2.dp)
                         .weight(1f)
@@ -74,7 +77,8 @@ fun CareerItemCard(careerItem: CareerItem, isLastItem: Boolean) {
         Card(
             modifier = Modifier.weight(1f),
             shape = RoundedCornerShape(12.dp),
-            colors = CardDefaults.cardColors(containerColor = ProfileLightPurpleBackground.copy(alpha = 0.8f)),
+            // --- COLOR CORREGIDO ---
+            colors = CardDefaults.cardColors(containerColor = lightPurpleCard.copy(alpha = 0.8f)),
             elevation = CardDefaults.cardElevation(0.dp)
         ) {
             Column(
@@ -91,7 +95,8 @@ fun CareerItemCard(careerItem: CareerItem, isLastItem: Boolean) {
                 )
                 Surface(
                     shape = RoundedCornerShape(8.dp),
-                    color = ProfileMainPurple.copy(alpha = 0.9f)
+                    // --- COLOR CORREGIDO ---
+                    color = mainPurple.copy(alpha = 0.9f)
                 ) {
                     Text(
                         text = careerItem.period,
