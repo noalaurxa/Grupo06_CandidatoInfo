@@ -9,6 +9,7 @@ import androidx.navigation.navArgument
 import com.example.grupo06_candidatoinfo.ui.screens.compare.CompareScreen
 import com.example.grupo06_candidatoinfo.ui.screens.detail.DetailScreen
 import com.example.grupo06_candidatoinfo.ui.screens.home.HomeScreen
+// --- IMPORTACIÓN AÑADIDA ---
 import com.example.grupo06_candidatoinfo.ui.screens.profile.ProfileScreen
 
 /**
@@ -22,7 +23,13 @@ sealed class Screen(val route: String) {
     object Detail: Screen("detail/{documentId}") {
         fun createRoute(documentId: String) = "detail/$documentId"
     }
-    object Compare : Screen("compare")
+
+    // --- RUTA ACTUALIZADA ---
+    // Ahora acepta un argumento opcional "ids"
+    object Compare : Screen("compare?ids={ids}") {
+        // Función para crear la ruta, similar a como lo tenías en HomeScreen
+        fun createRoute(ids: String) = "compare?ids=$ids"
+    }
 }
 
 /**
@@ -73,9 +80,22 @@ fun SetupNavGraph(navController: NavHostController) {
             )
         }
 
-        // Pantalla de comparación
-        composable(route = Screen.Compare.route) {
-            CompareScreen(navController = navController)
+        // --- PANTALLA DE COMPARACIÓN (ACTUALIZADA) ---
+        composable(
+            route = Screen.Compare.route, // Usa la nueva ruta
+            arguments = listOf(
+                navArgument("ids") { // Define el argumento
+                    type = NavType.StringType
+                    nullable = true // Es opcional
+                }
+            )
+        ) { backStackEntry ->
+            // Extrae los IDs y pásalos a la pantalla
+            val candidateIds = backStackEntry.arguments?.getString("ids")
+            CompareScreen(
+                navController = navController,
+                candidateIds = candidateIds // Pasa el string de IDs
+            )
         }
     }
 }

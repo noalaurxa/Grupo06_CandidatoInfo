@@ -1,31 +1,52 @@
 package com.example.grupo06_candidatoinfo.ui.screens.profile
 
+<<<<<<< HEAD
 import android.os.Build
 import androidx.annotation.RequiresApi
+=======
+// Imports necesarios
+>>>>>>> f0cdad359463fc8d12d70855d733c2060391744a
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.grupo06_candidatoinfo.data.repository.MockDataRepository
+<<<<<<< HEAD
 import com.example.grupo06_candidatoinfo.navigation.Screen
 import com.example.grupo06_candidatoinfo.ui.theme.ProfileLightGrayBackground
 import com.example.grupo06_candidatoinfo.ui.theme.ProfileMainPurple
+=======
+import com.example.grupo06_candidatoinfo.model.Candidate // Asegúrate de que este import esté
+
+>>>>>>> f0cdad359463fc8d12d70855d733c2060391744a
 // IMPORTS de la carpeta 'tabs'
 import com.example.grupo06_candidatoinfo.ui.screens.profile.tabs.CareerTabContent
 import com.example.grupo06_candidatoinfo.ui.screens.profile.tabs.GeneralTabContent
 import com.example.grupo06_candidatoinfo.ui.screens.profile.tabs.BackgroundTabContent
-import com.example.grupo06_candidatoinfo.ui.screens.profile.tabs.CurrentTabContent
+import com.example.grupo06_candidatoinfo.ui.screens.profile.tabs.CurrentTabContent // Asumiendo que este archivo existe
+
+// --- Colores del diseño ---
+private val mainPurple = Color(0xFF3C3472)
+private val lightPurpleBackground = Color(0xFFECEBFA) // Usado en tabs
+private val lighterPurpleCard = Color(0xFF5D559C) // Usado en tabs
+private val lightGrayBackground = Color(0xFFF7F7F7)
 
 
 // ==================== SCREEN PRINCIPAL ====================
@@ -47,7 +68,7 @@ fun ProfileScreen(
     val tabs = listOf("General", "Trayectoria", "Antecedentes", "Actualidad")
 
     Scaffold(
-        containerColor = ProfileLightGrayBackground
+        containerColor = lightGrayBackground // Usando color local
     ) { paddingValues ->
         if (candidate == null) {
             Column(
@@ -71,7 +92,18 @@ fun ProfileScreen(
                     .padding(bottom = paddingValues.calculateBottomPadding()),
                 contentPadding = PaddingValues(0.dp)
             ) {
+<<<<<<< HEAD
                 item {
+=======
+                // Header con foto (Padding aplicado aquí)
+                item {
+                    Box(modifier = Modifier.padding(horizontal = 16.dp).padding(top = 16.dp)) { // Padding corregido
+                        ProfileHeader(candidate = candidate, onBackClick = {
+                            navController.popBackStack()
+                        })
+                    }
+                }
+>>>>>>> f0cdad359463fc8d12d70855d733c2060391744a
 
                     Box(modifier = Modifier.padding(horizontal = 16.dp).padding( top = 16.dp).padding(top = 25.dp)) {
 
@@ -95,7 +127,7 @@ fun ProfileScreen(
                         ScrollableTabRow(
                             selectedTabIndex = selectedTabIndex,
                             containerColor = Color.Transparent,
-                            contentColor = ProfileMainPurple,
+                            contentColor = mainPurple, // Usando color local
                             edgePadding = 4.dp,
                             indicator = { },
                             divider = { }
@@ -113,7 +145,7 @@ fun ProfileScreen(
                                     Box(
                                         modifier = Modifier
                                             .background(
-                                                if (selectedTabIndex == index) ProfileMainPurple else Color.Transparent,
+                                                if (selectedTabIndex == index) mainPurple else Color.Transparent, // Usando color local
                                                 RoundedCornerShape(16.dp)
                                             )
                                             .padding(horizontal = 16.dp, vertical = 8.dp),
@@ -140,7 +172,7 @@ fun ProfileScreen(
                             .padding(horizontal = 16.dp, vertical = 12.dp)
                     ) {
                         when (selectedTabIndex) {
-                            0 -> {
+                            0 -> { // General
                                 if (profileDetails != null) {
                                     GeneralTabContent(
                                         navController = navController,
@@ -150,14 +182,19 @@ fun ProfileScreen(
                                     PlaceholderTabContent(title = "Información General no disponible")
                                 }
                             }
+<<<<<<< HEAD
 
                             1 -> {
+=======
+                            1 -> { // Trayectoria
+>>>>>>> f0cdad359463fc8d12d70855d733c2060391744a
                                 if (profileDetails?.careerHistory != null) {
                                     CareerTabContent(careerHistory = profileDetails.careerHistory)
                                 } else {
                                     PlaceholderTabContent(title = "Trayectoria no disponible")
                                 }
                             }
+<<<<<<< HEAD
 
                             2 -> {
                                 BackgroundTabContent(backgroundHistory = profileDetails?.backgroundHistory)
@@ -170,6 +207,20 @@ fun ProfileScreen(
                                         navController.navigate(Screen.Detail.createRoute(documentId))
                                     }
                                 )
+=======
+                            2 -> { // Antecedentes - LLAMADA CORREGIDA
+                                if (profileDetails?.backgroundReport != null) {
+                                    BackgroundTabContent(backgroundReport = profileDetails.backgroundReport)
+                                } else {
+                                    PlaceholderTabContent(title = "Antecedentes no disponibles")
+                                }
+                            }
+                            3 -> { // Actualidad
+                                // Asumiendo que CurrentTabContent existe y maneja su estado
+                                CurrentTabContent()
+                                // Si no existe, usa Placeholder:
+                                // PlaceholderTabContent(title = "Actualidad")
+>>>>>>> f0cdad359463fc8d12d70855d733c2060391744a
                             }
                         }
                     }
@@ -178,7 +229,12 @@ fun ProfileScreen(
         }
     }
 }
+<<<<<<< HEAD
 // ==================== PLACEHOLDER ====================
+=======
+
+// ==================== PLACEHOLDER (Mantenido) ====================
+>>>>>>> f0cdad359463fc8d12d70855d733c2060391744a
 @Composable
 fun PlaceholderTabContent(title: String) {
     Card(

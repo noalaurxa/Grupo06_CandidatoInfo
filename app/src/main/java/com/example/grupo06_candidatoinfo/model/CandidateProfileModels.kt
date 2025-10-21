@@ -6,9 +6,14 @@ data class CandidateProfile(
     val assetDeclaration: AssetDeclaration,
     val governmentPlan: GovernmentPlan,
     val academicFormation: AcademicFormation,
+<<<<<<< HEAD
     val careerHistory: CareerHistory,
     val backgroundHistory: BackgroundHistory?,
     val currentEvents: CurrentEvents?
+=======
+    val careerHistory: CareerHistory?, // Hacemos nullable por si no hay data
+    val backgroundReport: BackgroundReport? // Hacemos nullable por si no hay data
+>>>>>>> f0cdad359463fc8d12d70855d733c2060391744a
 )
 
 data class BasicInfo(
@@ -56,12 +61,15 @@ data class CareerHistory(
     val items: List<CareerItem>
 )
 
+// --- MODELO DE TRAYECTORIA CORREGIDO ---
+// Se añade 'description' para que coincida con la vista.
 data class CareerItem(
     val position: String,
     val period: String,
     val description: String
 )
 
+<<<<<<< HEAD
 // ANTECEDENTES
 data class BackgroundHistory(
     val items: List<BackgroundItem>
@@ -90,3 +98,19 @@ data class CurrentEventItem(
     val relatedTo: String,
     val isVerified: Boolean
 )
+=======
+// --- MODELOS PARA ANTECEDENTES ---
+data class BackgroundReport(
+    val records: List<BackgroundRecord>
+)
+
+data class BackgroundRecord(
+    val title: String,
+    val entity: String,
+    val date: String,
+    val description: String,
+    val tags: List<String>,
+    val documentId: String
+)
+
+>>>>>>> f0cdad359463fc8d12d70855d733c2060391744a
