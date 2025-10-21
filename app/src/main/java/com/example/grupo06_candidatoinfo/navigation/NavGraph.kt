@@ -1,5 +1,7 @@
 package com.example.grupo06_candidatoinfo.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -24,10 +26,9 @@ sealed class Screen(val route: String) {
         fun createRoute(documentId: String) = "detail/$documentId"
     }
 
-    // --- RUTA ACTUALIZADA ---
-    // Ahora acepta un argumento opcional "ids"
+    // --- RUTA ACTUALIZADA para argumento opcional ---
     object Compare : Screen("compare?ids={ids}") {
-        // Función para crear la ruta, similar a como lo tenías en HomeScreen
+        // Función para crear la ruta, pasando una cadena de IDs (e.g., "1,2,3")
         fun createRoute(ids: String) = "compare?ids=$ids"
     }
 }
@@ -36,6 +37,7 @@ sealed class Screen(val route: String) {
  * Configura el grafo de navegación de la aplicación
  */
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SetupNavGraph(navController: NavHostController) {
     NavHost(
@@ -80,17 +82,18 @@ fun SetupNavGraph(navController: NavHostController) {
             )
         }
 
-        // --- PANTALLA DE COMPARACIÓN (ACTUALIZADA) ---
+        // --- PANTALLA DE COMPARACIÓN (ACTUALIZADA con argumento opcional 'ids') ---
         composable(
-            route = Screen.Compare.route, // Usa la nueva ruta
+            route = Screen.Compare.route, // Usamos la ruta con el query parameter
             arguments = listOf(
-                navArgument("ids") { // Define el argumento
+                navArgument("ids") { // Definimos el argumento opcional
                     type = NavType.StringType
-                    nullable = true // Es opcional
+                    nullable = true // Importante: indica que el parámetro es opcional
+                    defaultValue = null // Establece un valor por defecto
                 }
             )
         ) { backStackEntry ->
-            // Extrae los IDs y pásalos a la pantalla
+            // Extrae la cadena de IDs y pásala a la pantalla. Será null si no se proporciona.
             val candidateIds = backStackEntry.arguments?.getString("ids")
             CompareScreen(
                 navController = navController,
