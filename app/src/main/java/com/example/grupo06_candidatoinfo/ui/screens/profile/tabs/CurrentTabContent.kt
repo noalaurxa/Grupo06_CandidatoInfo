@@ -63,7 +63,7 @@ fun CurrentTabContent(
                 modifier = Modifier.size(24.dp)
             )
             Text(
-                text = "Noticias, Actividades y Documentos", // TITULO
+                text = "Noticias y Actividades", // TITULO
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
                 color = ProfileMainPurple
@@ -115,7 +115,6 @@ fun CurrentTabContent(
             }
         }
 
-        // *** BOTÓN FullNewsButton ELIMINADO ***
     }
 }
 
@@ -131,9 +130,9 @@ fun TimelineNode(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(IntrinsicSize.Min) // Asegura que el Stepper y la Card tengan la misma altura
+            .height(IntrinsicSize.Min) // ASEGURA QUE EL CARD TENGA LA MISMA ALTURA
     ) {
-        // 1. Stepper (Punto y Línea - "Bolas al costado")
+        // 1. Stepper (Punto y Línea)
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(horizontal = 8.dp)

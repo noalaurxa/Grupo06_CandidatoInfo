@@ -23,13 +23,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.grupo06_candidatoinfo.model.*
 import com.example.grupo06_candidatoinfo.navigation.Screen
-// --- IMPORTS DE COLOR CORREGIDOS ---
+// --- IMPORTS DE COLOR ---
 import com.example.grupo06_candidatoinfo.ui.theme.ProfileLighterPurpleCard
 import com.example.grupo06_candidatoinfo.ui.theme.ProfileMainPurple
 import java.text.NumberFormat
 import java.util.Locale
 
-// Función de utilidad
 fun Color.Companion.fromHex(hexString: String): Color {
     return Color(android.graphics.Color.parseColor(hexString))
 }
@@ -123,7 +122,6 @@ fun DeclaracionBienesContent(declaration: AssetDeclaration) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
-        // --- COLOR CORREGIDO: Usamos ProfileLighterPurpleCard ---
         colors = CardDefaults.cardColors(containerColor = ProfileLighterPurpleCard)
     ) {
         Column(
@@ -314,7 +312,6 @@ private fun FormacionItem(icon: ImageVector, title: String, description: String)
         Icon(
             imageVector = icon,
             contentDescription = title,
-            // --- COLOR CORREGIDO: Usamos ProfileMainPurple ---
             tint = ProfileMainPurple,
             modifier = Modifier.size(32.dp).padding(top = 2.dp)
         )
@@ -349,14 +346,12 @@ private fun ClickableTextRow(text: String, icon: ImageVector, onClick: () -> Uni
         Icon(
             imageVector = icon,
             contentDescription = text,
-            // --- COLOR CORREGIDO: Usamos ProfileMainPurple ---
             tint = ProfileMainPurple,
             modifier = Modifier.size(20.dp)
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = text,
-            // --- COLOR CORREGIDO: Usamos ProfileMainPurple ---
             color = ProfileMainPurple,
             fontWeight = FontWeight.Medium,
             fontSize = 14.sp
@@ -440,11 +435,9 @@ fun GovernmentPlanCard(
             lineHeight = 20.sp,
             maxLines = 4,
         )
-        // Puedes listar algunas propuestas clave si quieres
         plan.proposals.take(2).forEach { proposal ->
             Spacer(modifier = Modifier.height(8.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
-                // Pequeño círculo como viñeta
                 Box(
                     modifier = Modifier
                         .size(6.dp)
@@ -474,7 +467,7 @@ fun AcademicFormationCard(
         subtitle = "Títulos registrados ante SUNEDU",
         icon = Icons.Default.School,
         documentId = academicFormation.documentId,
-        onDocumentClick = onDocumentClick // Pasa la acción al Composable clickable
+        onDocumentClick = onDocumentClick
     ) {
         // Contenido de la formación académica
         academicFormation.degrees.forEach { degree ->
@@ -503,8 +496,8 @@ fun DocumentSectionCard(
     subtitle: String,
     icon: ImageVector,
     documentId: String,
-    onDocumentClick: (documentId: String) -> Unit, // NUEVO: Función de click
-    content: @Composable () -> Unit // Contenido principal de la tarjeta
+    onDocumentClick: (documentId: String) -> Unit,
+    content: @Composable () -> Unit
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -548,12 +541,11 @@ fun DocumentSectionCard(
             }
             Spacer(modifier = Modifier.height(16.dp))
 
-
             // Botón de VER DOCUMENTO
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { onDocumentClick(documentId) } // <--- ¡LA ACCIÓN DE NAVEGACIÓN!
+                    .clickable { onDocumentClick(documentId) }
                     .background(Color.Transparent)
                     .padding(horizontal = 16.dp, vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
