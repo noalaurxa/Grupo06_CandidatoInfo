@@ -1,5 +1,7 @@
 package com.example.grupo06_candidatoinfo.ui.screens.profile
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -26,6 +29,7 @@ import com.example.grupo06_candidatoinfo.ui.screens.profile.tabs.CurrentTabConte
 
 
 // ==================== SCREEN PRINCIPAL ====================
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
@@ -47,7 +51,10 @@ fun ProfileScreen(
     ) { paddingValues ->
         if (candidate == null) {
             Column(
-                modifier = Modifier.fillMaxSize().padding(paddingValues).padding(16.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(16.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -64,20 +71,26 @@ fun ProfileScreen(
                     .padding(bottom = paddingValues.calculateBottomPadding()),
                 contentPadding = PaddingValues(0.dp)
             ) {
-                // Header con foto
                 item {
-                    Box(modifier = Modifier.padding(horizontal = 16.dp).padding(top = 25.dp)) {
-                        ProfileHeader(candidate = candidate, onBackClick = {
-                            navController.popBackStack()
-                        })
-                    }
-                }
 
+                    Box(modifier = Modifier.padding(horizontal = 16.dp).padding( top = 16.dp).padding(top = 25.dp)) {
+
+                        ProfileHeader(candidate = candidate, onBackClick = {
+
+                            navController.popBackStack()
+
+                        })
+
+                    }
+
+                }
                 // Tabs de navegación
                 item {
                     Surface(
                         color = Color.White,
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
                     ) {
                         ScrollableTabRow(
                             selectedTabIndex = selectedTabIndex,
@@ -134,7 +147,6 @@ fun ProfileScreen(
                                         profile = profileDetails
                                     )
                                 } else {
-                                    // Sigue usando PlaceholderTabContent aquí o crea un composable específico
                                     PlaceholderTabContent(title = "Información General no disponible")
                                 }
                             }
@@ -148,17 +160,13 @@ fun ProfileScreen(
                             }
 
                             2 -> {
-                                if (profileDetails?.backgroundHistory != null) {
-                                    BackgroundTabContent(backgroundHistory = profileDetails.backgroundHistory) // LLAMADA FINAL
-                                } else {
-                                    PlaceholderTabContent(title = "Antecedentes no disponibles")
-                                }
+                                BackgroundTabContent(backgroundHistory = profileDetails?.backgroundHistory)
                             }
 
                             3 -> {
                                 CurrentTabContent(
+                                    currentEvents = profileDetails?.currentEvents,
                                     onNewsClick = { documentId ->
-                                        // Navega a DetailScreen usando el ID del documento/noticia
                                         navController.navigate(Screen.Detail.createRoute(documentId))
                                     }
                                 )
@@ -169,37 +177,30 @@ fun ProfileScreen(
             }
         }
     }
-    // ==================== PLACEHOLDER ====================
-    @Composable
-    fun PlaceholderTabContent(title: String) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp),
-            shape = RoundedCornerShape(8.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
-            elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleLarge,
-                    color = Color.Gray
-                )
-            }
-        }
-    }}
-
+}
+// ==================== PLACEHOLDER ====================
 @Composable
 fun PlaceholderTabContent(title: String) {
-    TODO("Not yet implemented")
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(200.dp),
+        shape = RoundedCornerShape(8.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleLarge,
+                color = Color.Gray,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
 }
-
-
-
-
