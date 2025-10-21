@@ -60,7 +60,7 @@ dependencies {
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:3.0.0")
     implementation("com.squareup.retrofit2:converter-gson:3.0.0")
-    implementation(libs.androidx.compose.foundation)
+
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.3")
 
 
