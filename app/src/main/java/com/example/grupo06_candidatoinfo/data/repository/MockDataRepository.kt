@@ -12,6 +12,10 @@ import com.example.grupo06_candidatoinfo.model.CareerItem
 import com.example.grupo06_candidatoinfo.model.ElectionType
 import com.example.grupo06_candidatoinfo.model.GovernmentPlan
 import com.example.grupo06_candidatoinfo.model.ProposalItem
+// [NUEVAS IMPORTACIONES]
+import com.example.grupo06_candidatoinfo.model.BackgroundHistory
+import com.example.grupo06_candidatoinfo.model.BackgroundItem
+
 
 object MockDataRepository {
 
@@ -66,7 +70,23 @@ object MockDataRepository {
                         CareerItem("Alcalde de Lima", "2023-Presente", "Gestión municipal enfocada en seguridad, transporte y programas sociales."),
                         CareerItem("Regidor de Lima", "2007-2010", "Participó en comisiones de desarrollo urbano y transporte."),
                         CareerItem("Presidente del Directorio", "1996-Presente", "Fundador y líder de PeruRail, impulsando el turismo en Cusco.")
+                    )),
+                    // [INSERCIÓN DE ANTECEDENTES]
+                    backgroundHistory = BackgroundHistory(items = listOf(
+                        BackgroundItem(
+                            type = "Investigación Fiscal",
+                            description = "Investigación preliminar por presunto delito de lavado de activos.",
+                            date = "20/09/2021",
+                            status = "Vigente"
+                        ),
+                        BackgroundItem(
+                            type = "Denuncia",
+                            description = "Denuncia por difamación desestimada por el Poder Judicial.",
+                            date = "05/03/2019",
+                            status = "Archivado"
+                        )
                     ))
+                    // [FIN DE INSERCIÓN]
                 )
             ),
             // --- CANDIDATO 2 ---
@@ -111,7 +131,23 @@ object MockDataRepository {
                     careerHistory = CareerHistory(items = listOf(
                         CareerItem("Candidata a la Presidencia", "2011, 2016, 2021", "Lideró el partido Fuerza Popular en tres elecciones generales."),
                         CareerItem("Congresista de la República", "2006-2011", "Fue la congresista más votada en las elecciones de 2006.")
+                    )),
+                    // [INSERCIÓN DE ANTECEDENTES]
+                    backgroundHistory = BackgroundHistory(items = listOf(
+                        BackgroundItem(
+                            type = "Prisión Preventiva",
+                            description = "Investigación por aportes de campaña y presunto lavado de activos.",
+                            date = "2019 - 2020",
+                            status = "Concluido"
+                        ),
+                        BackgroundItem(
+                            type = "Denuncia",
+                            description = "Proceso judicial por presunta obstrucción a la justicia.",
+                            date = "15/07/2022",
+                            status = "Vigente"
+                        )
                     ))
+                    // [FIN DE INSERCIÓN]
                 )
             ),
             // --- CANDIDATO 3 ---
@@ -157,7 +193,23 @@ object MockDataRepository {
                         CareerItem("Gobernador Regional de La Libertad", "2015-2018", "Impulsó proyectos de infraestructura y educación en la región."),
                         CareerItem("Alcalde de Trujillo", "2007-2014", "Realizó dos gestiones consecutivas en la alcaldía provincial."),
                         CareerItem("Congresista de la República", "2000-2001", "Participó en el Congreso durante el periodo de transición.")
+                    )),
+                    // [INSERCIÓN DE ANTECEDENTES]
+                    backgroundHistory = BackgroundHistory(items = listOf(
+                        BackgroundItem(
+                            type = "Plagio Académico",
+                            description = "Denuncia por presunto plagio en tesis de doctorado y maestría.",
+                            date = "2016",
+                            status = "Archivado"
+                        ),
+                        BackgroundItem(
+                            type = "Proceso Civil",
+                            description = "Demanda por incumplimiento de contrato en sociedad empresarial.",
+                            date = "20/11/2023",
+                            status = "Vigente"
+                        )
                     ))
+                    // [FIN DE INSERCIÓN]
                 )
             ),
             // --- CANDIDATO 4 ---
@@ -210,7 +262,23 @@ object MockDataRepository {
                         CareerItem("Presidente de la República", "2018-2020", "Asumió la presidencia tras la renuncia de Pedro Pablo Kuczynski."),
                         CareerItem("Primer Vicepresidente", "2016-2018", "Electo en la plancha presidencial de Peruanos por el Kambio."),
                         CareerItem("Gobernador Regional de Moquegua", "2011-2014", "Reconocido por su gestión en el sector educativo de la región.")
+                    )),
+                    // [INSERCIÓN DE ANTECEDENTES]
+                    backgroundHistory = BackgroundHistory(items = listOf(
+                        BackgroundItem(
+                            type = "Inhabilitación",
+                            description = "Inhabilitación de la función pública por 10 años por el caso 'Vacunagate'.",
+                            date = "2021",
+                            status = "Vigente"
+                        ),
+                        BackgroundItem(
+                            type = "Investigación Fiscal",
+                            description = "Investigación por supuesta recepción de sobornos por obras públicas.",
+                            date = "2020",
+                            status = "Vigente"
+                        )
                     ))
+                    // [FIN DE INSERCIÓN]
                 )
             )
         )

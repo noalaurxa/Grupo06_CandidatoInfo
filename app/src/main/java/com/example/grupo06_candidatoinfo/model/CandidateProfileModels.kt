@@ -5,7 +5,9 @@ data class CandidateProfile(
     val assetDeclaration: AssetDeclaration,
     val governmentPlan: GovernmentPlan,
     val academicFormation: AcademicFormation,
-    val careerHistory: CareerHistory
+    val careerHistory: CareerHistory,
+    // [NUEVO] Propiedad de antecedentes
+    val backgroundHistory: BackgroundHistory?
 )
 
 data class BasicInfo(
@@ -57,4 +59,15 @@ data class CareerItem(
     val position: String,
     val period: String,
     val description: String
+)
+// ANTECEDENTES (Background)
+data class BackgroundHistory(
+    val items: List<BackgroundItem>
+)
+
+data class BackgroundItem(
+    val type: String, // Ejemplo: "Denuncia", "Investigación", "Sentencia"
+    val description: String,
+    val date: String,
+    val status: String // Ejemplo: "Vigente", "Archivado", "Concluido"
 )

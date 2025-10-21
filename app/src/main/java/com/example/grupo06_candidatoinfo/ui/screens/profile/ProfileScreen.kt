@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.grupo06_candidatoinfo.data.repository.MockDataRepository
+import com.example.grupo06_candidatoinfo.navigation.Screen
 import com.example.grupo06_candidatoinfo.ui.theme.ProfileLightGrayBackground
 import com.example.grupo06_candidatoinfo.ui.theme.ProfileMainPurple
 // IMPORTS de la carpeta 'tabs'
@@ -22,6 +23,7 @@ import com.example.grupo06_candidatoinfo.ui.screens.profile.tabs.CareerTabConten
 import com.example.grupo06_candidatoinfo.ui.screens.profile.tabs.GeneralTabContent
 import com.example.grupo06_candidatoinfo.ui.screens.profile.tabs.BackgroundTabContent
 import com.example.grupo06_candidatoinfo.ui.screens.profile.tabs.CurrentTabContent
+
 
 // ==================== SCREEN PRINCIPAL ====================
 @OptIn(ExperimentalMaterial3Api::class)
@@ -90,7 +92,7 @@ fun ProfileScreen(
                                     selected = selectedTabIndex == index,
                                     onClick = { selectedTabIndex = index },
                                     modifier = Modifier
-                                        .padding(horizontal = 4.dp, vertical=8.dp)
+                                        .padding(horizontal = 4.dp, vertical = 8.dp)
                                         .clip(RoundedCornerShape(16.dp)),
                                     selectedContentColor = Color.White,
                                     unselectedContentColor = Color.Gray
@@ -103,7 +105,7 @@ fun ProfileScreen(
                                             )
                                             .padding(horizontal = 16.dp, vertical = 8.dp),
                                         contentAlignment = Alignment.Center
-                                    ){
+                                    ) {
                                         Text(
                                             text = title,
                                             fontSize = 13.sp,
@@ -136,6 +138,7 @@ fun ProfileScreen(
                                     PlaceholderTabContent(title = "Información General no disponible")
                                 }
                             }
+
                             1 -> {
                                 if (profileDetails?.careerHistory != null) {
                                     CareerTabContent(careerHistory = profileDetails.careerHistory)
@@ -143,39 +146,60 @@ fun ProfileScreen(
                                     PlaceholderTabContent(title = "Trayectoria no disponible")
                                 }
                             }
-                            2 -> BackgroundTabContent()
-                            3 -> CurrentTabContent()
+
+                            2 -> {
+                                if (profileDetails?.backgroundHistory != null) {
+                                    BackgroundTabContent(backgroundHistory = profileDetails.backgroundHistory) // LLAMADA FINAL
+                                } else {
+                                    PlaceholderTabContent(title = "Antecedentes no disponibles")
+                                }
+                            }
+
+                            3 -> {
+                                CurrentTabContent(
+                                    onNewsClick = { documentId ->
+                                        // Navega a DetailScreen usando el ID del documento/noticia
+                                        navController.navigate(Screen.Detail.createRoute(documentId))
+                                    }
+                                )
+                            }
                         }
                     }
                 }
             }
         }
     }
-}
+    // ==================== PLACEHOLDER ====================
+    @Composable
+    fun PlaceholderTabContent(title: String) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp),
+            shape = RoundedCornerShape(8.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleLarge,
+                    color = Color.Gray
+                )
+            }
+        }
+    }}
 
-
-// ==================== PLACEHOLDER ====================
 @Composable
 fun PlaceholderTabContent(title: String) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(200.dp),
-        shape = RoundedCornerShape(8.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleLarge,
-                color = Color.Gray
-            )
-        }
-    }
+    TODO("Not yet implemented")
 }
+
+
+
+
