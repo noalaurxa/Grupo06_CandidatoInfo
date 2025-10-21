@@ -1,69 +1,54 @@
 package com.example.grupo06_candidatoinfo.ui.screens.profile.tabs
 
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed //para la línea de tiempo
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Article // Para noticias/documentos
+import androidx.compose.material.icons.filled.Campaign // Para actividad
+import androidx.compose.material.icons.filled.CheckCircle // Para verificado
 import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.OpenInNew
-import androidx.compose.material.icons.filled.RssFeed
+import androidx.compose.material.icons.filled.RssFeed // Fallback
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.grupo06_candidatoinfo.model.CurrentEventItem
+import com.example.grupo06_candidatoinfo.model.CurrentEvents
+import com.example.grupo06_candidatoinfo.ui.theme.ProfileLightPurpleBackground
 import com.example.grupo06_candidatoinfo.ui.theme.ProfileMainPurple
+import com.example.grupo06_candidatoinfo.ui.theme.TimelineColor
 
-// Modelo de datos simulado para las noticias (temporal)
-data class MockNewsItem(
-    val id: Int,
-    val title: String,
-    val date: String,
-    val source: String,
-    val url: String,
-    val documentId: String // Usaremos este ID para la navegación
-)
+import java.time.LocalDate
+import java.time.Period
+import java.time.format.DateTimeFormatter
 
-// Datos simulados para 3 noticias
-val mockNewsList = listOf(
-    MockNewsItem(
-        id = 1,
-        title = "Candidato Lanza Propuesta Clave de Infraestructura para el Sur del País",
-        date = "18 de Octubre, 2025",
-        source = "Prensa Oficial",
-        url = "https://www.ejemplo.com/noticia/1",
-        documentId = "news_infraestructura" // ID para la pantalla Detail
-    ),
-    MockNewsItem(
-        id = 2,
-        title = "Análisis: Impacto del Plan Económico del Partido en la Microempresa",
-        date = "16 de Octubre, 2025",
-        source = "Diario El País",
-        url = "https://www.ejemplo.com/noticia/2",
-        documentId = "news_economia" // ID para la pantalla Detail
-    ),
-    MockNewsItem(
-        id = 3,
-        title = "Debate Político: Reacciones a la postura sobre Seguridad Ciudadana",
-        date = "15 de Octubre, 2025",
-        source = "Noticias 24/7",
-        url = "https://www.ejemplo.com/noticia/3",
-        documentId = "news_seguridad" // ID para la pantalla Detail
-    )
-)
 
 // ==================== TAB ACTUALIDAD PRINCIPAL ====================
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CurrentTabContent(
-    onNewsClick: (documentId: String) -> Unit // NUEVO: Función para navegar
+    currentEvents: CurrentEvents?, // RECIBE LOS DATOS
+    onNewsClick: (documentId: String) -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         // Título de la sección
@@ -72,13 +57,13 @@ fun CurrentTabContent(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Icon(
-                imageVector = Icons.Default.RssFeed,
+                imageVector = Icons.Default.Article, // ICONO
                 contentDescription = "Actualidad",
                 tint = ProfileMainPurple,
                 modifier = Modifier.size(24.dp)
             )
             Text(
-                text = "Últimas Noticias (Feed)",
+                text = "Noticias, Actividades y Documentos", // TITULO
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
                 color = ProfileMainPurple
@@ -87,31 +72,111 @@ fun CurrentTabContent(
 
         Divider(modifier = Modifier.padding(bottom = 8.dp))
 
-        // Listado de las 3 Noticias Simuladas
-        mockNewsList.forEach { newsItem ->
-            NewsItemCard(
-                item = newsItem,
-                onNewsClick = onNewsClick // Le pasamos la función de navegación
-            )
+        // Listado de Noticias del Modelo
+        if (currentEvents == null || currentEvents.items.isEmpty()) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(150.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Sin actividad reciente registrada.",
+                        color = Color.Gray,
+                        fontSize = 16.sp,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        } else {
+            // LazyColumn CON LÍNEA DE TIEMPO
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 800.dp) // Limita la altura
+            ) {
+                itemsIndexed(currentEvents.items) { index, item ->
+                    val isFirst = index == 0
+                    val isLast = index == currentEvents.items.lastIndex
+
+                    TimelineNode( // El Composable para la línea de tiempo
+                        isFirst = isFirst,
+                        isLast = isLast,
+                        item = item,
+                        onNewsClick = { onNewsClick(item.id.toString()) }
+                    )
+                }
+            }
         }
 
-        // Botón de Acción para "Ver Más" (Sigue derivando al navegador externo)
-        Spacer(modifier = Modifier.height(8.dp))
-        FullNewsButton()
+        // *** BOTÓN FullNewsButton ELIMINADO ***
     }
 }
 
-// ==================== TARJETA INDIVIDUAL DE NOTICIA ====================
+// ==================== NODO DE LA LÍNEA DE TIEMPO ====================
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun NewsItemCard(
-    item: MockNewsItem,
-    onNewsClick: (documentId: String) -> Unit // RECIBE la función de navegación
+fun TimelineNode(
+    isFirst: Boolean,
+    isLast: Boolean,
+    item: CurrentEventItem,
+    onNewsClick: () -> Unit
 ) {
-    Card(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            // Al hacer clic, ejecuta la función de navegación con el documentId
-            .clickable { onNewsClick(item.documentId) },
+            .height(IntrinsicSize.Min) // Asegura que el Stepper y la Card tengan la misma altura
+    ) {
+        // 1. Stepper (Punto y Línea - "Bolas al costado")
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(horizontal = 8.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(12.dp)
+                    .clip(CircleShape)
+                    .background(if (isFirst) ProfileMainPurple else TimelineColor)
+            )
+            if (!isLast) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Box(
+                    modifier = Modifier
+                        .width(2.dp)
+                        .fillMaxHeight() // Se expande a la altura de la Card
+                        .background(TimelineColor)
+                )
+            }
+        }
+
+        // 2. Card de Noticia
+        NewsItemCard(
+            item = item,
+            onNewsClick = onNewsClick,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+    }
+}
+
+
+// ==================== TARJETA INDIVIDUAL DE NOTICIA ====================
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun NewsItemCard(
+    item: CurrentEventItem,
+    onNewsClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onNewsClick() }, // Ejecuta el lambda
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
@@ -120,56 +185,134 @@ fun NewsItemCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.Top, // Alinea icono y texto arriba
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Column(modifier = Modifier.weight(1f)) {
-                // Fuente y Fecha
-                Text(
-                    text = "${item.source} • ${item.date}",
-                    fontSize = 11.sp,
-                    color = Color.Gray
+            // Icono basado en el tipo
+            val icon = when (item.type) {
+                "noticia" -> Icons.Default.Article
+                "actividad" -> Icons.Default.Campaign
+                "documento" -> Icons.Default.Article
+                else -> Icons.Default.RssFeed
+            }
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(ProfileLightPurpleBackground),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = item.type,
+                    tint = ProfileMainPurple
                 )
-                Spacer(modifier = Modifier.height(4.dp))
+            }
+
+            // Contenido principal
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                // Fila de Fecha y Fuente
+                Row {
+                    Text(
+                        text = getRelativeTime(item.date), // Usa el helper de fecha
+                        fontSize = 12.sp,
+                        color = ProfileMainPurple,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = " • ${item.source}",
+                        fontSize = 12.sp,
+                        color = Color.Gray,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+
                 // Titular
                 Text(
                     text = item.title,
                     fontWeight = FontWeight.SemiBold,
-                    fontSize = 14.sp,
+                    fontSize = 15.sp,
                     color = Color.Black,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
+
+                // Descripción
+                Text(
+                    text = item.description,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 13.sp,
+                    color = Color(0xFF555555),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    lineHeight = 18.sp
+                )
+
+                // Etiqueta de Verificación
+                if (item.isVerified) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.CheckCircle,
+                            contentDescription = "Verificado",
+                            tint = Color(0xFF006400), // Verde oscuro
+                            modifier = Modifier.size(14.dp)
+                        )
+                        Text(
+                            text = "Información Verificada JNE",
+                            fontSize = 11.sp,
+                            color = Color(0xFF006400),
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                }
             }
+
             // Icono de Navegación
             Icon(
                 imageVector = Icons.Default.ChevronRight,
                 contentDescription = "Ver Noticia",
                 tint = ProfileMainPurple,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier
+                    .size(24.dp)
+                    .align(Alignment.CenterVertically) // Centra el chevron verticalmente
             )
         }
     }
 }
 
-// ... (El composable FullNewsButton se mantiene igual, ya que deriva a una web)
-@Composable
-fun FullNewsButton() {
-    val uriHandler = LocalUriHandler.current
 
-    Button(
-        onClick = {
-            uriHandler.openUri("https://www.ejemplo.com/noticias-del-candidato")
-        },
-        colors = ButtonDefaults.buttonColors(containerColor = ProfileMainPurple),
-        shape = RoundedCornerShape(10.dp),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Icon(
-            imageVector = Icons.Default.OpenInNew,
-            contentDescription = "Ver Más",
-            modifier = Modifier.size(20.dp)
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(text = "Ir al Portal de Noticias", color = Color.White, fontWeight = FontWeight.SemiBold)
+
+// ==================== HELPER DE FECHA ====================
+@RequiresApi(Build.VERSION_CODES.O)
+private fun getRelativeTime(dateString: String): String {
+    return try {
+        val formatter = DateTimeFormatter.ISO_LOCAL_DATE
+        val date = LocalDate.parse(dateString, formatter)
+        val today = LocalDate.now()
+
+        val period = Period.between(date, today)
+
+        when {
+            period.isZero -> "Hoy"
+            period.days == 1 -> "Ayer"
+            period.days < 7 -> "Hace ${period.days} días"
+            period.days < 14 -> "Hace 1 semana"
+            period.days < 30 -> "Hace ${period.days / 7} semanas"
+            period.months == 1 -> "Hace 1 mes"
+            period.months < 12 -> "Hace ${period.months} meses"
+            period.years == 1 -> "Hace 1 año"
+            period.years > 1 -> "Hace ${period.years} años"
+            else -> dateString
+        }
+    } catch (e: Exception) {
+        dateString
     }
 }
