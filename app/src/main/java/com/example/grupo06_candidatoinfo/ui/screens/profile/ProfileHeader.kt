@@ -18,8 +18,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.grupo06_candidatoinfo.model.Candidate
-import com.example.grupo06_candidatoinfo.ui.theme.ProfileLighterPurpleCard
-import com.example.grupo06_candidatoinfo.ui.theme.ProfileMainPurple
+//colores
+import com.example.grupo06_candidatoinfo.ui.theme.darkPurpleHeader
+import com.example.grupo06_candidatoinfo.ui.theme.mainPurple
 
 // ==================== HEADER ====================
 @Composable
@@ -31,7 +32,8 @@ fun ProfileHeader(candidate: Candidate, onBackClick: () -> Unit) {
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(32.dp
             ),
-            colors = CardDefaults.cardColors(containerColor = ProfileMainPurple)
+            // --- COLOR ACTUALIZADO ---
+            colors = CardDefaults.cardColors(containerColor = mainPurple)
         ) {
             Box(modifier = Modifier.fillMaxWidth()) {
                 Column(
@@ -63,7 +65,8 @@ fun ProfileHeader(candidate: Candidate, onBackClick: () -> Unit) {
                     Card(
                         modifier = Modifier.padding(vertical = 8.dp),
                         shape = RoundedCornerShape(12.dp),
-                        colors = CardDefaults.cardColors(containerColor = ProfileLighterPurpleCard)
+                        // --- COLOR ACTUALIZADO ---
+                        colors = CardDefaults.cardColors(containerColor = darkPurpleHeader)
                     ) {
                         Column(
                             modifier = Modifier.padding(horizontal = 24.dp, vertical = 10.dp),

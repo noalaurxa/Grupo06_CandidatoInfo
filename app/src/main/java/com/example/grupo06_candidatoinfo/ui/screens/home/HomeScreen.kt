@@ -1,18 +1,10 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.example.grupo06_candidatoinfo.ui.screens.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -21,21 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,10 +24,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.grupo06_candidatoinfo.data.repository.MockDataRepository
 import com.example.grupo06_candidatoinfo.model.Candidate
-import coil.compose.AsyncImage
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun HomeScreen(navController: NavController) {
     var searchQuery by remember { mutableStateOf("") }
@@ -62,7 +40,9 @@ fun HomeScreen(navController: NavController) {
     val electionTypes = remember { MockDataRepository.getElectionTypes() }
     var selectedElection by remember { mutableStateOf(electionTypes.first().name) }
 
-    // Filtrar candidatos
+    var selectedCandidates by remember { mutableStateOf<Set<Int>>(emptySet()) }
+    val selectedCount = selectedCandidates.size
+
     val filteredCandidates = candidates.filter { candidate ->
         val matchesSearch = candidate.name.contains(searchQuery, ignoreCase = true)
         val matchesPosition = selectedPosition == "Todos" || candidate.position == selectedPosition
@@ -70,15 +50,13 @@ fun HomeScreen(navController: NavController) {
         matchesSearch && matchesPosition && matchesParty
     }
 
-    Scaffold(
-        containerColor = Color(0xFF3C3472)
-    ) { paddingValues ->
+    Scaffold(containerColor = Color(0xFF3C3472)) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            // Header Section
+            // Header
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -95,7 +73,6 @@ fun HomeScreen(navController: NavController) {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Election Type Dropdown
                 Surface(
                     color = Color.White,
                     shape = RoundedCornerShape(12.dp),
@@ -109,81 +86,124 @@ fun HomeScreen(navController: NavController) {
                 }
             }
 
-            // Search and Filters Section
-            Card(
+            // Main Content
+            Surface(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
                 shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White)
+                color = Color.White
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp)
-                ) {
-                    // Search Bar
-                    OutlinedTextField(
-                        value = searchQuery,
-                        onValueChange = { searchQuery = it },
-                        modifier = Modifier.fillMaxWidth(),
-                        placeholder = { Text("Buscar candidato", color = Color.Gray) },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Search,
-                                contentDescription = "Search",
-                                tint = Color.Gray
-                            )
-                        },
-                        shape = RoundedCornerShape(12.dp),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            unfocusedBorderColor = Color.LightGray,
-                            focusedBorderColor = Color(0xFF3C3472)
-                        )
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // Cargo Electoral Filter
-                    Text(
-                        text = "Cargo Electoral",
-                        fontSize = 14.sp,
-                        color = Color.Gray,
-                        modifier = Modifier.padding(bottom = 4.dp)
-                    )
-                    DropdownSelector(
-                        value = selectedPosition,
-                        options = positions,
-                        onValueChange = { selectedPosition = it }
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // Organización Política Filter
-                    Text(
-                        text = "Organización Política",
-                        fontSize = 14.sp,
-                        color = Color.Gray,
-                        modifier = Modifier.padding(bottom = 4.dp)
-                    )
-                    DropdownSelector(
-                        value = selectedParty,
-                        options = parties,
-                        onValueChange = { selectedParty = it }
-                    )
-
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    // Candidates List
-                    LazyColumn(
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp)
                     ) {
-                        items(filteredCandidates) { candidate ->
-                            CandidateCard(
-                                candidate = candidate,
-                                onClick = {
-                                    navController.navigate("profile/${candidate.id}")
+                        OutlinedTextField(
+                            value = searchQuery,
+                            onValueChange = { searchQuery = it },
+                            modifier = Modifier.fillMaxWidth(),
+                            placeholder = { Text("Buscar candidato", color = Color.Gray) },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.Search,
+                                    contentDescription = "Buscar",
+                                    tint = Color.Gray
+                                )
+                            },
+                            shape = RoundedCornerShape(12.dp),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                unfocusedBorderColor = Color.LightGray,
+                                focusedBorderColor = Color(0xFF3C3472)
+                            )
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Text(
+                            text = "Cargo Electoral",
+                            fontSize = 14.sp,
+                            color = Color.Gray,
+                            modifier = Modifier.padding(bottom = 4.dp)
+                        )
+                        DropdownSelector(
+                            value = selectedPosition,
+                            options = positions,
+                            onValueChange = { selectedPosition = it }
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Text(
+                            text = "Organización Política",
+                            fontSize = 14.sp,
+                            color = Color.Gray,
+                            modifier = Modifier.padding(bottom = 4.dp)
+                        )
+                        DropdownSelector(
+                            value = selectedParty,
+                            options = parties,
+                            onValueChange = { selectedParty = it }
+                        )
+
+                        Spacer(modifier = Modifier.height(24.dp))
+
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                            contentPadding = PaddingValues(bottom = 80.dp)
+                        ) {
+                            items(filteredCandidates, key = { it.id }) { candidate ->
+                                val isSelected = selectedCandidates.contains(candidate.id)
+                                val canSelectMore = selectedCount < 2
+
+                                CandidateCard(
+                                    candidate = candidate,
+                                    isSelected = isSelected,
+                                    isCheckboxEnabled = isSelected || canSelectMore,
+                                    onCheckedChange = { newCheckedState ->
+                                        selectedCandidates = if (newCheckedState) {
+                                            if (canSelectMore) selectedCandidates + candidate.id else selectedCandidates
+                                        } else {
+                                            selectedCandidates - candidate.id
+                                        }
+                                    },
+                                    onClick = {
+                                        navController.navigate("profile/${candidate.id}")
+                                    }
+                                )
+                            }
+                        }
+                    }
+
+                    // Botón de comparar (sin animación)
+                    if (selectedCount > 0) {
+                        Button(
+                            onClick = {
+                                if (selectedCount == 2) {
+                                    val ids = selectedCandidates.joinToString(",")
+                                    navController.navigate("compare?ids=$ids")
                                 }
+                            },
+                            enabled = selectedCount == 2,
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                                .padding(16.dp)
+                                .fillMaxWidth()
+                                .height(56.dp),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF3C3472),
+                                disabledContainerColor = Color(0xFF3C3472).copy(alpha = 0.5f),
+                                disabledContentColor = Color.White.copy(alpha = 0.7f)
+                            )
+                        ) {
+                            Text(
+                                text = "COMPARAR ($selectedCount/2)",
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 16.sp
                             )
                         }
                     }
@@ -193,7 +213,6 @@ fun HomeScreen(navController: NavController) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DropdownSelector(
     value: String,
@@ -204,9 +223,8 @@ fun DropdownSelector(
 
     ExposedDropdownMenuBox(
         expanded = expanded,
-        onExpandedChange = { expanded = it }
+        onExpandedChange = { expanded = !expanded }
     ) {
-
         OutlinedTextField(
             value = value,
             onValueChange = {},
@@ -217,7 +235,7 @@ fun DropdownSelector(
             trailingIcon = {
                 Icon(
                     imageVector = Icons.Default.ArrowDropDown,
-                    contentDescription = "Dropdown"
+                    contentDescription = "Abrir lista"
                 )
             },
             shape = RoundedCornerShape(12.dp),
@@ -241,14 +259,15 @@ fun DropdownSelector(
                 )
             }
         }
-
-
     }
 }
 
 @Composable
 fun CandidateCard(
     candidate: Candidate,
+    isSelected: Boolean,
+    isCheckboxEnabled: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
     onClick: () -> Unit
 ) {
     Card(
@@ -265,7 +284,6 @@ fun CandidateCard(
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Photo
             AsyncImage(
                 model = candidate.photoUrl,
                 contentDescription = candidate.name,
@@ -277,10 +295,7 @@ fun CandidateCard(
 
             Spacer(modifier = Modifier.width(12.dp))
 
-            // Info
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = candidate.name,
                     fontWeight = FontWeight.Bold,
@@ -312,15 +327,10 @@ fun CandidateCard(
                 verticalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.height(64.dp)
             ) {
-                var isChecked by remember { mutableStateOf(candidate.isSelected) }
-
                 Checkbox(
-                    checked = isChecked,
-                    onCheckedChange = { isChecked = it },
-                    modifier = Modifier.clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() }
-                    ) { /*  */ }
+                    checked = isSelected,
+                    onCheckedChange = onCheckedChange,
+                    enabled = isCheckboxEnabled
                 )
 
                 Icon(
