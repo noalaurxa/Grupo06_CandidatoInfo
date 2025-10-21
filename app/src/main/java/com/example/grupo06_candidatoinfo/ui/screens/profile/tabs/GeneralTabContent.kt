@@ -24,8 +24,8 @@ import androidx.navigation.NavController
 import com.example.grupo06_candidatoinfo.model.*
 import com.example.grupo06_candidatoinfo.navigation.Screen
 // --- IMPORTS DE COLOR CORREGIDOS ---
-import com.example.grupo06_candidatoinfo.ui.theme.lightPurpleCard
-import com.example.grupo06_candidatoinfo.ui.theme.mainPurple
+import com.example.grupo06_candidatoinfo.ui.theme.ProfileLighterPurpleCard
+import com.example.grupo06_candidatoinfo.ui.theme.ProfileMainPurple
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -123,8 +123,8 @@ fun DeclaracionBienesContent(declaration: AssetDeclaration) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
-        // --- COLOR CORREGIDO ---
-        colors = CardDefaults.cardColors(containerColor = lightPurpleCard)
+        // --- COLOR CORREGIDO: Usamos ProfileLighterPurpleCard ---
+        colors = CardDefaults.cardColors(containerColor = ProfileLighterPurpleCard)
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -143,8 +143,8 @@ fun DeclaracionBienesContent(declaration: AssetDeclaration) {
                 Text(
                     text = format.format(declaration.totalPatrimony),
                     fontSize = 16.sp,
-                    // --- COLOR CORREGIDO ---
-                    color = mainPurple,
+                    // --- COLOR CORREGIDO: Usamos ProfileMainPurple ---
+                    color = ProfileMainPurple,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -202,8 +202,8 @@ fun PlanGobiernoContent(navController: NavController, plan: GovernmentPlan) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
-        // --- COLOR CORREGIDO ---
-        colors = CardDefaults.cardColors(containerColor = lightPurpleCard)
+        // --- COLOR CORREGIDO: Usamos ProfileLighterPurpleCard ---
+        colors = CardDefaults.cardColors(containerColor = ProfileLighterPurpleCard)
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -247,8 +247,8 @@ private fun PlanItem(icon: ImageVector, title: String, description: String) {
         Icon(
             imageVector = icon,
             contentDescription = title,
-            // --- COLOR CORREGIDO ---
-            tint = mainPurple,
+            // --- COLOR CORREGIDO: Usamos ProfileMainPurple ---
+            tint = ProfileMainPurple,
             modifier = Modifier.size(36.dp).padding(top = 2.dp)
         )
         Spacer(modifier = Modifier.width(10.dp))
@@ -277,8 +277,8 @@ fun FormacionAcademicaContent(navController: NavController, formation: AcademicF
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
-        // --- COLOR CORREGIDO ---
-        colors = CardDefaults.cardColors(containerColor = lightPurpleCard)
+        // --- COLOR CORREGIDO: Usamos ProfileLighterPurpleCard ---
+        colors = CardDefaults.cardColors(containerColor = ProfileLighterPurpleCard)
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -314,8 +314,8 @@ private fun FormacionItem(icon: ImageVector, title: String, description: String)
         Icon(
             imageVector = icon,
             contentDescription = title,
-            // --- COLOR CORREGIDO ---
-            tint = mainPurple,
+            // --- COLOR CORREGIDO: Usamos ProfileMainPurple ---
+            tint = ProfileMainPurple,
             modifier = Modifier.size(32.dp).padding(top = 2.dp)
         )
         Spacer(modifier = Modifier.width(10.dp))
@@ -349,15 +349,15 @@ private fun ClickableTextRow(text: String, icon: ImageVector, onClick: () -> Uni
         Icon(
             imageVector = icon,
             contentDescription = text,
-            // --- COLOR CORREGIDO ---
-            tint = mainPurple,
+            // --- COLOR CORREGIDO: Usamos ProfileMainPurple ---
+            tint = ProfileMainPurple,
             modifier = Modifier.size(20.dp)
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = text,
-            // --- COLOR CORREGIDO ---
-            color = mainPurple,
+            // --- COLOR CORREGIDO: Usamos ProfileMainPurple ---
+            color = ProfileMainPurple,
             fontWeight = FontWeight.Medium,
             fontSize = 14.sp
         )

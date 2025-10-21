@@ -19,8 +19,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.grupo06_candidatoinfo.model.Candidate
 //colores
-import com.example.grupo06_candidatoinfo.ui.theme.darkPurpleHeader
-import com.example.grupo06_candidatoinfo.ui.theme.mainPurple
+import com.example.grupo06_candidatoinfo.ui.theme.ProfileMainPurple // Corregido el import
+import com.example.grupo06_candidatoinfo.ui.theme.ProfileLighterPurpleCard // Usaremos este color para el fondo de la tarjeta
 
 // ==================== HEADER ====================
 @Composable
@@ -32,8 +32,8 @@ fun ProfileHeader(candidate: Candidate, onBackClick: () -> Unit) {
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(32.dp
             ),
-            // --- COLOR ACTUALIZADO ---
-            colors = CardDefaults.cardColors(containerColor = mainPurple)
+            // --- COLOR ACTUALIZADO: Usando ProfileMainPurple ---
+            colors = CardDefaults.cardColors(containerColor = ProfileMainPurple)
         ) {
             Box(modifier = Modifier.fillMaxWidth()) {
                 Column(
@@ -65,8 +65,8 @@ fun ProfileHeader(candidate: Candidate, onBackClick: () -> Unit) {
                     Card(
                         modifier = Modifier.padding(vertical = 8.dp),
                         shape = RoundedCornerShape(12.dp),
-                        // --- COLOR ACTUALIZADO ---
-                        colors = CardDefaults.cardColors(containerColor = darkPurpleHeader)
+                        // --- COLOR ACTUALIZADO: Usando ProfileLighterPurpleCard ---
+                        colors = CardDefaults.cardColors(containerColor = ProfileLighterPurpleCard)
                     ) {
                         Column(
                             modifier = Modifier.padding(horizontal = 24.dp, vertical = 10.dp),

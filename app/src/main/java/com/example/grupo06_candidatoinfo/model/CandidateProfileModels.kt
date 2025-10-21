@@ -6,14 +6,12 @@ data class CandidateProfile(
     val assetDeclaration: AssetDeclaration,
     val governmentPlan: GovernmentPlan,
     val academicFormation: AcademicFormation,
-<<<<<<< HEAD
-    val careerHistory: CareerHistory,
-    val backgroundHistory: BackgroundHistory?,
+    // FUSIÓN: Hacemos nullable (remoto) y mantenemos el nombre (HEAD)
+    val careerHistory: CareerHistory?,
+    // FUSIÓN: Usamos el modelo renombrado (BackgroundReport)
+    val backgroundReport: BackgroundReport?,
+    // FUSIÓN: Mantenemos el campo de Actualidad (CurrentEvents) que faltaba en el remoto
     val currentEvents: CurrentEvents?
-=======
-    val careerHistory: CareerHistory?, // Hacemos nullable por si no hay data
-    val backgroundReport: BackgroundReport? // Hacemos nullable por si no hay data
->>>>>>> f0cdad359463fc8d12d70855d733c2060391744a
 )
 
 data class BasicInfo(
@@ -69,21 +67,23 @@ data class CareerItem(
     val description: String
 )
 
-<<<<<<< HEAD
-// ANTECEDENTES
-data class BackgroundHistory(
-    val items: List<BackgroundItem>
-)
-data class BackgroundItem(
-    val title: String,
-    val description: String,
-    val entity: String,
-    val date: String,
-    val status: String,
-    val category: String
+
+// --- MODELOS PARA ANTECEDENTES (Nueva Estructura del remoto) ---
+data class BackgroundReport(
+    val records: List<BackgroundRecord>
 )
 
-// ACTUALIDAD
+data class BackgroundRecord(
+    val title: String,
+    val entity: String,
+    val date: String,
+    val description: String,
+    val tags: List<String>,
+    val documentId: String
+)
+
+
+// ACTUALIDAD (Se mantiene de HEAD)
 data class CurrentEvents(
     val items: List<CurrentEventItem>
 )
@@ -98,19 +98,3 @@ data class CurrentEventItem(
     val relatedTo: String,
     val isVerified: Boolean
 )
-=======
-// --- MODELOS PARA ANTECEDENTES ---
-data class BackgroundReport(
-    val records: List<BackgroundRecord>
-)
-
-data class BackgroundRecord(
-    val title: String,
-    val entity: String,
-    val date: String,
-    val description: String,
-    val tags: List<String>,
-    val documentId: String
-)
-
->>>>>>> f0cdad359463fc8d12d70855d733c2060391744a

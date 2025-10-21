@@ -1,6 +1,5 @@
 package com.example.grupo06_candidatoinfo.data.repository
 
-<<<<<<< HEAD
 import com.example.grupo06_candidatoinfo.model.AcademicDegree
 import com.example.grupo06_candidatoinfo.model.AcademicFormation
 import com.example.grupo06_candidatoinfo.model.AssetDeclaration
@@ -13,14 +12,10 @@ import com.example.grupo06_candidatoinfo.model.CareerItem
 import com.example.grupo06_candidatoinfo.model.ElectionType
 import com.example.grupo06_candidatoinfo.model.GovernmentPlan
 import com.example.grupo06_candidatoinfo.model.ProposalItem
-import com.example.grupo06_candidatoinfo.model.BackgroundHistory
-import com.example.grupo06_candidatoinfo.model.BackgroundItem
-import com.example.grupo06_candidatoinfo.model.CurrentEvents // <-- AÑADIDO
-import com.example.grupo06_candidatoinfo.model.CurrentEventItem // <-- AÑADIDO
-
-=======
-import com.example.grupo06_candidatoinfo.model.*
->>>>>>> f0cdad359463fc8d12d70855d733c2060391744a
+import com.example.grupo06_candidatoinfo.model.BackgroundReport // Nuevo modelo
+import com.example.grupo06_candidatoinfo.model.BackgroundRecord // Nuevo modelo
+import com.example.grupo06_candidatoinfo.model.CurrentEvents // Modelo para Actualidad
+import com.example.grupo06_candidatoinfo.model.CurrentEventItem // Modelo para Actualidad
 
 object MockDataRepository {
 
@@ -54,40 +49,26 @@ object MockDataRepository {
                         AcademicDegree("Maestría en Administración", "Universidad de Piura (1990-1992)"),
                         AcademicDegree("Ingeniería Industrial", "Universidad de Piura (1979-1984)")
                     ), "sunedu_1"),
-                    // --- DATOS DE TRAYECTORIA CORREGIDOS ---
+                    // --- DATOS DE TRAYECTORIA ---
                     careerHistory = CareerHistory(items = listOf(
                         CareerItem("Alcalde de Lima", "2023-Presente", "Gestión municipal enfocada en seguridad, transporte y programas sociales."),
                         CareerItem("Regidor de Lima", "2007-2010", "Participó en comisiones de desarrollo urbano y transporte."),
-<<<<<<< HEAD
-                        CareerItem("Presidente del Directorio", "1996-Presente", "Fundador y líder de PeruRail, impulsando el turismo en Cusco.")
+                        CareerItem("Presidente del Directorio en PeruRail S.A.", "1996-Presente", "Fundador y líder de PeruRail, impulsando el turismo en Cusco.")
                     )),
-                    // [ANTECEDENTES ACTUALIZADO]
-                    backgroundHistory = BackgroundHistory(items = listOf(
-                        BackgroundItem(
-                            title = "Investigación por Lavado de Activos",
-                            description = "Investigación preliminar por presunto delito de lavado de activos en sus empresas.",
-                            entity = "Fiscalía de Lavado de Activos",
-                            date = "20 sep. 2021",
-                            status = "Vigente",
-                            category = "Investigación"
-                        ),
-                        BackgroundItem(
-                            title = "Denuncia por Difamación",
-                            description = "Denuncia por difamación desestimada por el Poder Judicial.",
-                            entity = "Poder Judicial",
-                            date = "05 mar. 2019",
-                            status = "Archivado",
-                            category = "Denuncia"
+                    // --- ANTECEDENTES (Usando BackgroundReport) ---
+                    backgroundReport = BackgroundReport(
+                        records = listOf(
+                            BackgroundRecord("Investigación por Lavado de Activos", "Ministerio Público", "15/05/2021", "Investigación preliminar en el marco del caso 'Panama Papers'. El caso se encuentra en etapa de investigación y no cuenta con sentencia.", listOf("Investigación"), "doc_antecedente_1")
                         )
-                    )),
-                    // [ACTUALIDAD AÑADIDO]
+                    ),
+                    // --- ACTUALIDAD (Añadido) ---
                     currentEvents = CurrentEvents(items = listOf(
                         CurrentEventItem(
                             id = 101,
                             type = "noticia",
                             title = "López Aliaga anuncia 'Plan Cero Hambre'",
                             description = "El candidato presentó su plan de gobierno con énfasis en la lucha contra la desnutrición y la promoción de comedores populares.",
-                            date = "2025-10-18", // "Hace 3 días" (asumiendo hoy es 21/10)
+                            date = "2025-10-18",
                             source = "El Comercio",
                             relatedTo = "Rafael López Aliaga",
                             isVerified = true
@@ -97,21 +78,12 @@ object MockDataRepository {
                             type = "actividad",
                             title = "Mitin de cierre en Plaza San Martín",
                             description = "Realizó un evento masivo en el centro de Lima, presentando a sus candidatos al congreso.",
-                            date = "2025-10-14", // "Hace 1 semana"
+                            date = "2025-10-14",
                             source = "RPP Noticias",
                             relatedTo = "Rafael López Aliaga",
                             isVerified = false
                         )
                     ))
-=======
-                        CareerItem("Presidente del Directorio en PeruRail S.A.", "1996-Presente", "Fundador y líder de PeruRail, impulsando el turismo en Cusco.")
-                    )),
-                    backgroundReport = BackgroundReport(
-                        records = listOf(
-                            BackgroundRecord("Investigación por Lavado de Activos", "Ministerio Público", "15/05/2021", "Investigación preliminar en el marco del caso 'Panama Papers'. El caso se encuentra en etapa de investigación y no cuenta con sentencia.", listOf("Investigación"), "doc_antecedente_1")
-                        )
-                    )
->>>>>>> f0cdad359463fc8d12d70855d733c2060391744a
                 )
             ),
             // --- CANDIDATO 2: Keiko Fujimori ---
@@ -135,41 +107,28 @@ object MockDataRepository {
                         AcademicDegree("Master in Business Administration", "Columbia University (2004-2006)"),
                         AcademicDegree("Bachelor of Science", "Boston University (1993-1997)")
                     ), "sunedu_2"),
-                    // --- DATOS DE TRAYECTORIA CORREGIDOS ---
+                    // --- DATOS DE TRAYECTORIA ---
                     careerHistory = CareerHistory(items = listOf(
                         CareerItem("Candidata a la Presidencia", "2011, 2016, 2021", "Lideró el partido Fuerza Popular en tres elecciones generales."),
                         CareerItem("Congresista de la República", "2006-2011", "Fue la congresista más votada en las elecciones de 2006.")
                     )),
-<<<<<<< HEAD
-                    // [ANTECEDENTES ACTUALIZADO]
-                    backgroundHistory = BackgroundHistory(items = listOf(
-                        BackgroundItem(
-                            title = "Caso Odebrecht - Aportes de Campaña",
-                            description = "Investigación fiscal por presuntos aportes no declarados de la constructora Odebrecht a su campaña. El caso fue archivado por falta de elementos probatorios.",
-                            entity = "Fiscalía Especializada en Delitos de Corrupción",
-                            date = "2020", // Fecha de ejemplo
-                            status = "Archivado",
-                            category = "Investigación"
-                        ),
-                        BackgroundItem(
-                            title = "Denuncia por Obstrucción a la Justicia",
-                            description = "Proceso judicial por presunta obstrucción a la justicia en el marco de las investigaciones de campaña.",
-                            entity = "Poder Judicial",
-                            date = "15 jul. 2022",
-                            status = "Vigente",
-                            category = "Denuncia"
+                    // --- ANTECEDENTES (Usando BackgroundReport) ---
+                    backgroundReport = BackgroundReport(
+                        records = listOf(
+                            BackgroundRecord("Acusación por Lavado de Activos", "Equipo Especial Lava Jato", "11/03/2021", "Acusación fiscal por los presuntos delitos de organización criminal, lavado de activos y otros en el marco del 'Caso Cócteles'. El juicio oral está pendiente de inicio.", listOf("Investigación", "Juicio Oral"), "doc_antecedente_2_1"),
+                            BackgroundRecord("Obstrucción a la justicia", "Ministerio Público", "10/10/2018", "Prisión preventiva dictada en el marco de la investigación por presunta obstrucción a la justicia al interferir con testigos del caso.", listOf("Archivado"), "doc_antecedente_2_2")
                         )
-                    )),
-                    // [ACTUALIDAD AÑADIDO - Basado en tus imágenes]
+                    ),
+                    // --- ACTUALIDAD (Añadido) ---
                     currentEvents = CurrentEvents(items = listOf(
                         CurrentEventItem(
                             id = 201,
                             type = "noticia",
                             title = "Candidata presenta plan de gobierno enfocado en reactivacion economica",
                             description = "María Elena Rodríguez presentó su plan de gobierno con énfasis en la reactivación económica post-pandemia, incluyendo medidas de apoyo a las MiPymes y generación de empleo formal.",
-                            date = "2025-10-18", // "Hace 3 días"
+                            date = "2025-10-18",
                             source = "El Comercio",
-                            relatedTo = "Keiko Fujimori", // Asumiendo "Maria Elena" es un placeholder
+                            relatedTo = "Keiko Fujimori",
                             isVerified = true
                         ),
                         CurrentEventItem(
@@ -177,7 +136,7 @@ object MockDataRepository {
                             type = "actividad",
                             title = "Candidata presenta plan de gobierno enfocado en reactivacion economica",
                             description = "Maria Elena Rodrigues presento su plan de gobierno con enfasis...",
-                            date = "2025-10-14", // "Hace 1 semana"
+                            date = "2025-10-14",
                             source = "El Comercio",
                             relatedTo = "Keiko Fujimori",
                             isVerified = false
@@ -187,20 +146,12 @@ object MockDataRepository {
                             type = "documento",
                             title = "Candidata presenta plan de gobierno enfocado en reactivacion economica",
                             description = "Maria Elena Rodrigues presento su plan de gobierno con enfasis...",
-                            date = "2025-09-21", // "Hace 1 mes"
+                            date = "2025-09-21",
                             source = "El Comercio",
                             relatedTo = "Keiko Fujimori",
                             isVerified = true
                         )
                     ))
-=======
-                    backgroundReport = BackgroundReport(
-                        records = listOf(
-                            BackgroundRecord("Acusación por Lavado de Activos", "Equipo Especial Lava Jato", "11/03/2021", "Acusación fiscal por los presuntos delitos de organización criminal, lavado de activos y otros en el marco del 'Caso Cócteles'. El juicio oral está pendiente de inicio.", listOf("Investigación", "Juicio Oral"), "doc_antecedente_2_1"),
-                            BackgroundRecord("Obstrucción a la justicia", "Ministerio Público", "10/10/2018", "Prisión preventiva dictada en el marco de la investigación por presunta obstrucción a la justicia al interferir con testigos del caso.", listOf("Archivado"), "doc_antecedente_2_2")
-                        )
-                    )
->>>>>>> f0cdad359463fc8d12d70855d733c2060391744a
                 )
             ),
             // --- CANDIDATO 3: César Acuña ---
@@ -221,33 +172,19 @@ object MockDataRepository {
                     academicFormation = AcademicFormation(listOf(
                         AcademicDegree("Doctor en Educación", "Universidad Complutense de Madrid (2000-2003)")
                     ), "sunedu_3"),
-                    // --- DATOS DE TRAYECTORIA CORREGIDOS ---
+                    // --- DATOS DE TRAYECTORIA ---
                     careerHistory = CareerHistory(items = listOf(
                         CareerItem("Gobernador Regional de La Libertad", "2015-2018", "Impulsó proyectos de infraestructura y educación en la región."),
                         CareerItem("Alcalde de Trujillo", "2007-2014", "Realizó dos gestiones consecutivas en la alcaldía provincial."),
                         CareerItem("Congresista de la República", "2000-2001", "Participó en el Congreso durante el periodo de transición.")
                     )),
-<<<<<<< HEAD
-                    // [ANTECEDENTES ACTUALIZADO]
-                    backgroundHistory = BackgroundHistory(items = listOf(
-                        BackgroundItem(
-                            title = "Denuncia por Plagio Académico",
-                            description = "Denuncia por presunto plagio en tesis de doctorado (U. Complutense) y maestría (U. de Lima).",
-                            entity = "SUNEDU / Universidades",
-                            date = "2016",
-                            status = "Archivado",
-                            category = "Denuncia"
-                        ),
-                        BackgroundItem(
-                            title = "Proceso Civil por Incumplimiento",
-                            description = "Demanda por incumplimiento de contrato en una sociedad empresarial privada.",
-                            entity = "Poder Judicial",
-                            date = "20 nov. 2023",
-                            status = "Vigente",
-                            category = "Proceso Civil"
+                    // --- ANTECEDENTES (Usando BackgroundReport) ---
+                    backgroundReport = BackgroundReport(
+                        records = listOf(
+                            BackgroundRecord("Investigación por Plagio Agravado", "Fiscalía de la Nación", "20/04/2016", "Investigación por el presunto plagio en su tesis doctoral. La universidad validó el grado, pero la investigación fiscal continuó en diversas etapas.", listOf("Investigación"), "doc_antecedente_3_1")
                         )
-                    )),
-                    // [ACTUALIDAD AÑADIDO]
+                    ),
+                    // --- ACTUALIDAD (Añadido) ---
                     currentEvents = CurrentEvents(items = listOf(
                         CurrentEventItem(
                             id = 301,
@@ -260,13 +197,6 @@ object MockDataRepository {
                             isVerified = false
                         )
                     ))
-=======
-                    backgroundReport = BackgroundReport(
-                        records = listOf(
-                            BackgroundRecord("Investigación por Plagio Agravado", "Fiscalía de la Nación", "20/04/2016", "Investigación por el presunto plagio en su tesis doctoral. La universidad validó el grado, pero la investigación fiscal continuó en diversas etapas.", listOf("Investigación"), "doc_antecedente_3_1")
-                        )
-                    )
->>>>>>> f0cdad359463fc8d12d70855d733c2060391744a
                 )
             ),
             // --- CANDIDATO 4: Carlos Álvarez ---
@@ -276,18 +206,12 @@ object MockDataRepository {
                 party = "País para Todos",
                 position = "Presidencia",
                 photoUrl = "https://statics.exitosanoticias.pe/2023/10/653bc125b24b1.png",
-<<<<<<< HEAD
                 profileDetails = null // Sigue sin datos detallados
             ),
-            // --- CANDIDATO 5: Mario Vizcarra ---
-=======
-                profileDetails = null
-            ),
             // --- CANDIDATO 5: Martín Vizcarra ---
->>>>>>> f0cdad359463fc8d12d70855d733c2060391744a
             Candidate(
                 id = 5,
-                name = "Martín Vizcarra",
+                name = "Martín Vizcarra", // Nombre corregido
                 party = "Perú Primero",
                 position = "Presidencia",
                 photoUrl = "https://tse2.mm.bing.net/th/id/OIP.rEIcUIfKg887VmAIBBNYLwHaE8?rs=1&pid=ImgDetMain&o=7&rm=3",
@@ -302,32 +226,18 @@ object MockDataRepository {
                     academicFormation = AcademicFormation(listOf(
                         AcademicDegree("Ingeniería Civil", "Universidad Nacional de Ingeniería (1980-1985)")
                     ), "sunedu_5"),
-                    // --- DATOS DE TRAYECTORIA CORREGIDOS ---
+                    // --- DATOS DE TRAYECTORIA ---
                     careerHistory = CareerHistory(items = listOf(
                         CareerItem("Presidente de la República", "2018-2020", "Asumió la presidencia tras la renuncia de Pedro Pablo Kuczynski."),
                         CareerItem("Gobernador Regional de Moquegua", "2011-2014", "Reconocido por su gestión en el sector educativo de la región.")
                     )),
-<<<<<<< HEAD
-                    // [ANTECEDENTES ACTUALIZADO]
-                    backgroundHistory = BackgroundHistory(items = listOf(
-                        BackgroundItem(
-                            title = "Inhabilitación por Caso 'Vacunagate'",
-                            description = "Inhabilitación de la función pública por 10 años por el Congreso de la República.",
-                            entity = "Congreso de la República",
-                            date = "abr. 2021",
-                            status = "Vigente",
-                            category = "Sanción"
-                        ),
-                        BackgroundItem(
-                            title = "Investigación 'Club de la Construcción'",
-                            description = "Investigación por supuesta recepción de sobornos por obras públicas cuando era Gobernador de Moquegua.",
-                            entity = "Fiscalía de la Nación",
-                            date = "2020",
-                            status = "Vigente",
-                            category = "Investigación"
+                    // --- ANTECEDENTES (Usando BackgroundReport) ---
+                    backgroundReport = BackgroundReport(
+                        records = listOf(
+                            BackgroundRecord("Inhabilitación por 10 años", "Congreso de la República", "17/04/2021", "El Congreso lo inhabilitó para ejercer cargos públicos por su participación en el caso 'Vacunagate', por vacunación irregular contra la COVID-19.", listOf("Sentenciado"), "doc_antecedente_5_1")
                         )
-                    )),
-                    // [ACTUALIDAD AÑADIDO]
+                    ),
+                    // --- ACTUALIDAD (Añadido) ---
                     currentEvents = CurrentEvents(items = listOf(
                         CurrentEventItem(
                             id = 501,
@@ -336,17 +246,10 @@ object MockDataRepository {
                             description = "Defensa legal del candidato presentó un recurso ante el Tribunal Constitucional para poder postular en las elecciones 2026.",
                             date = "2025-10-10",
                             source = "Canal N",
-                            relatedTo = "Mario Vizcarra",
+                            relatedTo = "Martín Vizcarra",
                             isVerified = true
                         )
                     ))
-=======
-                    backgroundReport = BackgroundReport(
-                        records = listOf(
-                            BackgroundRecord("Inhabilitación por 10 años", "Congreso de la República", "17/04/2021", "El Congreso lo inhabilitó para ejercer cargos públicos por su participación en el caso 'Vacunagate', por vacunación irregular contra la COVID-19.", listOf("Sentenciado"), "doc_antecedente_5_1")
-                        )
-                    )
->>>>>>> f0cdad359463fc8d12d70855d733c2060391744a
                 )
             )
         )

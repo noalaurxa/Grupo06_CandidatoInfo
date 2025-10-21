@@ -1,11 +1,7 @@
 package com.example.grupo06_candidatoinfo.ui.screens.profile
 
-<<<<<<< HEAD
 import android.os.Build
 import androidx.annotation.RequiresApi
-=======
-// Imports necesarios
->>>>>>> f0cdad359463fc8d12d70855d733c2060391744a
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -26,26 +22,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
 import com.example.grupo06_candidatoinfo.data.repository.MockDataRepository
-<<<<<<< HEAD
 import com.example.grupo06_candidatoinfo.navigation.Screen
-import com.example.grupo06_candidatoinfo.ui.theme.ProfileLightGrayBackground
-import com.example.grupo06_candidatoinfo.ui.theme.ProfileMainPurple
-=======
-import com.example.grupo06_candidatoinfo.model.Candidate // Asegúrate de que este import esté
 
->>>>>>> f0cdad359463fc8d12d70855d733c2060391744a
 // IMPORTS de la carpeta 'tabs'
 import com.example.grupo06_candidatoinfo.ui.screens.profile.tabs.CareerTabContent
 import com.example.grupo06_candidatoinfo.ui.screens.profile.tabs.GeneralTabContent
 import com.example.grupo06_candidatoinfo.ui.screens.profile.tabs.BackgroundTabContent
-import com.example.grupo06_candidatoinfo.ui.screens.profile.tabs.CurrentTabContent // Asumiendo que este archivo existe
+import com.example.grupo06_candidatoinfo.ui.screens.profile.tabs.CurrentTabContent
 
-// --- Colores del diseño ---
+
+// --- Colores del diseño (Usando los colores locales que prevalecen) ---
 private val mainPurple = Color(0xFF3C3472)
-private val lightPurpleBackground = Color(0xFFECEBFA) // Usado en tabs
-private val lighterPurpleCard = Color(0xFF5D559C) // Usado en tabs
+private val lightPurpleBackground = Color(0xFFECEBFA)
+private val lighterPurpleCard = Color(0xFF5D559C)
 private val lightGrayBackground = Color(0xFFF7F7F7)
 
 
@@ -57,6 +47,7 @@ fun ProfileScreen(
     navController: NavController,
     candidateId: String?
 ) {
+    // La lógica de obtención del candidato es la misma
     val candidate = remember(candidateId) {
         MockDataRepository.getCandidates().find {
             it.id == candidateId?.toIntOrNull()
@@ -92,31 +83,18 @@ fun ProfileScreen(
                     .padding(bottom = paddingValues.calculateBottomPadding()),
                 contentPadding = PaddingValues(0.dp)
             ) {
-<<<<<<< HEAD
+                // Header con foto (Se utiliza la estructura de la rama remota, más limpia)
                 item {
-=======
-                // Header con foto (Padding aplicado aquí)
-                item {
-                    Box(modifier = Modifier.padding(horizontal = 16.dp).padding(top = 16.dp)) { // Padding corregido
+                    Box(modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .padding(top = 16.dp)) {
                         ProfileHeader(candidate = candidate, onBackClick = {
                             navController.popBackStack()
                         })
                     }
                 }
->>>>>>> f0cdad359463fc8d12d70855d733c2060391744a
 
-                    Box(modifier = Modifier.padding(horizontal = 16.dp).padding( top = 16.dp).padding(top = 25.dp)) {
-
-                        ProfileHeader(candidate = candidate, onBackClick = {
-
-                            navController.popBackStack()
-
-                        })
-
-                    }
-
-                }
-                // Tabs de navegación
+                // Tabs de navegación (Sin cambios)
                 item {
                     Surface(
                         color = Color.White,
@@ -127,7 +105,7 @@ fun ProfileScreen(
                         ScrollableTabRow(
                             selectedTabIndex = selectedTabIndex,
                             containerColor = Color.Transparent,
-                            contentColor = mainPurple, // Usando color local
+                            contentColor = mainPurple,
                             edgePadding = 4.dp,
                             indicator = { },
                             divider = { }
@@ -145,7 +123,7 @@ fun ProfileScreen(
                                     Box(
                                         modifier = Modifier
                                             .background(
-                                                if (selectedTabIndex == index) mainPurple else Color.Transparent, // Usando color local
+                                                if (selectedTabIndex == index) mainPurple else Color.Transparent,
                                                 RoundedCornerShape(16.dp)
                                             )
                                             .padding(horizontal = 16.dp, vertical = 8.dp),
@@ -164,7 +142,7 @@ fun ProfileScreen(
                     }
                 }
 
-                // Contenido dinámico según el Tab
+                // Contenido dinámico según el Tab (Se utilizan los modelos de la rama remota)
                 item {
                     Box(
                         modifier = Modifier
@@ -182,33 +160,14 @@ fun ProfileScreen(
                                     PlaceholderTabContent(title = "Información General no disponible")
                                 }
                             }
-<<<<<<< HEAD
-
-                            1 -> {
-=======
                             1 -> { // Trayectoria
->>>>>>> f0cdad359463fc8d12d70855d733c2060391744a
                                 if (profileDetails?.careerHistory != null) {
                                     CareerTabContent(careerHistory = profileDetails.careerHistory)
                                 } else {
                                     PlaceholderTabContent(title = "Trayectoria no disponible")
                                 }
                             }
-<<<<<<< HEAD
-
-                            2 -> {
-                                BackgroundTabContent(backgroundHistory = profileDetails?.backgroundHistory)
-                            }
-
-                            3 -> {
-                                CurrentTabContent(
-                                    currentEvents = profileDetails?.currentEvents,
-                                    onNewsClick = { documentId ->
-                                        navController.navigate(Screen.Detail.createRoute(documentId))
-                                    }
-                                )
-=======
-                            2 -> { // Antecedentes - LLAMADA CORREGIDA
+                            2 -> { // Antecedentes -
                                 if (profileDetails?.backgroundReport != null) {
                                     BackgroundTabContent(backgroundReport = profileDetails.backgroundReport)
                                 } else {
@@ -216,11 +175,13 @@ fun ProfileScreen(
                                 }
                             }
                             3 -> { // Actualidad
-                                // Asumiendo que CurrentTabContent existe y maneja su estado
-                                CurrentTabContent()
-                                // Si no existe, usa Placeholder:
-                                // PlaceholderTabContent(title = "Actualidad")
->>>>>>> f0cdad359463fc8d12d70855d733c2060391744a
+                                // Mantenemos la lógica de HEAD (más funcional) y asumimos que CurrentTabContent existe
+                                CurrentTabContent(
+                                    currentEvents = profileDetails?.currentEvents,
+                                    onNewsClick = { documentId ->
+                                        navController.navigate(Screen.Detail.createRoute(documentId))
+                                    }
+                                )
                             }
                         }
                     }
@@ -229,12 +190,9 @@ fun ProfileScreen(
         }
     }
 }
-<<<<<<< HEAD
-// ==================== PLACEHOLDER ====================
-=======
+
 
 // ==================== PLACEHOLDER (Mantenido) ====================
->>>>>>> f0cdad359463fc8d12d70855d733c2060391744a
 @Composable
 fun PlaceholderTabContent(title: String) {
     Card(
