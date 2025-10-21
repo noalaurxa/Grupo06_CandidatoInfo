@@ -3,8 +3,6 @@ package com.example.grupo06_candidatoinfo.ui.screens.profile.tabs
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BusinessCenter
@@ -19,62 +17,48 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.grupo06_candidatoinfo.model.CareerHistory
 import com.example.grupo06_candidatoinfo.model.CareerItem
-// --- IMPORTS DE COLOR CORREGIDOS ---
+// --- IMPORTS DE COLOR ---
 import com.example.grupo06_candidatoinfo.ui.theme.ProfileLighterPurpleCard
 import com.example.grupo06_candidatoinfo.ui.theme.ProfileMainPurple
-import com.example.grupo06_candidatoinfo.ui.theme.TimelineColor
 
-// ==================== TAB TRAYECTORIA ====================
+// ==================== TAB TRAYECTORIA (ESTÉTICA MEJORADA) ====================
 @Composable
 fun CareerTabContent(careerHistory: CareerHistory) {
-    Column(
+    LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .heightIn(max = 800.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        // Título de la sección
-        Text(
-            text = "HISTORIAL LABORAL",
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color(0xFF888888),
-            modifier = Modifier.padding(start = 4.dp)
-        )
-
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(0.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(max = 800.dp) // Límite de altura opcional
-        ) {
-            items(careerHistory.items.size) { index ->
-                CareerItemCard(
-                    careerItem = careerHistory.items[index],
-                    isLastItem = index == careerHistory.items.size - 1
-                )
-            }
+        items(careerHistory.items.size) { index ->
+            CareerItemCard(
+                careerItem = careerHistory.items[index],
+                esUltimoItem = index == careerHistory.items.size - 1
+            )
         }
     }
 }
 
+// ==================== ITEM DE TRAYECTORIA====================
 @Composable
-fun CareerItemCard(careerItem: CareerItem, isLastItem: Boolean) {
+fun CareerItemCard(careerItem: CareerItem, esUltimoItem: Boolean) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+        // Aplicamos el padding horizontal aquí para que la línea quede visible en el borde
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalAlignment = Alignment.Top
     ) {
-        // Columna de Timeline (Círculo e Separador)
+        // Columna de Timeline (Icono y Línea)
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.width(40.dp) // Ancho fijo para la columna de timeline
+            // Ancho ajustado para centrar bien la línea
+            modifier = Modifier.width(28.dp)
         ) {
-            // Círculo de la línea de tiempo
+            // Contenedor del Icono (Cuadrado Púrpura Redondeado)
             Box(
                 modifier = Modifier
-                    .size(24.dp)
-                    .clip(CircleShape)
-                    // --- COLOR CORREGIDO: Main Purple (Oscuro) ---
+                    .size(28.dp)
+                    .clip(RoundedCornerShape(8.dp))
                     .background(ProfileMainPurple),
                 contentAlignment = Alignment.Center
             ) {
@@ -82,20 +66,19 @@ fun CareerItemCard(careerItem: CareerItem, isLastItem: Boolean) {
                     imageVector = Icons.Default.BusinessCenter,
                     contentDescription = "Trabajo",
                     tint = Color.White,
-                    modifier = Modifier.size(14.dp)
+                    modifier = Modifier.size(16.dp)
                 )
             }
-            // Separador (Línea)
-            if (!isLastItem) {
-                Divider(
-                    // --- COLOR CORREGIDO: TimelineColor (Gris/Morado claro) ---
-                    color = TimelineColor,
+
+            if (!esUltimoItem) {
+                Box(
                     modifier = Modifier
                         .width(2.dp)
-                        .height(IntrinsicSize.Max)
                         .weight(1f)
-                        .defaultMinSize(minHeight = 40.dp) // Altura mínima de la línea
+                        .background(ProfileMainPurple.copy(alpha = 0.6f))
                 )
+            } else {
+                Spacer(modifier = Modifier.height(4.dp))
             }
         }
 
@@ -103,10 +86,8 @@ fun CareerItemCard(careerItem: CareerItem, isLastItem: Boolean) {
         Card(
             modifier = Modifier
                 .weight(1f)
-                .offset(y = (-8).dp) // Pequeño ajuste para centrar la tarjeta con el círculo
-                .padding(bottom = 20.dp), // Espacio inferior para separación con el siguiente elemento
-            shape = RoundedCornerShape(12.dp),
-            // --- COLOR CORREGIDO: Lighter Purple Card (Fondo claro) ---
+                .padding(top = 0.dp, bottom = 12.dp), // Pequeño padding inferior
+            shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(containerColor = ProfileLighterPurpleCard),
             elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
         ) {
@@ -116,30 +97,36 @@ fun CareerItemCard(careerItem: CareerItem, isLastItem: Boolean) {
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
+                // Posición
                 Text(
                     text = careerItem.position,
-                    fontSize = 15.sp,
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
                 )
+
+                // Tag de Periodo
                 Surface(
                     shape = RoundedCornerShape(8.dp),
-                    // --- COLOR CORREGIDO: Main Purple (Para el tag de periodo) ---
-                    color = ProfileMainPurple.copy(alpha = 0.9f)
+                    color = ProfileMainPurple
                 ) {
                     Text(
                         text = careerItem.period,
                         color = Color.White,
                         fontSize = 11.sp,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
                     )
                 }
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                // Descripción
                 Text(
                     text = careerItem.description,
-                    fontSize = 13.sp,
-                    color = Color(0xFF555555),
-                    lineHeight = 17.sp
+                    fontSize = 14.sp,
+                    color = Color(0xFF4A4A4A),
+                    lineHeight = 18.sp
                 )
             }
         }

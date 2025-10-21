@@ -175,7 +175,6 @@ fun ProfileScreen(
                                 }
                             }
                             3 -> { // Actualidad
-                                // Mantenemos la lógica de HEAD (más funcional) y asumimos que CurrentTabContent existe
                                 CurrentTabContent(
                                     currentEvents = profileDetails?.currentEvents,
                                     onNewsClick = { documentId ->
