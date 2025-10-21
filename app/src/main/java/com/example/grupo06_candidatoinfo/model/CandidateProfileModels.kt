@@ -68,7 +68,7 @@ data class CareerItem(
 )
 
 
-// --- MODELOS PARA ANTECEDENTES (Nueva Estructura del remoto) ---
+// --- MODELOS PARA ANTECEDENTES (ACTUALIZADO) ---
 data class BackgroundReport(
     val records: List<BackgroundRecord>
 )
@@ -78,12 +78,13 @@ data class BackgroundRecord(
     val entity: String,
     val date: String,
     val description: String,
-    val tags: List<String>,
+    val statusTags: List<String>, // Tags relacionados con el estado del proceso (Activo, Sentenciado, Archivado, Pendiente)
+    val classificationTags: List<String>, // Tags relacionados con la naturaleza del caso (Corrupción, Civil, Administrativo, Plagio)
     val documentId: String
 )
 
 
-// ACTUALIDAD (Se mantiene de HEAD)
+// ACTUALIDAD
 data class CurrentEvents(
     val items: List<CurrentEventItem>
 )
