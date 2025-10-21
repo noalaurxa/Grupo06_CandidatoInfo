@@ -1,13 +1,14 @@
 package com.example.grupo06_candidatoinfo.model
 
+// GENERAL
 data class CandidateProfile(
     val basicInfo: BasicInfo,
     val assetDeclaration: AssetDeclaration,
     val governmentPlan: GovernmentPlan,
     val academicFormation: AcademicFormation,
     val careerHistory: CareerHistory,
-    // [NUEVO] Propiedad de antecedentes
-    val backgroundHistory: BackgroundHistory?
+    val backgroundHistory: BackgroundHistory?,
+    val currentEvents: CurrentEvents?
 )
 
 data class BasicInfo(
@@ -60,14 +61,32 @@ data class CareerItem(
     val period: String,
     val description: String
 )
-// ANTECEDENTES (Background)
+
+// ANTECEDENTES
 data class BackgroundHistory(
     val items: List<BackgroundItem>
 )
-
 data class BackgroundItem(
-    val type: String, // Ejemplo: "Denuncia", "Investigación", "Sentencia"
+    val title: String,
+    val description: String,
+    val entity: String,
+    val date: String,
+    val status: String,
+    val category: String
+)
+
+// ACTUALIDAD
+data class CurrentEvents(
+    val items: List<CurrentEventItem>
+)
+
+data class CurrentEventItem(
+    val id: Int,
+    val type: String,
+    val title: String,
     val description: String,
     val date: String,
-    val status: String // Ejemplo: "Vigente", "Archivado", "Concluido"
+    val source: String,
+    val relatedTo: String,
+    val isVerified: Boolean
 )
