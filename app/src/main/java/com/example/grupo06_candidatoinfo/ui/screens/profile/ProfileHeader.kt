@@ -26,7 +26,9 @@ import com.example.grupo06_candidatoinfo.ui.theme.ProfileLighterPurpleCard // Us
 @Composable
 fun ProfileHeader(candidate: Candidate, onBackClick: () -> Unit) {
     Box(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .statusBarsPadding()
     ) {
         Card(
             modifier = Modifier.fillMaxWidth(),
