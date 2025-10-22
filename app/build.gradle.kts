@@ -35,6 +35,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = "11"
+        freeCompilerArgs += "-Xopt-in=androidx.compose.animation.ExperimentalAnimationApi"
     }
     buildFeatures {
         compose = true
@@ -61,6 +62,9 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:3.0.0")
     implementation("com.squareup.retrofit2:converter-gson:3.0.0")
 
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.3")
+
+
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -74,4 +78,18 @@ dependencies {
 
     // Coil – carga y visualización de imágenes
     implementation("io.coil-kt:coil-compose:2.7.0")
+
+    //
+    implementation("androidx.compose.material:material-icons-extended-android:1.6.8")
+
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+    implementation("androidx.compose.animation:animation:1.7.3")
+    implementation("androidx.compose.material3:material3:1.3.0")
+    implementation(platform("androidx.compose:compose-bom:2024.09.01"))
+    implementation("androidx.compose.animation:animation")
+    implementation("androidx.compose.material3:material3")
+
+
+
 }

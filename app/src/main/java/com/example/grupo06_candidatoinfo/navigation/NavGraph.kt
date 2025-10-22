@@ -1,5 +1,7 @@
 package com.example.grupo06_candidatoinfo.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -9,6 +11,7 @@ import androidx.navigation.navArgument
 import com.example.grupo06_candidatoinfo.ui.screens.compare.CompareScreen
 import com.example.grupo06_candidatoinfo.ui.screens.detail.DetailScreen
 import com.example.grupo06_candidatoinfo.ui.screens.home.HomeScreen
+// --- IMPORTACIÓN AÑADIDA ---
 import com.example.grupo06_candidatoinfo.ui.screens.profile.ProfileScreen
 
 /**
@@ -22,13 +25,19 @@ sealed class Screen(val route: String) {
     object Detail: Screen("detail/{documentId}") {
         fun createRoute(documentId: String) = "detail/$documentId"
     }
-    object Compare : Screen("compare")
+
+    // --- RUTA ACTUALIZADA para argumento opcional ---
+    object Compare : Screen("compare?ids={ids}") {
+        // Función para crear la ruta, pasando una cadena de IDs (e.g., "1,2,3")
+        fun createRoute(ids: String) = "compare?ids=$ids"
+    }
 }
 
 /**
  * Configura el grafo de navegación de la aplicación
  */
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SetupNavGraph(navController: NavHostController) {
     NavHost(
@@ -73,9 +82,23 @@ fun SetupNavGraph(navController: NavHostController) {
             )
         }
 
-        // Pantalla de comparación
-        composable(route = Screen.Compare.route) {
-            CompareScreen(navController = navController)
+        // --- PANTALLA DE COMPARACIÓN (ACTUALIZADA con argumento opcional 'ids') ---
+        composable(
+            route = Screen.Compare.route, // Usamos la ruta con el query parameter
+            arguments = listOf(
+                navArgument("ids") { // Definimos el argumento opcional
+                    type = NavType.StringType
+                    nullable = true // Importante: indica que el parámetro es opcional
+                    defaultValue = null // Establece un valor por defecto
+                }
+            )
+        ) { backStackEntry ->
+            // Extrae la cadena de IDs y pásala a la pantalla. Será null si no se proporciona.
+            val candidateIds = backStackEntry.arguments?.getString("ids")
+            CompareScreen(
+                navController = navController,
+                candidateIds = candidateIds // Pasa el string de IDs
+            )
         }
     }
 }

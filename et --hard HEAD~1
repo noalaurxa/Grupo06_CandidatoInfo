@@ -1,0 +1,75 @@
+[33mbe9d7b2[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mbranch-noa[m[33m)[m update files
+[33m1c0f23a[m Merge remote-tracking branch 'origin/branch-noa' into branch-noa
+[33md916119[m commit
+[33mc2f8121[m build: Añadir dependencias de Compose Navigation, Coil y Material 3
+[33m8ab3cc4[m style(theme): Definir paleta de colores personalizada de la aplicación
+[33m3e9a792[m refactor(profile): Mejorar la lógica de navegación de pestañas en ProfileScreen
+[33m909de32[m refactor(profile): Actualizar el diseño y la estructura del ProfileHeader
+[33mfdf44de[m feat(profile): Implementar UI de CareerTabContent
+[33m693b9de[m feat(profile): Implementar UI de GeneralTabContent
+[33me5877d2[m feat(profile): Implementar UI de BackgroundTab con tarjetas y TagChips
+[33m94f06bc[m feat(compare): Añadir estado vacío a CompareScreen
+[33mdf5b7e7[m feat(home): Actualizar HomeScreen
+[33mfc52dff[m feat(model): Definir los data class del perfil del candidato
+[33m2818f54[m feat(data): Poblar MockDataRepository con datos de antecedentes y actualidad
+[33mc52f911[m commit mock data repository
+[33m5031080[m commit agregar dependencia
+[33m04734a6[m feat: implementar sistema de navegación con NavGraph
+[33m2a58a88[m chore: ordenar dependencias
+[33m24ecdb6[m Merge branch 'jhamile' into 'branch-noa'
+[33ma9252f1[m[33m ([m[1;32mmacavilca[m[33m)[m Agregué la funcionalidad de antecedentes y actualidad
+[33mf0cdad3[m[33m ([m[1;31morigin/branch-noa[m[33m)[m Merge branch 'jhamile' into 'branch-noa'
+[33m38b018b[m Merge remote-tracking branch 'origin/macavilca' into branch-noa
+[33m1d81f62[m commit antecedentes y actualidad
+[33m9ea26b5[m commit mock data repository
+[33mefbf5b0[m commit mock data repository
+[33m22cd024[m Merge branch 'branch-noa' into macavilca
+[33mbd54ff6[m commit agregar dependencia
+[33m4a755b5[m refactor(profile): Reestructura ProfileScreen en archivos separados por tabs
+[33m651d3f9[m Merge remote-tracking branch 'origin/branch-noa' into macavilca
+[33m6d35904[m Merge remote-tracking branch 'origin/branch-mendoza' into macavilca
+[33m03ef021[m Merge branch 'master' into macavilca
+[33mc64b598[m refactor: integrar sistema de navegación en MainActivity
+[33maf5f806[m feat: crear pantalla de comparación de candidatos
+[33m6dd842d[m feat: crear pantalla de detalle de documentos
+[33m2964035[m feat: crear pantalla de perfil de candidato
+[33mefaa339[m feat: crear pantalla de inicio con navegación base
+[33m79ea4ad[m feat: implementar sistema de navegación con NavGraph
+[33m09c292b[m chore: ordenar dependencias
+[33m75b3411[m chore: agregar dependencias de Navigation Compose y Retrofit
+[33m0d3ec26[m Añadir dependencia para los iconos extendidos de Material
+[33m026ab96[m "Añadir datos de trayectoria al MockDataRepository"
+[33md391f3e[m "Ajustar modelo de datos para incluir Trayectoria"
+[33m9d08311[m fix: Corregir referencias de colores a theme colors
+[33m2e5dd3a[m feat: Ajustar diseño de ProfileScreen según mockup de referencia
+[33m4b39464[m feat(profile): Implementar UI de perfil con datos dinámicos
+[33m0809da1[m feat(profile): Implementar UI de perfil con datos dinámicos
+[33mb588c0c[m feat(model): Añadir modelos de datos para perfil detallado
+[33mbbf2036[m feat(data): Añadir modelos y mock data para perfil detallado
+[33mac5b79a[m fix(deps): Añadir dependencia de material-icons-extended
+[33m9384d1c[m Merge remote-tracking branch 'origin/branch-mendoza' into branch-noa (dia 3)
+[33mc6ed116[m[33m ([m[1;31morigin/branch-mendoza[m[33m)[m build: agregar dependencia Coil para carga de imágenes
+[33m23537a3[m chore: agregar permiso de Internet en AndroidManifest
+[33mf90b87a[m feat: implementar pantalla HomeScreen con búsqueda y filtros
+[33md0d486d[m feat: implementar MockDataRepository con datos de ejemplo
+[33m133ad73[m feat: agregar modelos de datos Candidate y ElectionType
+[33ma9c9e1a[m[33m ([m[1;31morigin/master[m[33m)[m Merge pull request #1 from noalaurxa/branch-mendoza
+[33mb402c2d[m Update README with project progress for Day 2
+[33mcb6c71b[m merge: integrar cambios de branch-mendoza en branch-noa
+[33m9681d19[m[33m ([m[1;32mmaster[m[33m, [m[1;32mbranch-mendoza[m[33m)[m refactor: integrar sistema de navegación en MainActivity
+[33mba67196[m feat: crear pantalla de comparación de candidatos
+[33m80886e9[m feat: crear pantalla de detalle de documentos
+[33mf9fb654[m feat: crear pantalla de perfil de candidato
+[33m72365bf[m feat: crear pantalla de inicio con navegación base
+[33m548d1a7[m feat: implementar sistema de navegación con NavGraph
+[33m081d2c5[m chore: ordenar dependencias
+[33m7932ad4[m chore: agregar dependencias de Navigation Compose y Retrofit
+[33m0a77125[m Update Project Structure
+[33m81a4ab1[m Merge remote-tracking branch 'origin/master'
+[33m6e8d4a2[m Update Project Structure
+[33m1ecb06e[m Initialize README with project overview and details
+[33ma8c9cd4[m Delete README-md
+[33m440b0b3[m Remove comparison module placeholder from README
+[33m122cddd[m Update team roles in README.md
+[33m55e4d8c[m Create README.md with project details
+[33me3ad767[m Initial commit
