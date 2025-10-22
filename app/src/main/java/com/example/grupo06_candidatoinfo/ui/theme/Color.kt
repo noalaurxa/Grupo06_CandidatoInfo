@@ -27,3 +27,14 @@ val RiskHighColor = Color(0xFFD32F2F)
 val TagArchivadoColor = Color(0xFFFDE7E7)
 val TagInvestigacionColor = Color(0xFFFFF1E0)
 val TagSentenciadoColor = Color(0xFFFADBD8)
+
+// Colores para CompareScreen
+val primaryPurple = Color(0xFF5E4FA2)
+val darkPurple = Color(0xFF3C3472)
+val lightPurple = Color(0xFFE8E5F2)
+val accentGreen = Color(0xFF10B981)
+val accentRed = Color(0xFFEF4444)
+val accentYellow = Color(0xFFF59E0B)
+val neutralGray = Color(0xFF6B7280)
+val lightGray = Color(0xFFF3F4F6)
+val cardWhite = Color.White
