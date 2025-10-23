@@ -11,16 +11,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.grupo06_candidatoinfo.model.Candidate
 //colores
-import com.example.grupo06_candidatoinfo.ui.theme.ProfileMainPurple // Corregido el import
-import com.example.grupo06_candidatoinfo.ui.theme.ProfileLighterPurpleCard // Usaremos este color para el fondo de la tarjeta
+import com.example.grupo06_candidatoinfo.ui.theme.ProfileMainPurple
+import com.example.grupo06_candidatoinfo.ui.theme.ProfileLighterPurpleCard
 
 // ==================== HEADER ====================
 @Composable
@@ -32,12 +35,24 @@ fun ProfileHeader(candidate: Candidate, onBackClick: () -> Unit) {
     ) {
         Card(
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(32.dp
+            shape = RoundedCornerShape(32.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = ProfileMainPurple
             ),
-            // --- COLOR ACTUALIZADO: Usando ProfileMainPurple ---
-            colors = CardDefaults.cardColors(containerColor = ProfileMainPurple)
+            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
         ) {
-            Box(modifier = Modifier.fillMaxWidth()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                ProfileMainPurple,
+                                ProfileMainPurple.copy(alpha = 0.95f)
+                            )
+                        )
+                    )
+            ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -45,63 +60,122 @@ fun ProfileHeader(candidate: Candidate, onBackClick: () -> Unit) {
                         .padding(top = 40.dp, bottom = 32.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    AsyncImage(
-                        model = candidate.photoUrl,
-                        contentDescription = candidate.name,
+                    // Imagen con borde elegante y sombra
+                    Box(
                         modifier = Modifier
-                            .size(100.dp)
-                            .clip(CircleShape)
-                            .background(Color.Gray, CircleShape),
-                        contentScale = ContentScale.Crop
-                    )
+                            .size(116.dp)
+                            .shadow(
+                                elevation = 16.dp,
+                                shape = CircleShape,
+                                spotColor = Color.Black.copy(alpha = 0.3f)
+                            )
+                            .background(
+                                brush = Brush.linearGradient(
+                                    colors = listOf(
+                                        Color.White.copy(alpha = 0.7f),
+                                        Color.White.copy(alpha = 0.2f)
+                                    ),
+                                    start = androidx.compose.ui.geometry.Offset(0f, 0f),
+                                    end = androidx.compose.ui.geometry.Offset(300f, 300f)
+                                ),
+                                shape = CircleShape
+                            )
+                            .padding(6.dp)
+                    ) {
+                        AsyncImage(
+                            model = candidate.photoUrl,
+                            contentDescription = candidate.name,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+
                     Spacer(modifier = Modifier.height(16.dp))
+
+                    // Nombre con mejor tipografía
                     Text(
                         text = candidate.name,
-                        style = MaterialTheme.typography.headlineSmall,
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            fontSize = 24.sp,
+                            letterSpacing = 0.5.sp
+                        ),
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center
                     )
+
                     Spacer(modifier = Modifier.height(16.dp))
 
+                    // Card con diseño glassmorphism
                     Card(
                         modifier = Modifier.padding(vertical = 8.dp),
                         shape = RoundedCornerShape(12.dp),
-                        // --- COLOR ACTUALIZADO: Usando ProfileLighterPurpleCard ---
-                        colors = CardDefaults.cardColors(containerColor = ProfileLighterPurpleCard)
+                        colors = CardDefaults.cardColors(
+                            containerColor = ProfileLighterPurpleCard
+                        ),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
                     ) {
-                        Column(
-                            modifier = Modifier.padding(horizontal = 24.dp, vertical = 10.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                        Box(
+                            modifier = Modifier.background(
+                                brush = Brush.linearGradient(
+                                    colors = listOf(
+                                        Color.White.copy(alpha = 0.1f),
+                                        Color.White.copy(alpha = 0.05f)
+                                    )
+                                )
+                            )
                         ) {
-                            Text(
-                                text = "Organización Política",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = Color(0xFFD0CDE1)
-                            )
-                            Text(
-                                text = candidate.party,
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = Color.White,
-                                fontWeight = FontWeight.Medium,
-                                textAlign = TextAlign.Center
-                            )
+                            Column(
+                                modifier = Modifier.padding(horizontal = 24.dp, vertical = 10.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = "Organización Política",
+                                    style = MaterialTheme.typography.labelMedium.copy(
+                                        fontSize = 11.sp,
+                                        letterSpacing = 1.2.sp,
+                                        fontWeight = FontWeight.Medium
+                                    ),
+                                    color = Color.White.copy(alpha = 0.7f)
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = candidate.party,
+                                    style = MaterialTheme.typography.bodyLarge.copy(
+                                        fontSize = 16.sp,
+                                        letterSpacing = 0.3.sp
+                                    ),
+                                    color = Color.White,
+                                    fontWeight = FontWeight.SemiBold,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
                         }
                     }
                 }
 
-                IconButton(
+                // Botón de volver minimalista
+                Surface(
                     onClick = onBackClick,
                     modifier = Modifier
                         .align(Alignment.TopStart)
-                        .padding(8.dp)
+                        .padding(16.dp)
+                        .size(40.dp),
+                    shape = CircleShape,
+                    color = Color.White.copy(alpha = 0.15f)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Volver",
-                        tint = Color.White,
-                        modifier = Modifier.size(24.dp)
-                    )
+                    Box(
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Volver",
+                            tint = Color.White,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
                 }
             }
         }
