@@ -37,7 +37,6 @@ import com.example.grupo06_candidatoinfo.ui.theme.TagSentenciadoColor
 // Función de utilidad para mapear el tag a sus colores
 @Composable
 fun getTagColors(tag: String): Pair<Color, Color> {
-    // Returns: Pair<ContainerColor, ContentColor/AccentColor>
     return when (tag.lowercase()) {
         "archivado", "desestimado" -> TagArchivadoColor to Color(0xFFC0392B) // Light background, Dark Red accent
         "investigación", "activo", "pendiente", "juicio oral" -> TagInvestigacionColor to Color(0xFFD35400) // Light orange background, Dark Orange accent
@@ -95,14 +94,11 @@ fun BackgroundTabContent(backgroundReport: BackgroundReport) {
 
 @Composable
 fun BackgroundRecordCard(record: BackgroundRecord) {
-    // Combinamos statusTags y classificationTags en una sola lista para el display
     val allTags = remember(record) { record.statusTags + record.classificationTags }
 
-    // Lógica para mostrar solo 2 tags + un chip de conteo si hay más
     val visibleTags = remember(allTags) { allTags.take(2) }
     val remainingTagsCount = remember(allTags) { allTags.size - visibleTags.size }
 
-    // Tomamos el color principal de la barra vertical del PRIMER tag (el AccentColor)
     val primaryTag = allTags.firstOrNull() ?: "Sin Estado"
     val (_, primaryAccentColor) = getTagColors(primaryTag)
 
