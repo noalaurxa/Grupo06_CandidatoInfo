@@ -177,7 +177,7 @@ fun HomeScreen(navController: NavController) {
                         }
                     }
 
-                    // Botón de comparar (sin animación)
+                    // Botón de comparar
                     if (selectedCount > 0) {
                         Button(
                             onClick = {

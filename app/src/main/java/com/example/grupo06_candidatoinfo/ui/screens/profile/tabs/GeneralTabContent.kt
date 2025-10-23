@@ -1,6 +1,11 @@
 package com.example.grupo06_candidatoinfo.ui.screens.profile.tabs
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -8,13 +13,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -23,11 +28,18 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.grupo06_candidatoinfo.model.*
 import com.example.grupo06_candidatoinfo.navigation.Screen
-// --- IMPORTS DE COLOR ---
-import com.example.grupo06_candidatoinfo.ui.theme.ProfileLighterPurpleCard
 import com.example.grupo06_candidatoinfo.ui.theme.ProfileMainPurple
 import java.text.NumberFormat
 import java.util.Locale
+
+// Importar Colores
+import com.example.grupo06_candidatoinfo.ui.theme.PrimaryColor
+import com.example.grupo06_candidatoinfo.ui.theme.SecondaryColor
+import com.example.grupo06_candidatoinfo.ui.theme.TertiaryColor
+import com.example.grupo06_candidatoinfo.ui.theme.BackgroundLight
+import com.example.grupo06_candidatoinfo.ui.theme.BorderColor
+import com.example.grupo06_candidatoinfo.ui.theme.AccentColor
+import com.example.grupo06_candidatoinfo.ui.theme.SuccessColor
 
 fun Color.Companion.fromHex(hexString: String): Color {
     return Color(android.graphics.Color.parseColor(hexString))
@@ -37,76 +49,210 @@ fun Color.Companion.fromHex(hexString: String): Color {
 @Composable
 fun GeneralTabContent(navController: NavController, profile: CandidateProfile) {
     Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 4.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        BasicInfoCard(info = profile.basicInfo)
-        ExpandableInfoCard(title = "DECLARACIÓN JURADA DE BIENES") {
+        // Información básica expandida por defecto
+        ModernExpandableCard(
+            title = "Información Personal",
+            icon = Icons.Outlined.Person,
+            initialExpanded = true
+        ) {
+            BasicInfoContent(info = profile.basicInfo)
+        }
+
+        // Declaración de bienes
+        ModernExpandableCard(
+            title = "Patrimonio Declarado",
+            icon = Icons.Outlined.AccountBalance,
+            initialExpanded = false
+        ) {
             DeclaracionBienesContent(declaration = profile.assetDeclaration)
         }
-        ExpandableInfoCard(title = "PLAN DE GOBIERNO") {
+
+        // Plan de gobierno
+        ModernExpandableCard(
+            title = "Plan de Gobierno",
+            icon = Icons.Outlined.Description,
+            initialExpanded = false
+        ) {
             PlanGobiernoContent(navController, plan = profile.governmentPlan)
         }
-        ExpandableInfoCard(title = "FORMACIÓN ACADÉMICA") {
+
+        // Formación académica
+        ModernExpandableCard(
+            title = "Formación Académica",
+            icon = Icons.Outlined.School,
+            initialExpanded = false
+        ) {
             FormacionAcademicaContent(navController, formation = profile.academicFormation)
         }
     }
 }
 
+// ==================== CARD EXPANDIBLE MODERNA ====================
 @Composable
-fun BasicInfoCard(info: BasicInfo) {
+fun ModernExpandableCard(
+    title: String,
+    icon: ImageVector,
+    initialExpanded: Boolean = false,
+    content: @Composable () -> Unit
+) {
+    var expanded by remember { mutableStateOf(initialExpanded) }
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 0.dp,
+            pressedElevation = 0.dp
+        )
+    ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            // Header clickeable
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { expanded = !expanded }
+                    .padding(20.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(AccentColor.copy(alpha = 0.1f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = null,
+                            tint = AccentColor,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                    Text(
+                        text = title,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = PrimaryColor
+                    )
+                }
+                Icon(
+                    imageVector = if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                    contentDescription = if (expanded) "Contraer" else "Expandir",
+                    tint = TertiaryColor,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+
+            // Contenido expandible con animación
+            AnimatedVisibility(
+                visible = expanded,
+                enter = expandVertically(animationSpec = tween(300)) + fadeIn(animationSpec = tween(300)),
+                exit = shrinkVertically(animationSpec = tween(300)) + fadeOut(animationSpec = tween(300))
+            ) {
+                Column {
+                    Divider(color = BorderColor, thickness = 1.dp)
+                    Box(modifier = Modifier.padding(20.dp)) {
+                        content()
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ==================== INFORMACIÓN BÁSICA ====================
+@Composable
+fun BasicInfoContent(info: BasicInfo) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                InfoRow(label = "Fecha de Nacimiento:", value = info.birthDate, labelSize = 13.sp, valueSize = 15.sp)
-                InfoRow(label = "Lugar de Nacimiento:", value = info.birthPlace, labelSize = 13.sp, valueSize = 15.sp)
+                InfoField(
+                    label = "Fecha de Nacimiento",
+                    value = info.birthDate,
+                    icon = Icons.Outlined.CalendarToday
+                )
+                InfoField(
+                    label = "Lugar de Nacimiento",
+                    value = info.birthPlace,
+                    icon = Icons.Outlined.Place
+                )
+                InfoField(
+                    label = "Estado Civil",
+                    value = info.civilStatus,
+                    icon = Icons.Outlined.Favorite
+                )
             }
-            Spacer(modifier = Modifier.width(20.dp))
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                InfoRow(label = "Edad:", value = info.age, labelSize = 13.sp, valueSize = 15.sp)
-                InfoRow(label = "Estado Civil:", value = info.civilStatus, labelSize = 13.sp, valueSize = 15.sp)
-                InfoRow(label = "Lugar de Residencia:", value = info.residencePlace, labelSize = 13.sp, valueSize = 15.sp)
+                InfoField(
+                    label = "Edad",
+                    value = info.age,
+                    icon = Icons.Outlined.Person
+                )
+                InfoField(
+                    label = "Residencia",
+                    value = info.residencePlace,
+                    icon = Icons.Outlined.Home
+                )
             }
         }
     }
 }
 
 @Composable
-private fun InfoRow(label: String, value: String, labelSize: androidx.compose.ui.unit.TextUnit, valueSize: androidx.compose.ui.unit.TextUnit) {
-    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-        Text(
-            text = label,
-            fontSize = labelSize,
-            color = Color(0xFF666666),
-            fontWeight = FontWeight.Normal,
-            lineHeight = (labelSize.value + 2).sp
+private fun InfoField(label: String, value: String, icon: ImageVector) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        verticalAlignment = Alignment.Top
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = AccentColor.copy(alpha = 0.7f),
+            modifier = Modifier.size(18.dp).padding(top = 1.dp)
         )
-        Text(
-            text = value,
-            fontSize = valueSize,
-            color = Color.Black,
-            fontWeight = FontWeight.SemiBold,
-            lineHeight = (valueSize.value + 2).sp
-        )
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Text(
+                text = label,
+                fontSize = 12.sp,
+                color = TertiaryColor,
+                fontWeight = FontWeight.Medium
+            )
+            Text(
+                text = value,
+                fontSize = 14.sp,
+                color = PrimaryColor,
+                fontWeight = FontWeight.Normal,
+                lineHeight = 20.sp
+            )
+        }
     }
 }
 
+// ==================== DECLARACIÓN DE BIENES ====================
 @Composable
 fun DeclaracionBienesContent(declaration: AssetDeclaration) {
     val format = remember {
@@ -114,53 +260,67 @@ fun DeclaracionBienesContent(declaration: AssetDeclaration) {
             minimumFractionDigits = 2
         }
     }
-    val progress = if (declaration.totalPatrimony > 0 && declaration.assets.isNotEmpty()) {
-        (declaration.assets[0].value / declaration.totalPatrimony).toFloat()
-    } else { 0f }
-    val progressBarColor = if (declaration.assets.isNotEmpty()) Color.fromHex(declaration.assets[0].colorHex) else Color.Red
 
-    Card(
+    Column(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = ProfileLighterPurpleCard)
+        verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+        // Total patrimonio
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(10.dp),
+            colors = CardDefaults.cardColors(containerColor = BackgroundLight)
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "Patrimonio Total Declarado",
-                    fontSize = 14.sp,
-                    color = Color(0xFF666666)
-                )
-                Text(
-                    text = format.format(declaration.totalPatrimony),
-                    fontSize = 16.sp,
-                    // --- COLOR CORREGIDO: Usamos ProfileMainPurple ---
-                    color = ProfileMainPurple,
-                    fontWeight = FontWeight.Bold
+                Column {
+                    Text(
+                        text = "Patrimonio Total",
+                        fontSize = 12.sp,
+                        color = TertiaryColor,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = format.format(declaration.totalPatrimony),
+                        fontSize = 22.sp,
+                        color = AccentColor,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                Icon(
+                    imageVector = Icons.Outlined.AccountBalanceWallet,
+                    contentDescription = null,
+                    tint = AccentColor.copy(alpha = 0.3f),
+                    modifier = Modifier.size(48.dp)
                 )
             }
-            // --- SINTAXIS DE PROGRESS CORREGIDA ---
-            LinearProgressIndicator(
-                progress = { progress },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(8.dp)
-                    .clip(RoundedCornerShape(4.dp)),
-                color = progressBarColor,
-                trackColor = Color(0xFFE0E0E0),
-                strokeCap = StrokeCap.Round
+        }
+
+        // Lista de activos
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text(
+                text = "Composición del Patrimonio",
+                fontSize = 13.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = SecondaryColor
             )
+
             declaration.assets.forEach { asset ->
-                BienesRow(
+                AssetRow(
                     label = asset.label,
                     value = format.format(asset.value),
+                    percentage = if (declaration.totalPatrimony > 0)
+                        (asset.value / declaration.totalPatrimony * 100).toInt()
+                    else 0,
                     color = Color.fromHex(asset.colorHex)
                 )
             }
@@ -169,327 +329,386 @@ fun DeclaracionBienesContent(declaration: AssetDeclaration) {
 }
 
 @Composable
-private fun BienesRow(label: String, value: String, color: Color) {
-    Row(
+private fun AssetRow(label: String, value: String, percentage: Int, color: Color) {
+    Column(
         modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Box(
-            modifier = Modifier
-                .size(9.dp)
-                .background(color, CircleShape)
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(
-            text = label,
-            modifier = Modifier.weight(1f),
-            fontSize = 14.sp,
-            color = Color.Black
-        )
-        Text(
-            text = value,
-            fontSize = 14.sp,
-            color = Color.Black,
-            fontWeight = FontWeight.Medium
-        )
-    }
-}
-
-@Composable
-fun PlanGobiernoContent(navController: NavController, plan: GovernmentPlan) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        // --- COLOR CORREGIDO: Usamos ProfileLighterPurpleCard ---
-        colors = CardDefaults.cardColors(containerColor = ProfileLighterPurpleCard)
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            Text(
-                text = plan.summary,
-                fontSize = 14.sp,
-                color = Color(0xFF555555),
-                lineHeight = 18.sp
-            )
-            plan.proposals.forEach { proposal ->
-                PlanItem(
-                    icon = Icons.Default.PlayCircleFilled,
-                    title = proposal.title,
-                    description = proposal.description
-                )
-            }
-            Divider(
-                modifier = Modifier.padding(vertical = 6.dp),
-                thickness = 0.5.dp,
-                color = Color.Gray.copy(alpha = 0.3f)
-            )
-            ClickableTextRow(
-                text = "Ver Plan Completo (PDF)",
-                icon = Icons.Default.MenuBook,
-                onClick = {
-                    navController.navigate(Screen.Detail.createRoute(plan.documentId))
-                }
-            )
-        }
-    }
-}
-
-@Composable
-private fun PlanItem(icon: ImageVector, title: String, description: String) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.Top
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = title,
-            // --- COLOR CORREGIDO: Usamos ProfileMainPurple ---
-            tint = ProfileMainPurple,
-            modifier = Modifier.size(36.dp).padding(top = 2.dp)
-        )
-        Spacer(modifier = Modifier.width(10.dp))
-        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(
-                text = title,
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-                lineHeight = 18.sp
-            )
-            Text(
-                text = description,
-                fontSize = 13.sp,
-                color = Color(0xFF666666),
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                lineHeight = 16.sp
-            )
-        }
-    }
-}
-
-@Composable
-fun FormacionAcademicaContent(navController: NavController, formation: AcademicFormation) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        // --- COLOR CORREGIDO: Usamos ProfileLighterPurpleCard ---
-        colors = CardDefaults.cardColors(containerColor = ProfileLighterPurpleCard)
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            formation.degrees.forEach { degree ->
-                FormacionItem(
-                    icon = Icons.Default.School,
-                    title = degree.title,
-                    description = degree.institutionAndPeriod
-                )
-            }
-            Divider(
-                modifier = Modifier.padding(vertical = 6.dp),
-                thickness = 0.5.dp,
-                color = Color.Gray.copy(alpha = 0.3f)
-            )
-            ClickableTextRow(
-                text = "Verificar en SUNEDU",
-                icon = Icons.Default.Shield,
-                onClick = {}
-            )
-        }
-    }
-}
-
-@Composable
-private fun FormacionItem(icon: ImageVector, title: String, description: String) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.Top
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = title,
-            tint = ProfileMainPurple,
-            modifier = Modifier.size(32.dp).padding(top = 2.dp)
-        )
-        Spacer(modifier = Modifier.width(10.dp))
-        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(
-                text = title,
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-                lineHeight = 18.sp
-            )
-            Text(
-                text = description,
-                fontSize = 13.sp,
-                color = Color(0xFF666666),
-                lineHeight = 16.sp
-            )
-        }
-    }
-}
-
-@Composable
-private fun ClickableTextRow(text: String, icon: ImageVector, onClick: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() }
-            .padding(vertical = 4.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = text,
-            tint = ProfileMainPurple,
-            modifier = Modifier.size(20.dp)
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(
-            text = text,
-            color = ProfileMainPurple,
-            fontWeight = FontWeight.Medium,
-            fontSize = 14.sp
-        )
-    }
-}
-
-@Composable
-fun ExpandableInfoCard(
-    title: String,
-    initialExpanded: Boolean = false,
-    content: @Composable () -> Unit
-) {
-    var expanded by remember { mutableStateOf(initialExpanded) }
-
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { expanded = !expanded },
-            shape = RoundedCornerShape(8.dp),
-            color = Color.White,
-            shadowElevation = 1.dp
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(10.dp)
+                        .clip(CircleShape)
+                        .background(color)
+                )
+                Text(
+                    text = label,
+                    fontSize = 14.sp,
+                    color = SecondaryColor,
+                    fontWeight = FontWeight.Normal
+                )
+            }
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = title,
+                    text = "$percentage%",
+                    fontSize = 12.sp,
+                    color = TertiaryColor,
+                    fontWeight = FontWeight.Medium
+                )
+                Text(
+                    text = value,
                     fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF888888),
-                    letterSpacing = 0.2.sp
-                )
-                Icon(
-                    imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                    contentDescription = "Expandir",
-                    tint = Color(0xFF888888),
-                    modifier = Modifier.size(22.dp)
+                    color = PrimaryColor,
+                    fontWeight = FontWeight.SemiBold
                 )
             }
         }
-
-        AnimatedVisibility(visible = expanded) {
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp),
-                color = Color.White,
-                shadowElevation = 1.dp
-            ) {
-                Box(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp, top = 8.dp)) {
-                    content()
-                }
-            }
-        }
+        LinearProgressIndicator(
+            progress = { percentage / 100f },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(4.dp)
+                .clip(RoundedCornerShape(2.dp)),
+            color = color,
+            trackColor = BorderColor,
+        )
     }
 }
 
-
+// ==================== PLAN DE GOBIERNO ====================
 @Composable
-fun GovernmentPlanCard(
-    plan: GovernmentPlan,
-    onDocumentClick: (documentId: String) -> Unit // RECIBE la función
-) {
-    DocumentSectionCard(
-        title = "Plan de Gobierno",
-        subtitle = "Documento oficial del plan de gestión",
-        icon = Icons.Default.MenuBook,
-        documentId = plan.documentId,
-        onDocumentClick = onDocumentClick // Pasa la acción al Composable clickable
+fun PlanGobiernoContent(navController: NavController, plan: GovernmentPlan) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        // Contenido del resumen del plan
+        // Resumen
         Text(
             text = plan.summary,
             fontSize = 14.sp,
-            color = Color(0xFF555555),
-            lineHeight = 20.sp,
-            maxLines = 4,
+            color = SecondaryColor,
+            lineHeight = 22.sp
         )
-        plan.proposals.take(2).forEach { proposal ->
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    modifier = Modifier
-                        .size(6.dp)
-                        .clip(RoundedCornerShape(3.dp))
-                        .background(ProfileMainPurple)
-                )
-                Spacer(modifier = Modifier.width(6.dp))
+
+        // Propuestas principales
+        if (plan.proposals.isNotEmpty()) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
                 Text(
-                    text = proposal.title,
+                    text = "Propuestas Principales",
                     fontSize = 13.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color.Black
+                    color = SecondaryColor
                 )
+
+                plan.proposals.forEach { proposal ->
+                    ProposalItem(
+                        title = proposal.title,
+                        description = proposal.description
+                    )
+                }
             }
+        }
+
+        // Botón ver documento completo
+        OutlinedButton(
+            onClick = { navController.navigate(Screen.Detail.createRoute(plan.documentId)) },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.outlinedButtonColors(
+                containerColor = Color.Transparent,
+                contentColor = AccentColor
+            ),
+            border = ButtonDefaults.outlinedButtonBorder.copy(width = 1.5.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.Description,
+                contentDescription = null,
+                modifier = Modifier.size(18.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = "Ver Plan Completo",
+                fontWeight = FontWeight.Medium,
+                fontSize = 14.sp
+            )
+        }
+    }
+}
+
+@Composable
+private fun ProposalItem(title: String, description: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(8.dp))
+            .background(BackgroundLight)
+            .padding(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(6.dp)
+                .clip(CircleShape)
+                .background(AccentColor)
+                .align(Alignment.Top)
+                .offset(y = 7.dp)
+        )
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Text(
+                text = title,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = PrimaryColor,
+                lineHeight = 20.sp
+            )
+            Text(
+                text = description,
+                fontSize = 13.sp,
+                color = TertiaryColor,
+                lineHeight = 18.sp,
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }
 
 // ==================== FORMACIÓN ACADÉMICA ====================
 @Composable
-fun AcademicFormationCard(
-    academicFormation: AcademicFormation,
-    onDocumentClick: (documentId: String) -> Unit // RECIBE la función
+fun FormacionAcademicaContent(navController: NavController, formation: AcademicFormation) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        // Timeline de formación académica
+        formation.degrees.forEachIndexed { index, degree ->
+            DegreeTimelineItem(
+                title = degree.title,
+                institution = degree.institutionAndPeriod,
+                isLast = index == formation.degrees.size - 1
+            )
+        }
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        // Botón verificar en SUNEDU
+        OutlinedButton(
+            onClick = { /* Acción de verificación */ },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.outlinedButtonColors(
+                containerColor = Color.Transparent,
+                contentColor = SuccessColor
+            ),
+            border = ButtonDefaults.outlinedButtonBorder.copy(
+                width = 1.5.dp,
+                brush = androidx.compose.ui.graphics.SolidColor(SuccessColor)
+            )
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.VerifiedUser,
+                contentDescription = null,
+                modifier = Modifier.size(18.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = "Verificar en SUNEDU",
+                fontWeight = FontWeight.Medium,
+                fontSize = 14.sp
+            )
+        }
+    }
+}
+
+@Composable
+private fun DegreeTimelineItem(title: String, institution: String, isLast: Boolean) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        // Timeline con nodo
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.width(24.dp)
+        ) {
+            // Nodo circular
+            Box(
+                modifier = Modifier
+                    .size(12.dp)
+                    .clip(CircleShape)
+                    .background(AccentColor)
+            )
+
+            // Línea conectora
+            if (!isLast) {
+                Box(
+                    modifier = Modifier
+                        .width(2.dp)
+                        .height(60.dp)
+                        .background(AccentColor.copy(alpha = 0.3f))
+                )
+            }
+        }
+
+        // Contenido del título
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(bottom = if (isLast) 0.dp else 12.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            Text(
+                text = title,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = PrimaryColor,
+                lineHeight = 20.sp
+            )
+            Text(
+                text = institution,
+                fontSize = 13.sp,
+                color = TertiaryColor,
+                lineHeight = 18.sp
+            )
+        }
+    }
+}
+
+@Composable
+private fun DegreeItem(title: String, institution: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(8.dp))
+            .background(BackgroundLight)
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(AccentColor.copy(alpha = 0.1f)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.School,
+                contentDescription = null,
+                tint = AccentColor,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Text(
+                text = title,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = PrimaryColor,
+                lineHeight = 20.sp
+            )
+            Text(
+                text = institution,
+                fontSize = 13.sp,
+                color = TertiaryColor,
+                lineHeight = 18.sp
+            )
+        }
+    }
+}
+
+// ==================== COMPOSABLES REUTILIZABLES ====================
+@Composable
+fun GovernmentPlanCard(
+    plan: GovernmentPlan,
+    onDocumentClick: (documentId: String) -> Unit
 ) {
     DocumentSectionCard(
-        title = "Formación Académica",
-        subtitle = "Títulos registrados ante SUNEDU",
-        icon = Icons.Default.School,
-        documentId = academicFormation.documentId,
+        title = "Plan de Gobierno",
+        subtitle = "Documento oficial del plan de gestión",
+        icon = Icons.Outlined.Description,
+        documentId = plan.documentId,
         onDocumentClick = onDocumentClick
     ) {
-        // Contenido de la formación académica
-        academicFormation.degrees.forEach { degree ->
-            Column(modifier = Modifier.padding(bottom = 8.dp)) {
-                Text(
-                    text = degree.title,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 14.sp,
-                    color = Color.Black
+        Text(
+            text = plan.summary,
+            fontSize = 14.sp,
+            color = SecondaryColor,
+            lineHeight = 20.sp,
+            maxLines = 4,
+            overflow = TextOverflow.Ellipsis
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+        plan.proposals.take(2).forEach { proposal ->
+            Row(
+                modifier = Modifier.padding(vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(6.dp)
+                        .clip(CircleShape)
+                        .background(AccentColor)
                 )
                 Text(
-                    text = degree.institutionAndPeriod,
+                    text = proposal.title,
                     fontSize = 13.sp,
-                    color = Color.Gray
+                    fontWeight = FontWeight.Medium,
+                    color = PrimaryColor
                 )
             }
         }
     }
 }
 
+@Composable
+fun AcademicFormationCard(
+    academicFormation: AcademicFormation,
+    onDocumentClick: (documentId: String) -> Unit
+) {
+    DocumentSectionCard(
+        title = "Formación Académica",
+        subtitle = "Títulos registrados ante SUNEDU",
+        icon = Icons.Outlined.School,
+        documentId = academicFormation.documentId,
+        onDocumentClick = onDocumentClick
+    ) {
+        academicFormation.degrees.forEach { degree ->
+            Column(modifier = Modifier.padding(bottom = 12.dp)) {
+                Text(
+                    text = degree.title,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 14.sp,
+                    color = PrimaryColor
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = degree.institutionAndPeriod,
+                    fontSize = 13.sp,
+                    color = TertiaryColor
+                )
+            }
+        }
+    }
+}
 
-// ==================== COMPOSABLE REUTILIZABLE (CLICKEABLE) ====================
 @Composable
 fun DocumentSectionCard(
     title: String,
@@ -503,65 +722,71 @@ fun DocumentSectionCard(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
-            // Título de la sección
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(20.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = title,
-                    tint = ProfileMainPurple,
-                    modifier = Modifier.size(24.dp)
-                )
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(AccentColor.copy(alpha = 0.1f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        tint = AccentColor,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = title,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         fontSize = 16.sp,
-                        color = ProfileMainPurple
+                        color = PrimaryColor
                     )
                     Text(
                         text = subtitle,
                         fontSize = 12.sp,
-                        color = Color.Gray
+                        color = TertiaryColor
                     )
                 }
             }
 
-            // Contenido
-            Box(modifier = Modifier.padding(horizontal = 16.dp)) {
+            Box(modifier = Modifier.padding(horizontal = 20.dp)) {
                 content()
             }
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Botón de VER DOCUMENTO
+            Divider(color = BorderColor, thickness = 1.dp)
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { onDocumentClick(documentId) }
-                    .background(Color.Transparent)
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                    .padding(horizontal = 20.dp, vertical = 16.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
                     text = "Ver Documento Completo",
-                    fontWeight = FontWeight.SemiBold,
+                    fontWeight = FontWeight.Medium,
                     fontSize = 14.sp,
-                    color = ProfileMainPurple
+                    color = AccentColor
                 )
                 Icon(
-                    imageVector = Icons.Default.ChevronRight,
-                    contentDescription = "Ver Detalle",
-                    tint = ProfileMainPurple,
-                    modifier = Modifier.size(20.dp)
+                    imageVector = Icons.Default.ArrowForward,
+                    contentDescription = "Ver documento",
+                    tint = AccentColor,
+                    modifier = Modifier.size(18.dp)
                 )
             }
         }

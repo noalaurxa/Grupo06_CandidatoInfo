@@ -32,7 +32,7 @@ import com.example.grupo06_candidatoinfo.ui.screens.profile.tabs.BackgroundTabCo
 import com.example.grupo06_candidatoinfo.ui.screens.profile.tabs.CurrentTabContent
 
 
-// --- Colores del diseño (Usando los colores locales que prevalecen) ---
+// Colores Importados
 private val mainPurple = Color(0xFF3C3472)
 private val lightPurpleBackground = Color(0xFFECEBFA)
 private val lighterPurpleCard = Color(0xFF5D559C)
@@ -59,7 +59,7 @@ fun ProfileScreen(
     val tabs = listOf("General", "Trayectoria", "Antecedentes", "Actualidad")
 
     Scaffold(
-        containerColor = lightGrayBackground // Usando color local
+        containerColor = lightGrayBackground
     ) { paddingValues ->
         if (candidate == null) {
             Column(
@@ -83,7 +83,7 @@ fun ProfileScreen(
                     .padding(bottom = paddingValues.calculateBottomPadding()),
                 contentPadding = PaddingValues(0.dp)
             ) {
-                // Header con foto (Se utiliza la estructura de la rama remota, más limpia)
+                // Header con foto
                 item {
                     Box(modifier = Modifier
                         .padding(horizontal = 16.dp)
@@ -94,7 +94,7 @@ fun ProfileScreen(
                     }
                 }
 
-                // Tabs de navegación (Sin cambios)
+                // Tabs de navegación
                 item {
                     Surface(
                         color = Color.White,
@@ -191,7 +191,7 @@ fun ProfileScreen(
 }
 
 
-// ==================== PLACEHOLDER (Mantenido) ====================
+// ==================== PLACEHOLDER ====================
 @Composable
 fun PlaceholderTabContent(title: String) {
     Card(

@@ -11,122 +11,124 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.grupo06_candidatoinfo.model.CareerHistory
 import com.example.grupo06_candidatoinfo.model.CareerItem
-// --- IMPORTS DE COLOR ---
-import com.example.grupo06_candidatoinfo.ui.theme.ProfileLighterPurpleCard
-import com.example.grupo06_candidatoinfo.ui.theme.ProfileMainPurple
 
-// ==================== TAB TRAYECTORIA (ESTÉTICA MEJORADA) ====================
+// Importar colores
+import com.example.grupo06_candidatoinfo.ui.theme.CardBackgroundColor
+import com.example.grupo06_candidatoinfo.ui.theme.TimelineLineColor
+import com.example.grupo06_candidatoinfo.ui.theme.IconTintColor
+import com.example.grupo06_candidatoinfo.ui.theme.PrimaryTextColor
+import com.example.grupo06_candidatoinfo.ui.theme.IconBackgroundColor
+import com.example.grupo06_candidatoinfo.ui.theme.SecondaryTextColor
+import com.example.grupo06_candidatoinfo.ui.theme.TagBackgroundColor
+import com.example.grupo06_candidatoinfo.ui.theme.TagTextColor
+
+// ==================== TAB TRAYECTORIA ====================
 @Composable
 fun CareerTabContent(careerHistory: CareerHistory) {
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(max = 800.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        contentPadding = PaddingValues(vertical = 8.dp)
     ) {
         items(careerHistory.items.size) { index ->
             CareerItemCard(
                 careerItem = careerHistory.items[index],
-                esUltimoItem = index == careerHistory.items.size - 1
+                esUltimoItem = index == careerHistory.items.size - 1,
+                esPrimerItem = index == 0
             )
         }
     }
 }
 
-// ==================== ITEM DE TRAYECTORIA====================
+// ==================== ITEM DE TRAYECTORIA ====================
 @Composable
-fun CareerItemCard(careerItem: CareerItem, esUltimoItem: Boolean) {
-    Row(
-        // Aplicamos el padding horizontal aquí para que la línea quede visible en el borde
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        verticalAlignment = Alignment.Top
+fun CareerItemCard(careerItem: CareerItem, esUltimoItem: Boolean, esPrimerItem: Boolean = false) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = CardBackgroundColor),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        // Columna de Timeline (Icono y Línea)
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            // Ancho ajustado para centrar bien la línea
-            modifier = Modifier.width(28.dp)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.Top
         ) {
-            // Contenedor del Icono (Cuadrado Púrpura Redondeado)
-            Box(
-                modifier = Modifier
-                    .size(28.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(ProfileMainPurple),
-                contentAlignment = Alignment.Center
+            // Columna de Timeline (Icono + Línea DENTRO de la card)
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.width(40.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Default.BusinessCenter,
-                    contentDescription = "Trabajo",
-                    tint = Color.White,
-                    modifier = Modifier.size(16.dp)
-                )
-            }
-
-            if (!esUltimoItem) {
+                // Icono minimalista
                 Box(
                     modifier = Modifier
-                        .width(2.dp)
-                        .weight(1f)
-                        .background(ProfileMainPurple.copy(alpha = 0.6f))
-                )
-            } else {
-                Spacer(modifier = Modifier.height(4.dp))
-            }
-        }
-
-        // Tarjeta de Contenido
-        Card(
-            modifier = Modifier
-                .weight(1f)
-                .padding(top = 0.dp, bottom = 12.dp), // Pequeño padding inferior
-            shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = ProfileLighterPurpleCard),
-            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(6.dp)
-            ) {
-                // Posición
-                Text(
-                    text = careerItem.position,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
-
-                // Tag de Periodo
-                Surface(
-                    shape = RoundedCornerShape(8.dp),
-                    color = ProfileMainPurple
+                        .size(40.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(IconBackgroundColor),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = careerItem.period,
-                        color = Color.White,
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+                    Icon(
+                        imageVector = Icons.Default.BusinessCenter,
+                        contentDescription = "Cargo",
+                        tint = IconTintColor,
+                        modifier = Modifier.size(20.dp)
                     )
                 }
 
-                Spacer(modifier = Modifier.height(4.dp))
+                // Línea sutil debajo del icono
+                Box(
+                    modifier = Modifier
+                        .width(3.dp)
+                        .height(45.dp)
+                        .background(TimelineLineColor)
+                )
+            }
+
+            // Contenido del cargo
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                // Título del cargo
+                Text(
+                    text = careerItem.position,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = PrimaryTextColor,
+                    lineHeight = 21.sp
+                )
+
+                // Tag de período minimalista
+                Surface(
+                    shape = RoundedCornerShape(6.dp),
+                    color = TagBackgroundColor
+                ) {
+                    Text(
+                        text = careerItem.period,
+                        color = TagTextColor,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
+                    )
+                }
 
                 // Descripción
                 Text(
                     text = careerItem.description,
-                    fontSize = 14.sp,
-                    color = Color(0xFF4A4A4A),
-                    lineHeight = 18.sp
+                    fontSize = 13.sp,
+                    color = SecondaryTextColor,
+                    lineHeight = 19.sp
                 )
             }
         }
