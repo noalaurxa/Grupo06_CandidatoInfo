@@ -27,6 +27,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.grupo06_candidatoinfo.data.repository.MockDataRepository
 import com.example.grupo06_candidatoinfo.model.Candidate
+import java.text.Normalizer
 
 @Composable
 fun HomeScreen(navController: NavController) {
@@ -44,7 +45,12 @@ fun HomeScreen(navController: NavController) {
     val selectedCount = selectedCandidates.size
 
     val filteredCandidates = candidates.filter { candidate ->
-        val matchesSearch = candidate.name.contains(searchQuery, ignoreCase = true)
+        val normalizedCandidateName = Normalizer.normalize(candidate.name, Normalizer.Form.NFD)
+            .replace("\\p{InCombiningDiacriticalMarks}+".toRegex(), "")
+        val normalizedSearchQuery = Normalizer.normalize(searchQuery, Normalizer.Form.NFD)
+            .replace("\\p{InCombiningDiacriticalMarks}+".toRegex(), "")
+
+        val matchesSearch = normalizedCandidateName.contains(normalizedSearchQuery, ignoreCase = true)
         val matchesPosition = selectedPosition == "Todos" || candidate.position == selectedPosition
         val matchesParty = selectedParty == "Todos" || candidate.party == selectedParty
         matchesSearch && matchesPosition && matchesParty
