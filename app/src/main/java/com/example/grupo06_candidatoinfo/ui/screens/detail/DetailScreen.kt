@@ -1,6 +1,5 @@
 package com.example.grupo06_candidatoinfo.ui.screens.detail
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -9,7 +8,6 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -20,17 +18,15 @@ import com.example.grupo06_candidatoinfo.ui.theme.ProfileLightGrayBackground
 import com.example.grupo06_candidatoinfo.ui.theme.ProfileMainPurple
 
 // ==================== MOCK DATA TEMPORAL ====================
-// En una aplicación real, esta información vendría de un ViewModel o Repository.
 data class DocumentDetail(
     val title: String,
     val subtitle: String,
     val content: String,
-    val type: String // Ejemplo: "Plan de Gobierno", "Noticia", "Antecedente"
+    val type: String
 )
 
 fun getMockDocument(documentId: String?): DocumentDetail {
     return when (documentId) {
-        // IDs de la pestaña Actualidad
         "news_infraestructura" -> DocumentDetail(
             title = "Plan Nacional de Conectividad (Detalle)",
             subtitle = "Propuesta de Infraestructura y Transporte para el Sur",
@@ -43,7 +39,6 @@ fun getMockDocument(documentId: String?): DocumentDetail {
             content = "El eje central es la simplificación tributaria y la línea de crédito subsidiada para negocios emergentes. Se eliminará la tasa de IGV por tres años a toda MYPE de nueva creación que demuestre tener menos de 10 empleados.",
             type = "Noticia de Campaña"
         )
-        // IDs de la pestaña General (Plan de Gobierno y SUNEDU)
         "plan_gobierno_1" -> DocumentDetail(
             title = "Plan de Gobierno 2026-2031 (Documento Oficial)",
             subtitle = "Resumen Ejecutivo de la Plataforma Electoral",
@@ -56,7 +51,6 @@ fun getMockDocument(documentId: String?): DocumentDetail {
             content = "La Sunedu certifica que el título de Licenciado en Administración de Empresas, otorgado por la Universidad de Lima en 1995, se encuentra debidamente registrado y es válido para ejercer la profesión en el territorio nacional. No presenta observaciones.",
             type = "Registro Académico"
         )
-        // Valor por defecto si el ID no existe
         else -> DocumentDetail(
             title = "Documento No Encontrado",
             subtitle = "ID: $documentId",
