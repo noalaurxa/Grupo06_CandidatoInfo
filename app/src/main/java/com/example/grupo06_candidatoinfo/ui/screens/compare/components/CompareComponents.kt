@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -25,10 +26,11 @@ import com.example.grupo06_candidatoinfo.ui.theme.*
 // ========== HEADER ==========
 
 @Composable
-fun ComparisonHeader(candidate1: Candidate, candidate2: Candidate) {
+fun ComparisonHeader(candidate1: Candidate, candidate2: Candidate, onCandidateClick: (Int) -> Unit) {
     Surface(modifier = Modifier.fillMaxWidth(), color = cardWhite, shadowElevation = 4.dp) {
         Row(modifier = Modifier.fillMaxWidth().padding(24.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-            CandidateCard(candidate1, Modifier.weight(1f))
+
+            CandidateCard(candidate1, Modifier.weight(1f), onClick = { onCandidateClick(candidate1.id)})
 
             Box(modifier = Modifier.width(60.dp).align(Alignment.CenterVertically), contentAlignment = Alignment.Center) {
                 Surface(shape = CircleShape, color = primaryPurple, modifier = Modifier.size(50.dp)) {
@@ -36,14 +38,14 @@ fun ComparisonHeader(candidate1: Candidate, candidate2: Candidate) {
                 }
             }
 
-            CandidateCard(candidate2, Modifier.weight(1f))
+            CandidateCard(candidate2, Modifier.weight(1f), onClick = { onCandidateClick(candidate2.id)})
         }
     }
 }
 
 @Composable
-private fun CandidateCard(candidate: Candidate, modifier: Modifier = Modifier) {
-    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
+private fun CandidateCard(candidate: Candidate, modifier: Modifier = Modifier, onClick: () -> Unit) {
+    Column(modifier = modifier.clickable(onClick = onClick), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Box(modifier = Modifier.size(100.dp).border(4.dp, primaryPurple, CircleShape).padding(4.dp)) {
             AsyncImage(model = candidate.photoUrl, contentDescription = candidate.name, modifier = Modifier.fillMaxSize().clip(CircleShape), contentScale = ContentScale.Crop)
         }

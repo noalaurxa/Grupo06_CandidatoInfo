@@ -51,7 +51,9 @@ fun CompareScreen(
                 contentPadding = PaddingValues(bottom = 24.dp)
             ) {
                 item {
-                    ComparisonHeader(candidates[0], candidates[1])
+                    ComparisonHeader(candidates[0], candidates[1], onCandidateClick = { candidateId ->
+                        navController.navigate("profile/$candidateId")
+                    })
                 }
 
                 when (selectedTab) {
