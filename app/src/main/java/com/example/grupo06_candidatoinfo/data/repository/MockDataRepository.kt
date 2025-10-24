@@ -138,10 +138,10 @@ object MockDataRepository {
                             CurrentEventItem(
                                 id = 101,
                                 type = "noticia",
-                                title = "López Aliaga anuncia 'Plan Cero Hambre'",
-                                description = "El candidato presentó su plan de gobierno con énfasis en la lucha contra la desnutrición.",
-                                date = "2025-10-18",
-                                source = "El Comercio",
+                                title = "Rafael López Aliaga si cumple con ollitas comunes",
+                                description = "A través de una conferencia de prensa se detalló el trabajo que se realiza desde la MML.",
+                                date = "2023-10-31",
+                                source = "MML",
                                 relatedTo = "Rafael López Aliaga",
                                 isVerified = true,
                                 documentId = "doc_noticia_101" // ID VÁLIDO
@@ -354,15 +354,15 @@ object MockDataRepository {
         return when (documentId) {
             // Rafael López Aliaga (RLA)
             "doc_noticia_101" -> NewsDetail(
-                title = "López Aliaga anuncia 'Plan Cero Hambre'",
-                summary = "El candidato anunció un ambicioso plan de ayuda social en zonas vulnerables como parte de su propuesta de gobierno.",
-                date = "18 de octubre de 2025",
-                source = "El Comercio",
+                title = "Rafael López Aliaga sí cumple con las ollitas comunes",
+                summary = "A través de una conferencia de prensa se detalló el trabajo que se realiza desde la MML.",
+                date = "31 de octubre de 2023",
+                source = "MML",
                 relatedCandidateName = "Rafael López Aliaga",
-                fullDescription = "El candidato de Renovación Popular presentó su 'Plan Cero Hambre', enfocado en la lucha contra la desnutrición en las zonas más vulnerables de Lima. La propuesta incluye la creación de nuevos comedores populares, la alianza estratégica con la empresa privada para la donación masiva de alimentos y la implementación de un padrón de beneficiarios transparente y digitalizado. Busca reducir el impacto de la crisis económica en las familias de bajos recursos y asegurar la alimentación básica.",
+                fullDescription = "El alcalde Rafael López Aliaga en compañía de la Gerente de Desarrollo Humano, Isabel Ayala y las presidentas de distintas ollas comunes de diversos distritos como Rímac, Santa Rosa, Ancón, San Juan de Miraflores, Villa María del Triunfo, entre otros, explicó la labor que se viene ejecutando desde la comuna edil para abastecer a las más de 2,000 ollas comunes en Lima Metropolitana.",
                 isVerified = true,
                 imageUrl = "https://tse2.mm.bing.net/th/id/OIP.x5tI1QlTquTNVm1kdFyKBQHaEK?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3",
-                sourceUrl = "https://elcomercio.pe/politica/lopez-aliaga-plan-cero-hambre-noticia/" // <-- ENLACE AÑADIDO
+                sourceUrl = "https://www.gob.pe/institucion/munilima/noticias/859856-rafael-lopez-aliaga-si-cumple-con-las-ollitas-comunes" // <-- ENLACE AÑADIDO
             )
             "doc_actividad_102" -> NewsDetail(
                 title = "Mitin de cierre en Plaza San Martín",
