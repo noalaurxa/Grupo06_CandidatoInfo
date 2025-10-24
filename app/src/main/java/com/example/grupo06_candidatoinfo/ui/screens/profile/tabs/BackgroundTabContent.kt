@@ -12,7 +12,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Gavel
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -25,10 +24,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController // <--- ¡Importación AÑADIDA!
 import com.example.grupo06_candidatoinfo.model.BackgroundRecord
 import com.example.grupo06_candidatoinfo.model.BackgroundReport
-import com.example.grupo06_candidatoinfo.navigation.Screen // <--- ¡Importación AÑADIDA para la navegación!
 import com.example.grupo06_candidatoinfo.ui.theme.ProfileLighterPurpleCard
 import com.example.grupo06_candidatoinfo.ui.theme.ProfileMainPurple
 import com.example.grupo06_candidatoinfo.ui.theme.RiskHighColor
@@ -36,7 +33,9 @@ import com.example.grupo06_candidatoinfo.ui.theme.TagArchivadoColor
 import com.example.grupo06_candidatoinfo.ui.theme.TagInvestigacionColor
 import com.example.grupo06_candidatoinfo.ui.theme.TagSentenciadoColor
 
-// Función de utilidad para mapear el tag a sus colores
+// ===========================================================
+// FUNCIONES AUXILIARES DE TAGS
+// ===========================================================
 @Composable
 fun getTagColors(tag: String): Pair<Color, Color> {
     return when (tag.lowercase()) {
@@ -47,13 +46,13 @@ fun getTagColors(tag: String): Pair<Color, Color> {
     }
 }
 
-// -----------------------------------------------------------
-// FUNCIÓN PRINCIPAL CORREGIDA
-// -----------------------------------------------------------
+// ===========================================================
+// FUNCIÓN PRINCIPAL: BACKGROUNDTABCONTENT
+// ===========================================================
 @Composable
 fun BackgroundTabContent(
-    navController: NavController, // <--- ARGUMENTO AÑADIDO
-    backgroundReport: BackgroundReport
+    backgroundReport: BackgroundReport?,
+    onBackgroundClick: (documentId: String) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -61,9 +60,8 @@ fun BackgroundTabContent(
             .padding(vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-
-        // Lista de Antecedentes
-        if (backgroundReport.records.isEmpty()) {
+        if (backgroundReport == null || backgroundReport.records.isEmpty()) {
+            // --- Estado vacío ---
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -86,6 +84,7 @@ fun BackgroundTabContent(
                 }
             }
         } else {
+            // --- Lista de antecedentes ---
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier
@@ -93,21 +92,32 @@ fun BackgroundTabContent(
                     .heightIn(max = 800.dp)
             ) {
                 items(backgroundReport.records) { record ->
-                    // Pasamos el navController a cada tarjeta para que pueda navegar
-                    BackgroundRecordCard(record = record, navController = navController)
+                    val documentId = record.documentId
+                    BackgroundRecordCard(
+                        record = record,
+                        onDetailClick = {
+                            if (!documentId.isNullOrEmpty()) {
+                                onBackgroundClick(documentId)
+                            } else {
+                                println("⚠️ Error: documentId nulo o vacío para este registro.")
+                            }
+                        }
+                    )
                 }
             }
         }
     }
 }
 
-// -----------------------------------------------------------
-// CARD DE REGISTRO CORREGIDA
-// -----------------------------------------------------------
+// ===========================================================
+// COMPOSABLE: BACKGROUNDRECORDCARD
+// ===========================================================
 @Composable
-fun BackgroundRecordCard(record: BackgroundRecord, navController: NavController) { // <--- ARGUMENTO AÑADIDO
+fun BackgroundRecordCard(
+    record: BackgroundRecord,
+    onDetailClick: () -> Unit
+) {
     val allTags = remember(record) { record.statusTags + record.classificationTags }
-
     val visibleTags = remember(allTags) { allTags.take(2) }
     val remainingTagsCount = remember(allTags) { allTags.size - visibleTags.size }
 
@@ -120,11 +130,8 @@ fun BackgroundRecordCard(record: BackgroundRecord, navController: NavController)
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.Top
-        ) {
-            // --- 1. Indicador de riesgo vertical (Barra lateral) ---
+        Row(modifier = Modifier.fillMaxWidth()) {
+            // --- 1. Indicador de riesgo lateral ---
             Box(
                 modifier = Modifier
                     .width(6.dp)
@@ -132,10 +139,10 @@ fun BackgroundRecordCard(record: BackgroundRecord, navController: NavController)
                     .background(primaryAccentColor)
             )
 
-            // --- 2. Contenido de la tarjeta ---
+            // --- 2. Contenido principal ---
             Column(modifier = Modifier.weight(1f)) {
 
-                // Fila Superior: Icono, Título, Entidad y Tags
+                // --- Encabezado ---
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -143,20 +150,16 @@ fun BackgroundRecordCard(record: BackgroundRecord, navController: NavController)
                     verticalAlignment = Alignment.Top,
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    // Icono (Mazo de juez)
                     Icon(
                         imageVector = Icons.Default.Gavel,
                         contentDescription = "Icono de Antecedente Legal",
                         tint = ProfileMainPurple.copy(alpha = 0.7f),
                         modifier = Modifier.size(24.dp)
                     )
-
-                    // Título, Entidad y Tags
                     Column(
                         modifier = Modifier.weight(1f),
                         verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
-                        // 1. Título
                         Text(
                             text = record.title,
                             fontSize = 16.sp,
@@ -165,8 +168,6 @@ fun BackgroundRecordCard(record: BackgroundRecord, navController: NavController)
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
-
-                        // 2. Entidad
                         Text(
                             text = record.entity,
                             fontSize = 12.sp,
@@ -176,16 +177,19 @@ fun BackgroundRecordCard(record: BackgroundRecord, navController: NavController)
                             overflow = TextOverflow.Ellipsis
                         )
 
-                        // 3. Tags (Solo mostramos los primeros dos)
+                        // --- Chips de tags ---
                         LazyRow(
                             horizontalArrangement = Arrangement.spacedBy(6.dp),
                             contentPadding = PaddingValues(top = 4.dp)
                         ) {
                             items(visibleTags) { tag ->
                                 val (container, content) = getTagColors(tag)
-                                TagChip(text = tag.uppercase(), contentColor = content, containerColor = container)
+                                TagChip(
+                                    text = tag.uppercase(),
+                                    contentColor = content,
+                                    containerColor = container
+                                )
                             }
-                            // Chip para el conteo restante
                             if (remainingTagsCount > 0) {
                                 item {
                                     TagChip(
@@ -199,9 +203,10 @@ fun BackgroundRecordCard(record: BackgroundRecord, navController: NavController)
                     }
                 }
 
-                // Contenido Inferior (Descripción y Fecha)
-                Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 16.dp)) {
-                    // Descripción
+                // --- Descripción ---
+                Column(
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                ) {
                     Text(
                         text = record.description,
                         fontSize = 13.sp,
@@ -211,8 +216,6 @@ fun BackgroundRecordCard(record: BackgroundRecord, navController: NavController)
                         overflow = TextOverflow.Ellipsis
                     )
                     Spacer(modifier = Modifier.height(10.dp))
-
-                    // Fecha de inicio
                     Text(
                         text = "Inicio: ${record.date}",
                         fontSize = 12.sp,
@@ -221,25 +224,20 @@ fun BackgroundRecordCard(record: BackgroundRecord, navController: NavController)
                     )
                 }
 
-                // Separador
                 Divider(
-                    modifier = Modifier.padding(horizontal = 0.dp),
                     thickness = 0.5.dp,
                     color = Color.Gray.copy(alpha = 0.15f)
                 )
 
-                // Botón de "Ver Detalle" - ¡ACCIÓN DE NAVEGACIÓN AÑADIDA!
+                // --- Botón de "Ver Detalle" ---
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp))
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
-                            // ACCIÓN DE NAVEGACIÓN AÑADIDA
-                            onClick = {
-                                // Navega a la ruta de Detalle de Investigación
-                                navController.navigate(Screen.InvestigationDetail.createRoute(record.documentId))
-                            }
+                            indication = null, // 🔹 Evita doble efecto ripple
+                            onClick = onDetailClick
                         )
                         .padding(horizontal = 16.dp, vertical = 14.dp),
                     verticalAlignment = Alignment.CenterVertically,
@@ -263,7 +261,9 @@ fun BackgroundRecordCard(record: BackgroundRecord, navController: NavController)
     }
 }
 
-// Componente TagChip (sin cambios)
+// ===========================================================
+// COMPONENTE: TAG CHIP
+// ===========================================================
 @Composable
 fun TagChip(text: String, contentColor: Color, containerColor: Color) {
     Surface(
