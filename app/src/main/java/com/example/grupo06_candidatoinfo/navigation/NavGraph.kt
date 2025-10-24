@@ -9,10 +9,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.grupo06_candidatoinfo.ui.screens.compare.CompareScreen
-import com.example.grupo06_candidatoinfo.ui.screens.detail.DetailScreen
 import com.example.grupo06_candidatoinfo.ui.screens.home.HomeScreen
-// --- IMPORTACIÓN AÑADIDA ---
+// --- IMPORTACIONES DE PANTALLAS ---
 import com.example.grupo06_candidatoinfo.ui.screens.profile.ProfileScreen
+import com.example.grupo06_candidatoinfo.ui.screens.detail.InvestigationDetail
+import com.example.grupo06_candidatoinfo.ui.screens.detail.NewsDetail
+import com.example.grupo06_candidatoinfo.ui.screens.detail.PlanDetail
 
 /**
  * Sealed class que define las rutas de navegación de la aplicación
@@ -22,24 +24,30 @@ sealed class Screen(val route: String) {
     object Profile: Screen("profile/{candidateId}") {
         fun createRoute(candidateId: String) = "profile/$candidateId"
     }
-    object Detail: Screen("detail/{documentId}") {
-        fun createRoute(documentId: String) = "detail/$documentId"
+    // Rutas de detalle
+    object PlanDetail: Screen("plan_detail/{documentId}") {
+        fun createRoute(documentId: String) = "plan_detail/$documentId"
+    }
+    object NewsDetail: Screen("news_detail/{documentId}") {
+        fun createRoute(documentId: String) = "news_detail/$documentId"
+    }
+    object InvestigationDetail: Screen("investigation_detail/{documentId}") {
+        fun createRoute(documentId: String) = "investigation_detail/$documentId"
     }
 
-    // --- RUTA ACTUALIZADA para argumento opcional ---
+    // --- RUTA COMPARE ---
     object Compare : Screen("compare?ids={ids}") {
-        // Función para crear la ruta, pasando una cadena de IDs (e.g., "1,2,3")
         fun createRoute(ids: String) = "compare?ids=$ids"
     }
 }
 
 /**
  * Configura el grafo de navegación de la aplicación
+ * NOMBRE CORREGIDO: Usando 'NavGraph' en lugar de 'SetupNavGraph'
  */
-
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun SetupNavGraph(navController: NavHostController) {
+fun NavGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
         startDestination = Screen.Home.route
@@ -66,38 +74,65 @@ fun SetupNavGraph(navController: NavHostController) {
             )
         }
 
-        // Pantalla de detalle de documento/denuncia
+        // --- PANTALLAS DE DETALLE ESPECÍFICAS ---
+
+        // 1. Detalle del Plan de Gobierno
         composable(
-            route = Screen.Detail.route,
+            route = Screen.PlanDetail.route,
             arguments = listOf(
-                navArgument("documentId") {
-                    type = NavType.StringType
-                }
+                navArgument("documentId") { type = NavType.StringType }
             )
         ) { backStackEntry ->
             val documentId = backStackEntry.arguments?.getString("documentId")
-            DetailScreen(
+            PlanDetail(
                 navController = navController,
                 documentId = documentId
             )
         }
 
-        // --- PANTALLA DE COMPARACIÓN (ACTUALIZADA con argumento opcional 'ids') ---
+        // 2. Detalle de Noticias y Actividades
         composable(
-            route = Screen.Compare.route, // Usamos la ruta con el query parameter
+            route = Screen.NewsDetail.route,
             arguments = listOf(
-                navArgument("ids") { // Definimos el argumento opcional
+                navArgument("documentId") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val documentId = backStackEntry.arguments?.getString("documentId")
+            NewsDetail(
+                navController = navController,
+                documentId = documentId
+            )
+        }
+
+        // 3. Detalle de Investigación por Lavado de Activos
+        composable(
+            route = Screen.InvestigationDetail.route,
+            arguments = listOf(
+                navArgument("documentId") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val documentId = backStackEntry.arguments?.getString("documentId")
+            InvestigationDetail(
+                navController = navController,
+                documentId = documentId
+            )
+        }
+
+        // Pantalla de Comparación
+        composable(
+            route = Screen.Compare.route,
+            arguments = listOf(
+                navArgument("ids") {
                     type = NavType.StringType
-                    nullable = true // Importante: indica que el parámetro es opcional
-                    defaultValue = null // Establece un valor por defecto
+                    nullable = true
+                    defaultValue = null
                 }
             )
         ) { backStackEntry ->
-            // Extrae la cadena de IDs y pásala a la pantalla. Será null si no se proporciona.
             val candidateIds = backStackEntry.arguments?.getString("ids")
             CompareScreen(
                 navController = navController,
-                candidateIds = candidateIds // Pasa el string de IDs
+                candidateIds = candidateIds
             )
         }
     }
