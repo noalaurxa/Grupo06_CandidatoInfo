@@ -42,6 +42,7 @@ val BackgroundLight = Color(0xFFF8F9FA)
 val BorderColor = Color(0xFFE5E5E5)
 val AccentColor = Color(0xFF2D2391)
 val SuccessColor = Color(0xFF10B981)
+
 // colores para tab Career
 val CardBackgroundColor = Color(0xFFF9FAFB)
 val TimelineLineColor = ProfileMainPurple.copy(alpha = 0.5f)
@@ -51,4 +52,8 @@ val PrimaryTextColor = Color(0xFF1F2937)
 val SecondaryTextColor = Color(0xFF6B7280)
 val TagBackgroundColor = Color(0xFFE5E7EB)
 val TagTextColor = Color(0xFF4B5563)
+
+//colores de profile
+val mainPurple = Color(0xFF3C3472)
+val lightGrayBackground = Color(0xFFF7F7F7)
 

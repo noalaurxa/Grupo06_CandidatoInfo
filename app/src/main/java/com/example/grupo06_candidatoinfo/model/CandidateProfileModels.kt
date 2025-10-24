@@ -1,16 +1,14 @@
 package com.example.grupo06_candidatoinfo.model
 
-// GENERAL
+// ==================== MODELOS DE PERFIL (CANDIDATE PROFILE) ====================
+
 data class CandidateProfile(
     val basicInfo: BasicInfo,
     val assetDeclaration: AssetDeclaration,
     val governmentPlan: GovernmentPlan,
     val academicFormation: AcademicFormation,
-    // FUSIÓN: Hacemos nullable (remoto) y mantenemos el nombre (HEAD)
     val careerHistory: CareerHistory?,
-    // FUSIÓN: Usamos el modelo renombrado (BackgroundReport)
     val backgroundReport: BackgroundReport?,
-    // FUSIÓN: Mantenemos el campo de Actualidad (CurrentEvents) que faltaba en el remoto
     val currentEvents: CurrentEvents?
 )
 
@@ -54,21 +52,20 @@ data class AcademicDegree(
     val institutionAndPeriod: String
 )
 
-// TRAYECTORIA
+// ==================== MODELOS DE TRAYECTORIA ====================
+
 data class CareerHistory(
     val items: List<CareerItem>
 )
 
-// --- MODELO DE TRAYECTORIA CORREGIDO ---
-// Se añade 'description' para que coincida con la vista.
 data class CareerItem(
     val position: String,
     val period: String,
     val description: String
 )
 
+// ==================== MODELOS PARA ANTECEDENTES ====================
 
-// --- MODELOS PARA ANTECEDENTES (ACTUALIZADO) ---
 data class BackgroundReport(
     val records: List<BackgroundRecord>
 )
@@ -78,13 +75,14 @@ data class BackgroundRecord(
     val entity: String,
     val date: String,
     val description: String,
-    val statusTags: List<String>, // Tags relacionados con el estado del proceso (Activo, Sentenciado, Archivado, Pendiente)
-    val classificationTags: List<String>, // Tags relacionados con la naturaleza del caso (Corrupción, Civil, Administrativo, Plagio)
+    val statusTags: List<String>,
+    val classificationTags: List<String>,
     val documentId: String
 )
 
 
-// ACTUALIDAD
+// ==================== MODELOS PARA ACTUALIDAD Y DETALLE ====================
+
 data class CurrentEvents(
     val items: List<CurrentEventItem>
 )
@@ -97,5 +95,20 @@ data class CurrentEventItem(
     val date: String,
     val source: String,
     val relatedTo: String,
-    val isVerified: Boolean
+    val isVerified: Boolean,
+    val documentId: String // ¡Crucial para la navegación!
+)
+
+
+// --- MODELO PARA DETALLE DE NOTICIAS ---
+data class NewsDetail(
+    val title: String,
+    val summary: String, // Texto introductorio bajo el título
+    val date: String,
+    val source: String,
+    val relatedCandidateName: String,
+    val fullDescription: String, // El cuerpo del texto principal
+    val isVerified: Boolean,
+    val imageUrl: String, // Para la imagen en el detalle
+    val sourceUrl: String? // URL de la fuente original
 )

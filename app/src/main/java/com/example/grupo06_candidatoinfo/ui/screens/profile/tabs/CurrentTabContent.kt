@@ -21,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -109,8 +108,7 @@ fun CurrentTabContent(
                         isFirst = isFirst,
                         isLast = isLast,
                         item = item,
-                        onNewsClick = { onNewsClick(item.id.toString()) }
-                    )
+                        onNewsClick = { onNewsClick(item.documentId) }                    )
                 }
             }
         }

@@ -3,20 +3,15 @@ package com.example.grupo06_candidatoinfo.ui.screens.profile
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -33,11 +28,8 @@ import com.example.grupo06_candidatoinfo.ui.screens.profile.tabs.CurrentTabConte
 
 
 // Colores Importados
-private val mainPurple = Color(0xFF3C3472)
-private val lightPurpleBackground = Color(0xFFECEBFA)
-private val lighterPurpleCard = Color(0xFF5D559C)
-private val lightGrayBackground = Color(0xFFF7F7F7)
-
+import com.example.grupo06_candidatoinfo.ui.theme.lightGrayBackground
+import com.example.grupo06_candidatoinfo.ui.theme.mainPurple
 
 // ==================== SCREEN PRINCIPAL ====================
 @RequiresApi(Build.VERSION_CODES.O)
@@ -54,7 +46,9 @@ fun ProfileScreen(
         }
     }
 
+    // === Mantenido: Usamos profileDetails como variable local ===
     val profileDetails = candidate?.profileDetails
+
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val tabs = listOf("General", "Trayectoria", "Antecedentes", "Actualidad")
 
@@ -142,7 +136,7 @@ fun ProfileScreen(
                     }
                 }
 
-                // Contenido dinámico según el Tab (Se utilizan los modelos de la rama remota)
+                // Contenido dinámico según el Tab (FINAL y CORREGIDO)
                 item {
                     Box(
                         modifier = Modifier
@@ -150,10 +144,10 @@ fun ProfileScreen(
                             .padding(horizontal = 16.dp, vertical = 12.dp)
                     ) {
                         when (selectedTabIndex) {
-                            0 -> { // General
+                            0 -> { // General (Plan de Gobierno)
                                 if (profileDetails != null) {
                                     GeneralTabContent(
-                                        navController = navController,
+                                        navController = navController, // <--- CORRECCIÓN CLAVE: Pasando navController
                                         profile = profileDetails
                                     )
                                 } else {
@@ -167,18 +161,22 @@ fun ProfileScreen(
                                     PlaceholderTabContent(title = "Trayectoria no disponible")
                                 }
                             }
-                            2 -> { // Antecedentes -
+                            2 -> { // Antecedentes (Investigación)
                                 if (profileDetails?.backgroundReport != null) {
-                                    BackgroundTabContent(backgroundReport = profileDetails.backgroundReport)
+                                    BackgroundTabContent(
+                                        navController = navController, // <--- CORRECCIÓN CLAVE: Pasando navController
+                                        backgroundReport = profileDetails.backgroundReport
+                                    )
                                 } else {
                                     PlaceholderTabContent(title = "Antecedentes no disponibles")
                                 }
                             }
-                            3 -> { // Actualidad
+                            3 -> { // Actualidad (Noticias)
                                 CurrentTabContent(
                                     currentEvents = profileDetails?.currentEvents,
                                     onNewsClick = { documentId ->
-                                        navController.navigate(Screen.Detail.createRoute(documentId))
+                                        // Navegación al Detalle de Noticias
+                                        navController.navigate(Screen.NewsDetail.createRoute(documentId))
                                     }
                                 )
                             }

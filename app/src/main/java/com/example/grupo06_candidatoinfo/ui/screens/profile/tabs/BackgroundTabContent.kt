@@ -12,7 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Gavel
-import androidx.compose.material.ripple.rememberRipple // La importación de rememberRipple está aquí
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -25,8 +25,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController // <--- ¡Importación AÑADIDA!
 import com.example.grupo06_candidatoinfo.model.BackgroundRecord
 import com.example.grupo06_candidatoinfo.model.BackgroundReport
+import com.example.grupo06_candidatoinfo.navigation.Screen // <--- ¡Importación AÑADIDA para la navegación!
 import com.example.grupo06_candidatoinfo.ui.theme.ProfileLighterPurpleCard
 import com.example.grupo06_candidatoinfo.ui.theme.ProfileMainPurple
 import com.example.grupo06_candidatoinfo.ui.theme.RiskHighColor
@@ -38,15 +40,21 @@ import com.example.grupo06_candidatoinfo.ui.theme.TagSentenciadoColor
 @Composable
 fun getTagColors(tag: String): Pair<Color, Color> {
     return when (tag.lowercase()) {
-        "archivado", "desestimado" -> TagArchivadoColor to Color(0xFFC0392B) // Light background, Dark Red accent
-        "investigación", "activo", "pendiente", "juicio oral" -> TagInvestigacionColor to Color(0xFFD35400) // Light orange background, Dark Orange accent
-        "sentenciado", "inhabilitado", "corrupción", "lavado de activos" -> TagSentenciadoColor to RiskHighColor // Light red background, High Risk Red accent (Usamos estos para alertar más)
-        else -> Color.LightGray to Color.Black // Default para tags como 'Administrativo', 'Civil', etc.
+        "archivado", "desestimado" -> TagArchivadoColor to Color(0xFFC0392B)
+        "investigación", "activo", "pendiente", "juicio oral" -> TagInvestigacionColor to Color(0xFFD35400)
+        "sentenciado", "inhabilitado", "corrupción", "lavado de activos" -> TagSentenciadoColor to RiskHighColor
+        else -> Color.LightGray to Color.Black
     }
 }
 
+// -----------------------------------------------------------
+// FUNCIÓN PRINCIPAL CORREGIDA
+// -----------------------------------------------------------
 @Composable
-fun BackgroundTabContent(backgroundReport: BackgroundReport) {
+fun BackgroundTabContent(
+    navController: NavController, // <--- ARGUMENTO AÑADIDO
+    backgroundReport: BackgroundReport
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -85,15 +93,19 @@ fun BackgroundTabContent(backgroundReport: BackgroundReport) {
                     .heightIn(max = 800.dp)
             ) {
                 items(backgroundReport.records) { record ->
-                    BackgroundRecordCard(record = record)
+                    // Pasamos el navController a cada tarjeta para que pueda navegar
+                    BackgroundRecordCard(record = record, navController = navController)
                 }
             }
         }
     }
 }
 
+// -----------------------------------------------------------
+// CARD DE REGISTRO CORREGIDA
+// -----------------------------------------------------------
 @Composable
-fun BackgroundRecordCard(record: BackgroundRecord) {
+fun BackgroundRecordCard(record: BackgroundRecord, navController: NavController) { // <--- ARGUMENTO AÑADIDO
     val allTags = remember(record) { record.statusTags + record.classificationTags }
 
     val visibleTags = remember(allTags) { allTags.take(2) }
@@ -216,14 +228,18 @@ fun BackgroundRecordCard(record: BackgroundRecord) {
                     color = Color.Gray.copy(alpha = 0.15f)
                 )
 
-                // Botón de "Ver Detalle"
+                // Botón de "Ver Detalle" - ¡ACCIÓN DE NAVEGACIÓN AÑADIDA!
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp)) // Clip the ripple to the card's bottom corners
+                        .clip(RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp))
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
-                            onClick = { /* Acción para ver el detalle */ }
+                            // ACCIÓN DE NAVEGACIÓN AÑADIDA
+                            onClick = {
+                                // Navega a la ruta de Detalle de Investigación
+                                navController.navigate(Screen.InvestigationDetail.createRoute(record.documentId))
+                            }
                         )
                         .padding(horizontal = 16.dp, vertical = 14.dp),
                     verticalAlignment = Alignment.CenterVertically,
@@ -247,7 +263,7 @@ fun BackgroundRecordCard(record: BackgroundRecord) {
     }
 }
 
-// Componente TagChip
+// Componente TagChip (sin cambios)
 @Composable
 fun TagChip(text: String, contentColor: Color, containerColor: Color) {
     Surface(
