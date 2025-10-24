@@ -34,7 +34,8 @@ data class AssetItem(
 data class GovernmentPlan(
     val summary: String,
     val proposals: List<ProposalItem>,
-    val documentId: String
+    val documentId: String,
+    val documentUrl: String?
 )
 
 data class ProposalItem(
@@ -59,6 +60,8 @@ data class CareerHistory(
 )
 
 data class CareerItem(
+
+
     val position: String,
     val period: String,
     val description: String
@@ -79,6 +82,36 @@ data class BackgroundRecord(
     val classificationTags: List<String>,
     val documentId: String
 )
+
+// modelo DETALLE INVESTIGACION
+
+data class InvestigationDetail(
+    val caseTitle: String,
+    val caseEntity: String, // Entidad que investiga (Fiscalía, Congreso, etc.)
+    val caseDate: String, // Fecha de inicio o de mención
+    val status: String, // Estado actual del caso (Activo, Archivado, En Proceso, etc.)
+    val timeline: List<CaseTimelineEvent>,
+    val officialDocuments: List<OfficialDocument>,
+    val involvedParties: List<InvolvedParty>,
+)
+
+/**
+ * Modelo para un evento dentro de la Cronología del Caso.
+ */
+data class CaseTimelineEvent(
+    val date: String,
+    val title: String,
+    val description: String
+)
+
+/**
+ * Modelo para un Documento Oficial relacionado al caso (ej: Carpeta Fiscal).
+ */
+data class OfficialDocument(
+    val title: String,
+    val documentUrl: String?
+)
+
 
 
 // ==================== MODELOS PARA ACTUALIDAD Y DETALLE ====================
@@ -111,4 +144,12 @@ data class NewsDetail(
     val isVerified: Boolean,
     val imageUrl: String, // Para la imagen en el detalle
     val sourceUrl: String? // URL de la fuente original
+)
+
+/**
+ * Modelo para una Parte Involucrada en la investigación.
+ */
+data class InvolvedParty(
+    val name: String,
+    val role: String // Ej: "Investigada Principal", "Co-investigado", "Fiscal a cargo"
 )
