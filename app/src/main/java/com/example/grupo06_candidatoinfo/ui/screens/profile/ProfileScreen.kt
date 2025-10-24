@@ -162,14 +162,13 @@ fun ProfileScreen(
                                 }
                             }
                             2 -> { // Antecedentes (Investigación)
-                                if (profileDetails?.backgroundReport != null) {
-                                    BackgroundTabContent(
-                                        navController = navController, // <--- CORRECCIÓN CLAVE: Pasando navController
-                                        backgroundReport = profileDetails.backgroundReport
-                                    )
-                                } else {
-                                    PlaceholderTabContent(title = "Antecedentes no disponibles")
-                                }
+                                BackgroundTabContent(
+                                    backgroundReport = profileDetails?.backgroundReport,
+                                    onBackgroundClick = { documentId ->
+                                        navController.navigate(Screen.InvestigationDetail.createRoute(documentId))
+                                    }
+                                )
+
                             }
                             3 -> { // Actualidad (Noticias)
                                 CurrentTabContent(
