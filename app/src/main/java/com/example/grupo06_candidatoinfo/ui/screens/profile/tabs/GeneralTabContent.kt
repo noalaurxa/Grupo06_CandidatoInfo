@@ -425,7 +425,8 @@ fun PlanGobiernoContent(navController: NavController, plan: GovernmentPlan) {
 
         // Botón ver documento completo
         OutlinedButton(
-            onClick = { navController.navigate(Screen.Detail.createRoute(plan.documentId)) },
+            // CÓDIGO ACTUALIZADO: Se asume que 'Screen.PlanDetail' es la ruta correcta.
+            onClick = { navController.navigate(Screen.PlanDetail.createRoute(plan.documentId)) },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.outlinedButtonColors(
