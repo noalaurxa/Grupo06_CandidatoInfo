@@ -38,9 +38,10 @@ import com.example.grupo06_candidatoinfo.model.NewsDetail
 import coil.compose.AsyncImage
 
 // Definición de Colores
-private val mainPurple = Color(0xFF3C3472)
-private val lightGrayBackground = Color(0xFFF0F0F5)
-private val verifiedGreen = Color(0xFF4CAF50)
+
+import com.example.grupo06_candidatoinfo.ui.theme.lightGrayBackground
+import com.example.grupo06_candidatoinfo.ui.theme.mainPurple
+import com.example.grupo06_candidatoinfo.ui.theme.verifiedGreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -210,6 +211,7 @@ fun NewsDetail(
         }
     }
 }
+
 
 // ... (NewsHeaderBlock, MetadataGrid, MetadataCard, DescriptionCard, VerificationBanner, ImageFullScreenDialog se mantienen iguales) ...
 
