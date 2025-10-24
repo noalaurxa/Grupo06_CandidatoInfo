@@ -92,9 +92,8 @@ private fun CompareTopBar(
                 navigationIconContentColor = Color.White
             )
         )
-
         if (showTabs) {
-            TabRow(
+            ScrollableTabRow (
                 selectedTabIndex = selectedTab,
                 containerColor = primaryPurple,
                 contentColor = Color.White,
