@@ -14,9 +14,13 @@ import com.example.grupo06_candidatoinfo.model.GovernmentPlan
 import com.example.grupo06_candidatoinfo.model.ProposalItem
 import com.example.grupo06_candidatoinfo.model.BackgroundReport
 import com.example.grupo06_candidatoinfo.model.BackgroundRecord
+import com.example.grupo06_candidatoinfo.model.CaseTimelineEvent
 import com.example.grupo06_candidatoinfo.model.CurrentEvents
 import com.example.grupo06_candidatoinfo.model.CurrentEventItem
+import com.example.grupo06_candidatoinfo.model.InvestigationDetail
+import com.example.grupo06_candidatoinfo.model.InvolvedParty
 import com.example.grupo06_candidatoinfo.model.NewsDetail // Modelo para Detalle de Noticias
+import com.example.grupo06_candidatoinfo.model.OfficialDocument
 
 /**
  * Repositorio que proporciona datos simulados (Mock Data) para la aplicación.
@@ -28,7 +32,6 @@ object MockDataRepository {
     // --------------------------------------------------------------------
     // --- DATOS GENERALES DE ELECCIONES Y CANDIDATOS ---
     // --------------------------------------------------------------------
-
     fun getElectionTypes(): List<ElectionType> {
         return listOf(
             ElectionType(1, "Elecciones Generales 2026")
@@ -54,8 +57,8 @@ object MockDataRepository {
                         )
                     ),
                     governmentPlan = GovernmentPlan(
-                        "Plan de gobierno centrado en la inversión privada, seguridad ciudadana y programas sociales directos.",
-                        listOf(
+                        summary = "Plan de gobierno centrado en la inversión privada, seguridad ciudadana y programas sociales directos.",
+                        proposals = listOf(
                             ProposalItem(
                                 "Economía",
                                 "Fomento de la inversión y reducción de la burocracia para la creación de 2 millones de empleos."
@@ -69,7 +72,8 @@ object MockDataRepository {
                                 "Lanzamiento del 'Plan Cero Hambre' enfocado en la lucha contra la desnutrición infantil."
                             )
                         ),
-                        "plan_gobierno_1"
+                        documentId = "plan_gobierno_1",
+                        documentUrl = "https://declara.jne.gob.pe/ASSETS/PLANGOBIERNO/FILEPLANGOBIERNO/16482.pdf" // <-- ADDED
                     ),
                     academicFormation = AcademicFormation(
                         listOf(
@@ -170,10 +174,15 @@ object MockDataRepository {
                         AssetItem("Bienes Inmuebles", 550000.0, "#388E3C"),
                         AssetItem("Cuentas Bancarias", 550000.0, "#00796B")
                     )),
-                    governmentPlan = GovernmentPlan("Propuesta de reactivación económica y reforma política.", listOf(
-                        ProposalItem("Reforma Judicial", "Creación de una comisión de alto nivel para depurar el sistema de justicia."),
-                        ProposalItem("Economía", "Incentivos fiscales para la inversión en regiones.")
-                    ), "plan_gobierno_2"),
+                    governmentPlan = GovernmentPlan(
+                        summary = "Propuesta de reactivación económica y reforma política.",
+                        proposals = listOf(
+                            ProposalItem("Reforma Judicial", "Creación de una comisión de alto nivel para depurar el sistema de justicia."),
+                            ProposalItem("Economía", "Incentivos fiscales para la inversión en regiones.")
+                        ),
+                        documentId = "plan_gobierno_2",
+                        documentUrl = "https://apisije-e.jne.gob.pe/TRAMITE/ESCRITO/1095/ARCHIVO/FIRMADO/3017.PDF"
+                    ),
                     academicFormation = AcademicFormation(listOf(
                         AcademicDegree("Maestría en Administración de Negocios (MBA)", "Columbia University (2000-2002)"),
                         AcademicDegree("Bachiller en Administración de Empresas", "Boston University (1993-1997)")
@@ -233,10 +242,15 @@ object MockDataRepository {
                         AssetItem("Empresas y Acciones", 3500000.0, "#FFC107"),
                         AssetItem("Inmuebles", 1500000.0, "#FF9800")
                     )),
-                    governmentPlan = GovernmentPlan("Énfasis en la educación y descentralización del país.", listOf(
-                        ProposalItem("Educación", "Inversión del 6% del PBI y creación de universidades tecnológicas en cada región."),
-                        ProposalItem("Descentralización", "Mayor autonomía a gobiernos regionales y locales.")
-                    ), "plan_gobierno_3"),
+                    governmentPlan = GovernmentPlan(
+                        summary = "Énfasis en la educación y descentralización del país.",
+                        proposals = listOf(
+                            ProposalItem("Educación", "Inversión del 6% del PBI y creación de universidades tecnológicas en cada región."),
+                            ProposalItem("Descentralización", "Mayor autonomía a gobiernos regionales y locales.")
+                        ),
+                        documentId = "plan_gobierno_3",
+                        documentUrl = "https://mpesije.jne.gob.pe/docs/1632dad2-4408-461c-b5e0-ba87a0c19027.pdf" // <-- ADDED
+                    ),
                     academicFormation = AcademicFormation(listOf(
                         AcademicDegree("Doctor en Educación", "Universidad Complutense de Madrid"),
                         AcademicDegree("Maestría en Dirección Universitaria", "Universidad de Los Andes")
@@ -286,10 +300,15 @@ object MockDataRepository {
                         AssetItem("Inmuebles", 700000.0, "#03A9F4"),
                         AssetItem("Cuentas Bancarias", 200000.0, "#00BCD4")
                     )),
-                    governmentPlan = GovernmentPlan("Reforma del sistema político y lucha contra la corrupción.", listOf(
-                        ProposalItem("Política", "Reforma constitucional para limitar la inmunidad parlamentaria."),
-                        ProposalItem("Salud", "Fortalecimiento del sistema de salud pública post-pandemia.")
-                    ), "plan_gobierno_5"),
+                    governmentPlan = GovernmentPlan(
+                        summary = "Reforma del sistema político y lucha contra la corrupción.",
+                        proposals = listOf(
+                            ProposalItem("Política", "Reforma constitucional para limitar la inmunidad parlamentaria."),
+                            ProposalItem("Salud", "Fortalecimiento del sistema de salud pública post-pandemia.")
+                        ),
+                        documentId = "plan_gobierno_5",
+                        documentUrl = "https://apisije-e.jne.gob.pe/TRAMITE/ESCRITO/1859/ARCHIVO/FIRMADO/7346.PDF" // <-- ADDED
+                    ),
                     academicFormation = AcademicFormation(listOf(
                         AcademicDegree("Ingeniería Civil", "Universidad Nacional de Ingeniería (UNI) (1981-1986)")
                     ), "sunedu_5"),
@@ -332,7 +351,6 @@ object MockDataRepository {
     // --- FUNCIÓN CRÍTICA PARA EL DETALLE DE NOTICIAS ---
     // --------------------------------------------------------------------
     fun getNewsDetail(documentId: String): NewsDetail? {
-        // Devuelve el detalle de una noticia específica basado en el ID.
         return when (documentId) {
             // Rafael López Aliaga (RLA)
             "doc_noticia_101" -> NewsDetail(
@@ -411,6 +429,191 @@ object MockDataRepository {
             else -> null // Retorna null si el ID no es encontrado
         }
     }
+
+    // --------------------------------------------------------------------
+    // --- FUNCIÓN CRÍTICA PARA EL DETALLE DE INVESTIGACIÓN ---
+    // --------------------------------------------------------------------
+    fun getInvestigationDetail(documentId: String): InvestigationDetail? {
+        return when (documentId) {
+            // --- RLA: doc_antecedente_1_1 (Lavado de Activos) ---
+            "doc_antecedente_1_1" -> InvestigationDetail(
+                caseTitle = "Investigación por Lavado de Activos",
+                caseEntity = "Ministerio Público (Fiscalía de la Nación)",
+                caseDate = "15/05/2021",
+                status = "Activo - En Indagación Preliminar",
+                timeline = listOf(
+                    CaseTimelineEvent(
+                        date = "15/05/2021",
+                        title = "Apertura de Investigación Preliminar",
+                        description = "La Fiscalía inicia indagación en el marco de 'Panama Papers' por presuntos aportes y patrimonio no justificados."
+                    ),
+                    CaseTimelineEvent(
+                        date = "10/08/2022",
+                        title = "Requisitoria Documental",
+                        description = "La fiscalía solicita levantamiento del secreto bancario a sus empresas relacionadas."
+                    ),
+                    CaseTimelineEvent(
+                        date = "01/03/2023",
+                        title = "Declaración del Investigado",
+                        description = "Rafael López Aliaga brinda su testimonio ante el despacho fiscal."
+                    )
+                ),
+                officialDocuments = listOf(
+                    OfficialDocument(title = "Resolución Fiscal N° 001 - Inicio de Diligencias", documentUrl = "https://fiscalia.gob.pe/res-rla-001"),
+                    OfficialDocument(title = "Requerimiento de Información Bancaria", documentUrl = "https://fiscalia.gob.pe/req-info-banco")
+                ),
+                involvedParties = listOf(
+                    InvolvedParty(name = "Rafael López Aliaga", role = "Investigado Principal"),
+                    InvolvedParty(name = "Empresas del Grupo", role = "Terceros Involucrados")
+                ),
+            )
+
+            // --- RLA: doc_antecedente_1_2 (Deudas Tributarias) ---
+            "doc_antecedente_1_2" -> InvestigationDetail(
+                caseTitle = "Proceso Administrativo por Deudas Tributarias",
+                caseEntity = "Superintendencia Nacional de Aduanas y de Administración Tributaria (SUNAT)",
+                caseDate = "01/03/2019",
+                status = "En Proceso de Fraccionamiento y Pago",
+                timeline = listOf(
+                    CaseTimelineEvent(
+                        date = "01/03/2019",
+                        title = "Emisión de Resolución de Cobranza",
+                        description = "SUNAT emite resolución por deuda pendiente de una de las empresas por Impuesto a la Renta."
+                    ),
+                    CaseTimelineEvent(
+                        date = "15/05/2019",
+                        title = "Solicitud de Fraccionamiento",
+                        description = "La defensa legal presenta solicitud de fraccionamiento de la deuda."
+                    ),
+                    CaseTimelineEvent(
+                        date = "01/07/2019",
+                        title = "Aprobación de Fraccionamiento",
+                        description = "SUNAT aprueba el plan de pagos por 36 meses."
+                    )
+                ),
+                officialDocuments = listOf(
+                    OfficialDocument(title = "Resolución de Deuda SUNAT", documentUrl = "https://sunat.gob.pe/res-deuda-rla"),
+                    OfficialDocument(title = "Acuerdo de Fraccionamiento N° 456-2019", documentUrl = "https://sunat.gob.pe/acuerdo-rla")
+                ),
+                involvedParties = listOf(
+                    InvolvedParty(name = "Empresa X de RLA", role = "Deudor Principal")
+                ),
+
+            )
+
+            // --- KF: doc_antecedente_2_1 (Aportes de Campaña / Cócteles) ---
+            "doc_antecedente_2_1" -> InvestigationDetail(
+                caseTitle = "Investigación por Aportes de Campaña (Caso Cócteles)",
+                caseEntity = "Ministerio Público (Fiscalía de la Nación)",
+                caseDate = "20/09/2018",
+                status = "Investigación Formalizada",
+                timeline = listOf(
+                    CaseTimelineEvent(
+                        date = "20/09/2018",
+                        title = "Inicio de la Investigación",
+                        description = "La Fiscalía inicia indagación por presuntos aportes ilícitos a la campaña presidencial de 2011 y 2016."
+                    ),
+                    CaseTimelineEvent(
+                        date = "31/10/2018",
+                        title = "Orden de Prisión Preventiva (Revocada)",
+                        description = "Se dicta orden de prisión preventiva por 36 meses, posteriormente revocada por el TC."
+                    ),
+                    CaseTimelineEvent(
+                        date = "10/06/2021",
+                        title = "Acusación Formal",
+                        description = "La fiscalía presenta acusación formal ante el Poder Judicial por el delito de crimen organizado y lavado de activos."
+                    )
+                ),
+                officialDocuments = listOf(
+                    OfficialDocument(title = "Carpeta Fiscal N° 123-2024", documentUrl = "https://fiscalia.gob.pe/carpeta-123-2024"),
+                    OfficialDocument(title = "Resolución del Tribunal Constitucional (TC)", documentUrl = "https://tc.gob.pe/res-fujimori")
+                ),
+                involvedParties = listOf(
+                    InvolvedParty(name = "Keiko Fujimori", role = "Investigada Principal"),
+                    InvolvedParty(name = "Vicente Silva Checa", role = "Co-investigado"),
+                    InvolvedParty(name = "Mark Vito Villanella", role = "Testigo/Co-investigado")
+                ),
+            )
+
+            // --- CA: doc_antecedente_3_1 (Plagio) ---
+            "doc_antecedente_3_1" -> InvestigationDetail(
+                caseTitle = "Denuncia por Plagio Académico",
+                caseEntity = "Comisión de Ética del Congreso / Universidad",
+                caseDate = "20/01/2016",
+                status = "Cerrado (Sin Sanción)",
+                timeline = listOf(
+                    CaseTimelineEvent(
+                        date = "20/01/2016",
+                        title = "Denuncia Pública",
+                        description = "Medios de comunicación revelan presunto plagio en tesis doctoral obtenida en España."
+                    ),
+                    CaseTimelineEvent(
+                        date = "05/02/2016",
+                        title = "Investigación de Comisión de Ética",
+                        description = "El Congreso inicia una investigación preliminar por la conducta del entonces congresista."
+                    ),
+                    CaseTimelineEvent(
+                        date = "15/03/2016",
+                        title = "Informe de Rectorado",
+                        description = "La universidad emisora del título declara que, tras revisión, no procede la anulación del mismo."
+                    )
+                ),
+                officialDocuments = listOf(
+                    OfficialDocument(title = "Informe Final de Comisión de Ética", documentUrl = "https://congreso.gob.pe/informe-etica-acuña"),
+                    OfficialDocument(title = "Comunicado Oficial de Universidad", documentUrl = "https://universidad.es/comunicado-acuña")
+                ),
+                involvedParties = listOf(
+                    InvolvedParty(name = "César Acuña", role = "Denunciado"),
+                    InvolvedParty(name = "Comisión de Ética", role = "Entidad Investigadora")
+                ),
+
+            )
+
+            // --- MV: doc_antecedente_5_1 (Inhabilitación Política / Vacunagate) ---
+            "doc_antecedente_5_1" -> InvestigationDetail(
+                caseTitle = "Inhabilitación Política (Caso Vacunagate)",
+                caseEntity = "Congreso de la República",
+                caseDate = "16/04/2021",
+                status = "Inhabilitado (10 años)",
+                timeline = listOf(
+                    CaseTimelineEvent(
+                        date = "01/03/2021",
+                        title = "Revelación Pública",
+                        description = "Se revela que el expresidente recibió la vacuna Sinopharm de forma irregular antes del inicio de la campaña nacional."
+                    ),
+                    CaseTimelineEvent(
+                        date = "16/04/2021",
+                        title = "Decisión Final del Congreso",
+                        description = "El pleno vota a favor de la inhabilitación por 10 años para ejercer cargos públicos."
+                    ),
+                    CaseTimelineEvent(
+                        date = "10/10/2025",
+                        title = "Apelación ante el TC",
+                        description = "La defensa legal presenta recurso ante el Tribunal Constitucional buscando revertir la sanción."
+                    )
+                ),
+                officialDocuments = listOf(
+                    OfficialDocument(
+                        title = "Resolución Legislativa del Congreso",
+                        documentUrl = "https://congreso.gob.pe/rl-vizcarra"
+                    ),
+                    OfficialDocument(
+                        title = "Recurso de Agravio Constitucional (TC)",
+                        documentUrl = "https://tc.gob.pe/recurso-vizcarra"
+                    )
+                ),
+                involvedParties = listOf(
+                    InvolvedParty(name = "Martín Vizcarra", role = "Sancionado/Inhabilitado"),
+                    InvolvedParty(name = "Pilar Mazzetti", role = "Ex-Ministra de Salud")
+                ),
+            )
+
+            else -> null
+        }
+    }
+
+
+
 
     // --------------------------------------------------------------------
     // --- FILTROS ---
