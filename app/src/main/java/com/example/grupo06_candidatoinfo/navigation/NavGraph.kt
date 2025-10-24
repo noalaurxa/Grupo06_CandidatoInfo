@@ -14,7 +14,6 @@ import com.example.grupo06_candidatoinfo.ui.screens.home.HomeScreen
 import com.example.grupo06_candidatoinfo.ui.screens.profile.ProfileScreen
 import com.example.grupo06_candidatoinfo.ui.screens.detail.InvestigationDetail
 import com.example.grupo06_candidatoinfo.ui.screens.detail.NewsDetail
-import com.example.grupo06_candidatoinfo.ui.screens.detail.PlanDetail
 
 /**
  * Sealed class que define las rutas de navegación de la aplicación
@@ -23,10 +22,6 @@ sealed class Screen(val route: String) {
     object Home: Screen("home")
     object Profile: Screen("profile/{candidateId}") {
         fun createRoute(candidateId: String) = "profile/$candidateId"
-    }
-    // Rutas de detalle
-    object PlanDetail: Screen("plan_detail/{documentId}") {
-        fun createRoute(documentId: String) = "plan_detail/$documentId"
     }
     object NewsDetail: Screen("news_detail/{documentId}") {
         fun createRoute(documentId: String) = "news_detail/$documentId"
@@ -43,7 +38,6 @@ sealed class Screen(val route: String) {
 
 /**
  * Configura el grafo de navegación de la aplicación
- * NOMBRE CORREGIDO: Usando 'NavGraph' en lugar de 'SetupNavGraph'
  */
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -52,7 +46,6 @@ fun NavGraph(navController: NavHostController) {
         navController = navController,
         startDestination = Screen.Home.route
     ) {
-
         // Pantalla de inicio
         composable(route = Screen.Home.route){
             HomeScreen(navController = navController)
@@ -71,22 +64,6 @@ fun NavGraph(navController: NavHostController) {
             ProfileScreen(
                 navController = navController,
                 candidateId = candidateId
-            )
-        }
-
-        // --- PANTALLAS DE DETALLE ESPECÍFICAS ---
-
-        // 1. Detalle del Plan de Gobierno
-        composable(
-            route = Screen.PlanDetail.route,
-            arguments = listOf(
-                navArgument("documentId") { type = NavType.StringType }
-            )
-        ) { backStackEntry ->
-            val documentId = backStackEntry.arguments?.getString("documentId")
-            PlanDetail(
-                navController = navController,
-                documentId = documentId
             )
         }
 
