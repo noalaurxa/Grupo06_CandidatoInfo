@@ -41,7 +41,9 @@ val TertiaryColor = Color(0xFF757575)
 val BackgroundLight = Color(0xFFF8F9FA)
 val BorderColor = Color(0xFFE5E5E5)
 val AccentColor = Color(0xFF2D2391)
-val SuccessColor = Color(0xFF10B981)
+val SuccessColor = accentGreen
+
+val verifiedGreen = accentGreen
 
 // colores para tab Career
 val CardBackgroundColor = Color(0xFFF9FAFB)
@@ -56,4 +58,11 @@ val TagTextColor = Color(0xFF4B5563)
 //colores de profile
 val mainPurple = Color(0xFF3C3472)
 val lightGrayBackground = Color(0xFFF7F7F7)
+
+//
+val PrimaryPurple1 = Color(0xFF6B4FBB) // Color de marca principal
+val LightPurple1 = Color(0xFFF3F1FF)   // Acento claro
+val AccentPurple1 = Color(0xFF8B7FC7)   // Acento secundario
+val BackgroundGray1 = Color(0xFFF8F9FA) // Color de fondo general
+val DividerGray1 = Color.LightGray.copy(alpha = 0.5f) // Color suave para el divisor
 
