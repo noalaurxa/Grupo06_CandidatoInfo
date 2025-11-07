@@ -98,6 +98,8 @@ data class InvestigationDetail(
 /**
  * Modelo para un evento dentro de la Cronología del Caso.
  */
+
+
 data class CaseTimelineEvent(
     val date: String,
     val title: String,
