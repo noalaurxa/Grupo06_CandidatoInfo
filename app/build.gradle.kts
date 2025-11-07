@@ -91,7 +91,14 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material:material-icons-extended:1.6.0")
 
+// Retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    // Convertidor JSON para Kotlin (Gson o kotlinx.serialization, aquí usaremos Gson)
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
+    // Coroutines para manejo asíncrono
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
 
 }

@@ -27,7 +27,7 @@ import com.example.grupo06_candidatoinfo.model.OfficialDocument
  * Contiene la lógica para obtener la lista de candidatos, tipos de elección
  * y el detalle de noticias/eventos.
  */
-object MockDataRepository {
+object MockDataRepository : CandidateRepository{
 
     // --------------------------------------------------------------------
     // --- DATOS GENERALES DE ELECCIONES Y CANDIDATOS ---
@@ -38,7 +38,7 @@ object MockDataRepository {
         )
     }
 
-    fun getCandidates(): List<Candidate> {
+    override suspend fun getCandidates(): List<Candidate> {
         return listOf(
             // --- CANDIDATO 1: Rafael López Aliaga (MOCK DETALLADO COMPLETO) ---
             Candidate(
@@ -350,7 +350,7 @@ object MockDataRepository {
     // --------------------------------------------------------------------
     // --- FUNCIÓN CRÍTICA PARA EL DETALLE DE NOTICIAS ---
     // --------------------------------------------------------------------
-    fun getNewsDetail(documentId: String): NewsDetail? {
+    override suspend fun getNewsDetail(documentId: String): NewsDetail? {
         return when (documentId) {
             // Rafael López Aliaga (RLA)
             "doc_noticia_101" -> NewsDetail(
@@ -433,7 +433,7 @@ object MockDataRepository {
     // --------------------------------------------------------------------
     // --- FUNCIÓN CRÍTICA PARA EL DETALLE DE INVESTIGACIÓN ---
     // --------------------------------------------------------------------
-    fun getInvestigationDetail(documentId: String): InvestigationDetail? {
+    override suspend fun getInvestigationDetail(documentId: String): InvestigationDetail? {
         return when (documentId) {
             // --- RLA: doc_antecedente_1_1 (Lavado de Activos) ---
             "doc_antecedente_1_1" -> InvestigationDetail(
@@ -619,11 +619,11 @@ object MockDataRepository {
     // --- FILTROS ---
     // --------------------------------------------------------------------
 
-    fun getPositions(): List<String> {
+    override fun getPositions(): List<String> {
         return listOf("Todos", "Presidencia", "Congreso", "Alcaldía", "Gobernador")
     }
 
-    fun getPoliticalParties(): List<String> {
+    override fun getPoliticalParties(): List<String> {
         return listOf(
             "Todos",
             "Renovación Popular",

@@ -1,5 +1,7 @@
 package com.example.grupo06_candidatoinfo.model
 
+import com.google.gson.annotations.SerializedName
+
 // ==================== MODELOS DE PERFIL (CANDIDATE PROFILE) ====================
 
 data class CandidateProfile(
@@ -49,7 +51,9 @@ data class AcademicFormation(
 )
 
 data class AcademicDegree(
+    @SerializedName("nombre")
     val title: String,
+    @SerializedName("institucion_periodo")
     val institutionAndPeriod: String
 )
 
@@ -61,9 +65,11 @@ data class CareerHistory(
 
 data class CareerItem(
 
-
+    @SerializedName("cargo")
     val position: String,
+    @SerializedName("periodo")
     val period: String,
+    @SerializedName("descripcion")
     val description: String
 )
 
@@ -74,12 +80,17 @@ data class BackgroundReport(
 )
 
 data class BackgroundRecord(
+    @SerializedName("titulo")
     val title: String,
+    @SerializedName("entidad")
     val entity: String,
+    @SerializedName("fecha")
     val date: String,
+    @SerializedName("descripcion")
     val description: String,
     val statusTags: List<String>,
     val classificationTags: List<String>,
+    @SerializedName("document_id")
     val documentId: String
 )
 
