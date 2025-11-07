@@ -2,6 +2,12 @@
 
 package com.example.grupo06_candidatoinfo.ui.screens.home
 
+// --- AÑADE ESTAS IMPORTACIONES ---
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import com.example.grupo06_candidatoinfo.R
+// ---
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -19,7 +25,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -44,6 +49,11 @@ fun HomeScreen(navController: NavController) {
     val electionTypes = remember { MockDataRepository.getElectionTypes() }
     var selectedElection by remember { mutableStateOf(electionTypes.first().name) }
 
+    // --- ESTADO PARA EL MENÚ DE ELECCIÓN ---
+    var electionMenuExpanded by remember { mutableStateOf(false) }
+    val electionTypeOptions = remember { electionTypes.map { it.name } }
+    // ---
+
     var selectedCandidates by remember { mutableStateOf<Set<Int>>(emptySet()) }
     val selectedCount = selectedCandidates.size
 
@@ -63,57 +73,99 @@ fun HomeScreen(navController: NavController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            Color(0xFF5B4B8A),
-                            Color(0xFF3C3472)
-                        )
-                    )
-                )
+                // --- FONDO GRIS OSCURO ---
+                .background(color = Color(0xFF4A4A4A))
         ) {
             // Header
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(
-                        brush = Brush.horizontalGradient(
-                            colors = listOf(Color(0xFF5B4B8A), Color(0xFF3C3472))
-                        )
-                    )
+                    // --- USA EL FONDO GRIS DEL PADRE ---
                     .padding(horizontal = 20.dp, vertical = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "CandidatoInfo",
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = Color.White,
-                    fontWeight = FontWeight.ExtraBold,
-                    fontSize = 32.sp
+                // --- LOGO HORIZONTAL ---
+                Image(
+                    painter = painterResource(id = R.drawable.logo_enc),
+                    contentDescription = "Voto Informado Logo",
+                    modifier = Modifier
+                        .height(90.dp)
+                        .padding(top = 15.dp),
                 )
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(15.dp))
 
-                // Selector de elección
-                Surface(
-                    color = Color.White,
-                    shape = RoundedCornerShape(16.dp),
-                    shadowElevation = 8.dp,
+                // --- INICIO SELECTOR DE ELECCIÓN INTERACTIVO ---
+                ExposedDropdownMenuBox(
+                    expanded = electionMenuExpanded,
+                    onExpandedChange = { electionMenuExpanded = !it },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp)
+                    // El "botón" blanco
+                    Surface(
+                        color = Color.White,
+                        shape = RoundedCornerShape(16.dp),
+                        shadowElevation = 8.dp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .menuAnchor()
+                            .clickable { electionMenuExpanded = true }
                     ) {
-                        Text(
-                            text = selectedElection,
-                            fontSize = 18.sp,
-                            color = Color(0xFF3C3472),
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center
-                        )
+                        Column(
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = selectedElection,
+                                    fontSize = 18.sp,
+                                    color = Color(0xFF3C3472),
+                                    fontWeight = FontWeight.Bold,
+                                    textAlign = TextAlign.Center
+                                )
+                                Icon(
+                                    imageVector = Icons.Default.ArrowDropDown,
+                                    contentDescription = "Cambiar elección",
+                                    tint = Color(0xFF3C3472),
+                                    modifier = Modifier.padding(start = 8.dp)
+                                )
+                            }
+                        }
+                    }
+
+                    // El menú desplegable
+                    ExposedDropdownMenu(
+                        expanded = electionMenuExpanded,
+                        onDismissRequest = { electionMenuExpanded = false },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color(0xFFF6F3FA)) // Fondo lila
+                            .clip(RoundedCornerShape(12.dp))
+                    ) {
+                        electionTypeOptions.forEach { option ->
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        option,
+                                        fontWeight = if (option == selectedElection) FontWeight.Bold else FontWeight.Normal,
+                                        color = if (option == selectedElection) Color(0xFF3C3472) else Color(0xFF333333),
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                },
+                                onClick = {
+                                    selectedElection = option
+                                    electionMenuExpanded = false
+                                },
+                                modifier = Modifier.fillMaxWidth(),
+                                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 14.dp)
+                            )
+                        }
                     }
                 }
+                // --- FIN SELECTOR DE ELECCIÓN ---
             }
 
             // Main Content
@@ -166,7 +218,7 @@ fun HomeScreen(navController: NavController) {
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             Box(modifier = Modifier.weight(1f)) {
-                                DropdownSelector(
+                                DropdownSelector( // <-- ESTE YA ESTÁ ACTUALIZADO
                                     label = "Cargo",
                                     value = selectedPosition,
                                     options = positions,
@@ -175,7 +227,7 @@ fun HomeScreen(navController: NavController) {
                             }
 
                             Box(modifier = Modifier.weight(1f)) {
-                                DropdownSelector(
+                                DropdownSelector( // <-- ESTE YA ESTÁ ACTUALIZADO
                                     label = "Partido",
                                     value = selectedParty,
                                     options = parties,
@@ -272,6 +324,7 @@ fun HomeScreen(navController: NavController) {
     }
 }
 
+// --- FUNCIÓN DropdownSelector ACTUALIZADA ---
 @Composable
 fun DropdownSelector(
     label: String,
@@ -280,6 +333,11 @@ fun DropdownSelector(
     onValueChange: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
+
+    // Colores del diseño
+    val VotoPurple = Color(0xFF3C3472)
+    val VotoMenuBg = Color(0xFFF6F3FA) // Fondo lila
+    val VotoTextDark = Color(0xFF333333)
 
     ExposedDropdownMenuBox(
         expanded = expanded,
@@ -294,19 +352,20 @@ fun DropdownSelector(
                 .menuAnchor(),
             textStyle = LocalTextStyle.current.copy(
                 fontSize = 14.sp,
-                fontWeight = if (value != "Todos") FontWeight.SemiBold else FontWeight.Normal
+                fontWeight = if (value != "Todos") FontWeight.SemiBold else FontWeight.Normal,
+                color = VotoTextDark // Texto oscuro
             ),
             trailingIcon = {
                 Icon(
                     imageVector = Icons.Default.ArrowDropDown,
                     contentDescription = null,
-                    tint = Color(0xFF3C3472),
+                    tint = VotoPurple,
                     modifier = Modifier.size(20.dp)
                 )
             },
             colors = OutlinedTextFieldDefaults.colors(
-                unfocusedBorderColor = Color(0xFFE0E0E0),
-                focusedBorderColor = Color(0xFF3C3472),
+                unfocusedBorderColor = VotoPurple, // Borde púrpura
+                focusedBorderColor = VotoPurple,
                 unfocusedContainerColor = Color.White,
                 focusedContainerColor = Color.White
             ),
@@ -316,7 +375,10 @@ fun DropdownSelector(
 
         ExposedDropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false },
+            modifier = Modifier
+                .background(VotoMenuBg) // Fondo lila
+                .clip(RoundedCornerShape(12.dp))
         ) {
             options.forEach { option ->
                 DropdownMenuItem(
@@ -324,18 +386,20 @@ fun DropdownSelector(
                         Text(
                             option,
                             fontWeight = if (option == value) FontWeight.Bold else FontWeight.Normal,
-                            color = if (option == value) Color(0xFF3C3472) else Color.Black
+                            color = if (option == value) VotoPurple else VotoTextDark
                         )
                     },
                     onClick = {
                         onValueChange(option)
                         expanded = false
-                    }
+                    },
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp) // Más padding
                 )
             }
         }
     }
 }
+// --- FIN FUNCIÓN ACTUALIZADA ---
 
 @Composable
 fun CandidateCard(

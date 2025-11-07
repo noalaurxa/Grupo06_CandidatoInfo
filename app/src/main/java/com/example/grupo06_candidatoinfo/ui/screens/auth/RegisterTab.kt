@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.example.grupo06_candidatoinfo.ui.screens.auth
 
 import androidx.compose.animation.AnimatedContent
@@ -16,6 +18,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+// Importamos el ícono de flecha "auto-mirrored" para que funcione bien
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -34,6 +38,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.grupo06_candidatoinfo.navigation.Screen
+
+// Definiciones de color para reutilizar (Paleta Púrpura)
+private val VotoPurple = Color(0xFF4F2D8F)
+private val VotoPurpleLight = Color(0xFFDCD1F3) // Color para pasos inactivos
+private val VotoGrayText = Color(0xFF8E8E93)
+private val VotoDarkText = Color(0xFF2C2C54)
+private val VotoBorderGray = Color(0xFFE0E0E0)
+private val VotoErrorRed = Color(0xFFD32F2F)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -80,29 +92,29 @@ fun RegisterStep1_DniInput(viewModel: AuthViewModel, state: RegistroState) {
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 4.dp),
-            color = Color(0xFF2C2C54)
+            color = VotoDarkText
         )
         Text(
             text = "Lo usaremos para precargar tus datos",
             style = MaterialTheme.typography.bodyMedium,
-            color = Color(0xFF8E8E93),
+            color = VotoGrayText,
             modifier = Modifier.padding(bottom = 24.dp)
         )
 
         OutlinedTextField(
             value = state.dni,
             onValueChange = { viewModel.onDniChange(it) },
-            label = { Text("DNI", color = Color(0xFF8E8E93)) },
+            label = { Text("DNI", color = VotoGrayText) },
             placeholder = { Text("Ingresa tu DNI", color = Color(0xFFB0B0B0)) },
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             singleLine = true,
             shape = RoundedCornerShape(8.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFF3F51B5),
-                unfocusedBorderColor = Color(0xFFE0E0E0),
-                focusedLabelColor = Color(0xFF3F51B5),
-                cursorColor = Color(0xFF3F51B5)
+                focusedBorderColor = VotoPurple,
+                unfocusedBorderColor = VotoBorderGray,
+                focusedLabelColor = VotoPurple,
+                cursorColor = VotoPurple
             )
         )
 
@@ -117,15 +129,15 @@ fun RegisterStep1_DniInput(viewModel: AuthViewModel, state: RegistroState) {
                 onCheckedChange = { viewModel.onTermsAcceptedChange(it) },
                 modifier = Modifier.padding(end = 8.dp),
                 colors = CheckboxDefaults.colors(
-                    checkedColor = Color(0xFF3F51B5),
-                    uncheckedColor = Color(0xFF8E8E93)
+                    checkedColor = VotoPurple,
+                    uncheckedColor = VotoGrayText
                 )
             )
             Text(
                 text = "He leído y acepto los Términos y Condiciones.",
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.padding(top = 12.dp),
-                color = Color(0xFF2C2C54)
+                color = VotoDarkText
             )
         }
 
@@ -133,7 +145,7 @@ fun RegisterStep1_DniInput(viewModel: AuthViewModel, state: RegistroState) {
             Spacer(Modifier.height(8.dp))
             Text(
                 text = state.error,
-                color = Color(0xFFD32F2F),
+                color = VotoErrorRed,
                 style = MaterialTheme.typography.bodySmall
             )
         }
@@ -148,8 +160,8 @@ fun RegisterStep1_DniInput(viewModel: AuthViewModel, state: RegistroState) {
             enabled = !state.isLoading,
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF3F51B5),
-                disabledContainerColor = Color(0xFF9FA8DA)
+                containerColor = VotoPurple,
+                disabledContainerColor = VotoPurpleLight
             )
         ) {
             if (state.isLoading) {
@@ -180,17 +192,31 @@ fun RegisterStep2_ProfileComplete(viewModel: AuthViewModel, state: RegistroState
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
     ) {
-        Text(
-            text = "Ya te encontramos!",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 4.dp),
-            color = Color(0xFF2C2C54)
-        )
+        // --- INICIO DE LA ACTUALIZACIÓN (Botón Volver + Título) ---
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(bottom = 4.dp)
+        ) {
+            IconButton(onClick = { viewModel.goToPreviousStep() }) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Volver",
+                    tint = VotoPurple
+                )
+            }
+            Text(
+                text = "Ya te encontramos!",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                color = VotoDarkText
+            )
+        }
+        // --- FIN DE LA ACTUALIZACIÓN ---
+
         Text(
             text = "Estos son tus datos. Completa el resto para crear tu perfil.",
             style = MaterialTheme.typography.bodyMedium,
-            color = Color(0xFF8E8E93),
+            color = VotoGrayText,
             modifier = Modifier.padding(bottom = 24.dp)
         )
 
@@ -207,16 +233,16 @@ fun RegisterStep2_ProfileComplete(viewModel: AuthViewModel, state: RegistroState
         OutlinedTextField(
             value = state.email,
             onValueChange = { viewModel.onEmailChange(it) },
-            label = { Text("Correo Electrónico", color = Color(0xFF8E8E93)) },
+            label = { Text("Correo Electrónico", color = VotoGrayText) },
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             singleLine = true,
             shape = RoundedCornerShape(8.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFF3F51B5),
-                unfocusedBorderColor = Color(0xFFE0E0E0),
-                focusedLabelColor = Color(0xFF3F51B5),
-                cursorColor = Color(0xFF3F51B5)
+                focusedBorderColor = VotoPurple,
+                unfocusedBorderColor = VotoBorderGray,
+                focusedLabelColor = VotoPurple,
+                cursorColor = VotoPurple
             )
         )
 
@@ -225,7 +251,7 @@ fun RegisterStep2_ProfileComplete(viewModel: AuthViewModel, state: RegistroState
         OutlinedTextField(
             value = state.password,
             onValueChange = { viewModel.onPasswordChange(it) },
-            label = { Text("Contraseña", color = Color(0xFF8E8E93)) },
+            label = { Text("Contraseña", color = VotoGrayText) },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -233,15 +259,15 @@ fun RegisterStep2_ProfileComplete(viewModel: AuthViewModel, state: RegistroState
             trailingIcon = {
                 val image = if (passwordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                    Icon(imageVector = image, null, tint = Color(0xFF8E8E93))
+                    Icon(imageVector = image, null, tint = VotoGrayText)
                 }
             },
             shape = RoundedCornerShape(8.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFF3F51B5),
-                unfocusedBorderColor = Color(0xFFE0E0E0),
-                focusedLabelColor = Color(0xFF3F51B5),
-                cursorColor = Color(0xFF3F51B5)
+                focusedBorderColor = VotoPurple,
+                unfocusedBorderColor = VotoBorderGray,
+                focusedLabelColor = VotoPurple,
+                cursorColor = VotoPurple
             )
         )
 
@@ -250,7 +276,7 @@ fun RegisterStep2_ProfileComplete(viewModel: AuthViewModel, state: RegistroState
         OutlinedTextField(
             value = state.confirmPassword,
             onValueChange = { viewModel.onConfirmPasswordChange(it) },
-            label = { Text("Confirmar contraseña", color = Color(0xFF8E8E93)) },
+            label = { Text("Confirmar contraseña", color = VotoGrayText) },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -258,15 +284,15 @@ fun RegisterStep2_ProfileComplete(viewModel: AuthViewModel, state: RegistroState
             trailingIcon = {
                 val image = if (confirmPasswordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
                 IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
-                    Icon(imageVector = image, null, tint = Color(0xFF8E8E93))
+                    Icon(imageVector = image, null, tint = VotoGrayText)
                 }
             },
             shape = RoundedCornerShape(8.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFF3F51B5),
-                unfocusedBorderColor = Color(0xFFE0E0E0),
-                focusedLabelColor = Color(0xFF3F51B5),
-                cursorColor = Color(0xFF3F51B5)
+                focusedBorderColor = VotoPurple,
+                unfocusedBorderColor = VotoBorderGray,
+                focusedLabelColor = VotoPurple,
+                cursorColor = VotoPurple
             )
         )
 
@@ -274,7 +300,7 @@ fun RegisterStep2_ProfileComplete(viewModel: AuthViewModel, state: RegistroState
             Spacer(Modifier.height(8.dp))
             Text(
                 text = state.error,
-                color = Color(0xFFD32F2F),
+                color = VotoErrorRed,
                 style = MaterialTheme.typography.bodySmall
             )
         }
@@ -288,7 +314,7 @@ fun RegisterStep2_ProfileComplete(viewModel: AuthViewModel, state: RegistroState
                 .height(56.dp),
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF3F51B5)
+                containerColor = VotoPurple
             )
         ) {
             Text(
@@ -304,17 +330,32 @@ fun RegisterStep2_ProfileComplete(viewModel: AuthViewModel, state: RegistroState
 @Composable
 fun RegisterStep3_EmailVerify(viewModel: AuthViewModel, state: RegistroState, navController: NavHostController) {
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.Start) {
-        Text(
-            text = "Verifica tu correo",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 4.dp),
-            color = Color(0xFF2C2C54)
-        )
+
+        // --- INICIO DE LA ACTUALIZACIÓN (Botón Volver + Título) ---
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(bottom = 4.dp)
+        ) {
+            IconButton(onClick = { viewModel.goToPreviousStep() }) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Volver",
+                    tint = VotoPurple
+                )
+            }
+            Text(
+                text = "Verifica tu correo",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                color = VotoDarkText
+            )
+        }
+        // --- FIN DE LA ACTUALIZACIÓN ---
+
         Text(
             text = "Te enviamos un código de 6 dígitos",
             style = MaterialTheme.typography.bodyMedium,
-            color = Color(0xFF8E8E93),
+            color = VotoGrayText,
             modifier = Modifier.padding(bottom = 24.dp)
         )
 
@@ -328,7 +369,7 @@ fun RegisterStep3_EmailVerify(viewModel: AuthViewModel, state: RegistroState, na
             Spacer(Modifier.height(8.dp))
             Text(
                 text = state.error,
-                color = Color(0xFFD32F2F),
+                color = VotoErrorRed,
                 style = MaterialTheme.typography.bodySmall
             )
         }
@@ -347,7 +388,7 @@ fun RegisterStep3_EmailVerify(viewModel: AuthViewModel, state: RegistroState, na
                 .height(56.dp),
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF3F51B5)
+                containerColor = VotoPurple
             )
         ) {
             Text(
@@ -372,11 +413,12 @@ fun OtpInputField(value: String, onValueChange: (String) -> Unit) {
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .aspectRatio(1f)
+                    .aspectRatio(1f) // Hace que la caja sea cuadrada
                     .padding(horizontal = 4.dp)
                     .border(
                         width = 2.dp,
-                        color = if (char.isNotEmpty()) Color(0xFF3F51B5) else Color.LightGray,
+                        // Color púrpura si está activo/lleno, gris si no
+                        color = if (char.isNotEmpty()) VotoPurple else VotoBorderGray,
                         shape = RoundedCornerShape(8.dp)
                     )
                     .clip(RoundedCornerShape(8.dp)),
@@ -386,7 +428,7 @@ fun OtpInputField(value: String, onValueChange: (String) -> Unit) {
                     text = char,
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF3F51B5)
+                    color = VotoPurple // Color del texto
                 )
             }
         }
@@ -416,9 +458,9 @@ fun StepProgressIndicator(currentStep: Int, totalSteps: Int) {
             val isPast = i < currentStep
             val isCurrent = i == currentStep
             val color = when {
-                isCurrent -> Color(0xFF3F51B5)
-                isPast -> Color(0xFF3F51B5)
-                else -> Color.LightGray
+                isCurrent -> VotoPurple // Púrpura activo
+                isPast -> VotoPurple // Púrpura pasado
+                else -> VotoPurpleLight // Lila inactivo
             }
             val size = if (isCurrent) 12.dp else 8.dp
 
@@ -430,7 +472,7 @@ fun StepProgressIndicator(currentStep: Int, totalSteps: Int) {
             if (i < totalSteps - 1) {
                 Divider(
                     modifier = Modifier.width(32.dp),
-                    color = if (isPast) Color(0xFF3F51B5) else Color.LightGray,
+                    color = if (isPast) VotoPurple else VotoPurpleLight, // Color de la línea
                     thickness = 2.dp
                 )
             }
@@ -443,18 +485,18 @@ fun ReadOnlyTextField(label: String, value: String) {
     OutlinedTextField(
         value = value,
         onValueChange = {},
-        label = { Text(label, color = Color(0xFF8E8E93)) },
+        label = { Text(label, color = VotoGrayText) },
         readOnly = true,
         modifier = Modifier.fillMaxWidth(),
         trailingIcon = {
-            Icon(Icons.Filled.Lock, contentDescription = "Campo bloqueado", tint = Color(0xFF8E8E93))
+            Icon(Icons.Filled.Lock, contentDescription = "Campo bloqueado", tint = VotoGrayText)
         },
         colors = TextFieldDefaults.colors(
-            disabledTextColor = Color(0xFF2C2C54),
-            disabledIndicatorColor = Color(0xFFE0E0E0),
-            disabledLabelColor = Color(0xFF8E8E93),
-            disabledTrailingIconColor = Color(0xFF8E8E93),
-            disabledContainerColor = Color(0xFFF5F5F5)
+            disabledTextColor = VotoDarkText,
+            disabledIndicatorColor = VotoBorderGray,
+            disabledLabelColor = VotoGrayText,
+            disabledTrailingIconColor = VotoGrayText,
+            disabledContainerColor = Color.White // Fondo blanco como en la imagen
         ),
         enabled = false,
         shape = RoundedCornerShape(8.dp)

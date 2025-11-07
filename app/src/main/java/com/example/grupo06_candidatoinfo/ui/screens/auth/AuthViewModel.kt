@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.grupo06_candidatoinfo.data.remote.RetrofitClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update // Importante para la función de volver
 import kotlinx.coroutines.launch
 
 /**
@@ -51,34 +52,54 @@ class AuthViewModel : ViewModel() {
     fun onDniChange(value: String) {
         // Limitar a 8 dígitos numéricos
         if (value.length <= 8 && value.all { it.isDigit() }) {
-            _registroState.value = _registroState.value.copy(dni = value, error = null)
+            // _registroState.value = _registroState.value.copy(dni = value, error = null)
+            // Usamos .update() para ser seguro con la concurrencia
+            _registroState.update { it.copy(dni = value, error = null) }
         }
     }
 
     fun onTermsAcceptedChange(value: Boolean) {
-        _registroState.value = _registroState.value.copy(termsAccepted = value, error = null)
+        _registroState.update { it.copy(termsAccepted = value, error = null) }
     }
 
     fun onEmailChange(value: String) {
-        _registroState.value = _registroState.value.copy(email = value, error = null)
+        _registroState.update { it.copy(email = value, error = null) }
     }
 
     fun onPasswordChange(value: String) {
-        _registroState.value = _registroState.value.copy(password = value, error = null)
+        _registroState.update { it.copy(password = value, error = null) }
     }
 
     fun onConfirmPasswordChange(value: String) {
-        _registroState.value = _registroState.value.copy(confirmPassword = value, error = null)
+        _registroState.update { it.copy(confirmPassword = value, error = null) }
     }
 
     fun onVerificationCodeChange(value: String) {
         // Limitar a 6 dígitos
         if (value.length <= 6 && value.all { it.isDigit() }) {
-            _registroState.value = _registroState.value.copy(verificationCode = value, error = null)
+            _registroState.update { it.copy(verificationCode = value, error = null) }
         }
     }
 
     // --- Acciones del ViewModel (Lógica de negocio) ---
+
+    // --- FUNCIÓN AÑADIDA ---
+    /**
+     * Se llama desde la UI para navegar al paso anterior.
+     */
+    fun goToPreviousStep() {
+        _registroState.update { currentState ->
+            val previousStep = when (currentState.step) {
+                RegistrationStep.PROFILE_COMPLETE -> RegistrationStep.DNI_INPUT
+                RegistrationStep.EMAIL_VERIFY -> RegistrationStep.PROFILE_COMPLETE
+                // No se puede volver desde el primer paso
+                RegistrationStep.DNI_INPUT -> currentState.step
+            }
+            // Regresa al paso anterior y limpia cualquier error
+            currentState.copy(step = previousStep, error = null)
+        }
+    }
+    // --- FIN DE LA FUNCIÓN AÑADIDA ---
 
     /**
      * Se llama en el Paso 1.
@@ -89,43 +110,49 @@ class AuthViewModel : ViewModel() {
         val dni = state.dni.trim()
 
         if (dni.length != 8) {
-            _registroState.value = _registroState.value.copy(error = "El DNI debe tener 8 dígitos")
+            _registroState.update { it.copy(error = "El DNI debe tener 8 dígitos") }
             return
         }
 
         if (!state.termsAccepted) {
-            _registroState.value = _registroState.value.copy(error = "Debes aceptar los Términos y Condiciones")
+            _registroState.update { it.copy(error = "Debes aceptar los Términos y Condiciones") }
             return
         }
 
         viewModelScope.launch {
-            _registroState.value = _registroState.value.copy(isLoading = true, error = null)
+            _registroState.update { it.copy(isLoading = true, error = null) }
             try {
                 // Llamada a la API (como en tu código original)
                 val response = RetrofitClient.api.getDniInfo(dni)
 
                 if (response.success) {
                     // Éxito: autocompletar datos y avanzar al siguiente paso
-                    _registroState.value = _registroState.value.copy(
-                        nombres = response.data.nombres,
-                        apellidoPaterno = response.data.apellido_paterno,
-                        apellidoMaterno = response.data.apellido_materno,
-                        isLoading = false,
-                        step = RegistrationStep.PROFILE_COMPLETE // <-- Avanza al Paso 2
-                    )
+                    _registroState.update {
+                        it.copy(
+                            nombres = response.data.nombres,
+                            apellidoPaterno = response.data.apellido_paterno,
+                            apellidoMaterno = response.data.apellido_materno,
+                            isLoading = false,
+                            step = RegistrationStep.PROFILE_COMPLETE // <-- Avanza al Paso 2
+                        )
+                    }
                 } else {
                     // DNI no encontrado u otro error de la API
-                    _registroState.value = _registroState.value.copy(
-                        error = "No se encontró el DNI ingresado",
-                        isLoading = false
-                    )
+                    _registroState.update {
+                        it.copy(
+                            error = "No se encontró el DNI ingresado",
+                            isLoading = false
+                        )
+                    }
                 }
             } catch (e: Exception) {
                 // Error de conexión
-                _registroState.value = _registroState.value.copy(
-                    error = "Error al conectar con el servidor: ${e.localizedMessage}",
-                    isLoading = false
-                )
+                _registroState.update {
+                    it.copy(
+                        error = "Error al conectar con el servidor: ${e.localizedMessage}",
+                        isLoading = false
+                    )
+                }
             }
         }
     }
@@ -139,18 +166,18 @@ class AuthViewModel : ViewModel() {
 
         // TODO: Añadir validación de email (formato)
         if (state.email.isBlank()) {
-            _registroState.value = _registroState.value.copy(error = "El correo es obligatorio")
+            _registroState.update { it.copy(error = "El correo es obligatorio") }
             return
         }
 
         // TODO: Añadir validación de fortaleza de contraseña
         if (state.password.length < 6) {
-            _registroState.value = _registroState.value.copy(error = "La contraseña debe tener al menos 6 caracteres")
+            _registroState.update { it.copy(error = "La contraseña debe tener al menos 6 caracteres") }
             return
         }
 
         if (state.password != state.confirmPassword) {
-            _registroState.value = _registroState.value.copy(error = "Las contraseñas no coinciden")
+            _registroState.update { it.copy(error = "Las contraseñas no coinciden") }
             return
         }
 
@@ -158,11 +185,13 @@ class AuthViewModel : ViewModel() {
         // y enviar el correo de verificación.
 
         // Simulación de éxito: avanzar al Paso 3
-        _registroState.value = _registroState.value.copy(
-            isLoading = false,
-            error = null,
-            step = RegistrationStep.EMAIL_VERIFY // <-- Avanza al Paso 3
-        )
+        _registroState.update {
+            it.copy(
+                isLoading = false,
+                error = null,
+                step = RegistrationStep.EMAIL_VERIFY // <-- Avanza al Paso 3
+            )
+        }
     }
 
     /**
@@ -173,7 +202,7 @@ class AuthViewModel : ViewModel() {
         val state = _registroState.value
 
         if (state.verificationCode.length != 6) {
-            _registroState.value = _registroState.value.copy(error = "El código debe tener 6 dígitos")
+            _registroState.update { it.copy(error = "El código debe tener 6 dígitos") }
             return
         }
 
@@ -184,7 +213,7 @@ class AuthViewModel : ViewModel() {
         // El VM no navega, pero puede poner un estado de "éxito"
         // que el Composable usará para navegar a Home.
         println("Verificación exitosa (simulada)")
-        _registroState.value = _registroState.value.copy(isLoading = false, error = null)
+        _registroState.update { it.copy(isLoading = false, error = null) }
 
         // El Composable (RegisterTab) se encargará de navegar a Home
         // al detectar que este submit fue exitoso.

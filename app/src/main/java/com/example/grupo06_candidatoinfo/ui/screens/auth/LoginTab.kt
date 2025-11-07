@@ -11,6 +11,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+// Importamos FontWeight para el texto de "Olvidaste..."
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -25,6 +27,13 @@ fun LoginTab(navController: NavHostController) {
     var passwordVisible by remember { mutableStateOf(false) }
     var rememberMe by remember { mutableStateOf(false) }
 
+    // --- Paleta de colores actualizada ---
+    val VotoPurple = Color(0xFF4F2D8F)
+    val VotoGrayText = Color(0xFF8E8E93)
+    val VotoDarkText = Color(0xFF2C2C54)
+    val VotoBorderGray = Color(0xFFE0E0E0)
+    // ---
+
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Top
@@ -32,16 +41,16 @@ fun LoginTab(navController: NavHostController) {
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Correo Electrónico", color = Color(0xFF8E8E93)) },
+            label = { Text("Correo Electrónico", color = VotoGrayText) },
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             singleLine = true,
             shape = RoundedCornerShape(8.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFF3F51B5),
-                unfocusedBorderColor = Color(0xFFE0E0E0),
-                focusedLabelColor = Color(0xFF3F51B5),
-                cursorColor = Color(0xFF3F51B5)
+                focusedBorderColor = VotoPurple, // Actualizado
+                unfocusedBorderColor = VotoBorderGray,
+                focusedLabelColor = VotoPurple, // Actualizado
+                cursorColor = VotoPurple // Actualizado
             )
         )
 
@@ -50,7 +59,7 @@ fun LoginTab(navController: NavHostController) {
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("Contraseña", color = Color(0xFF8E8E93)) },
+            label = { Text("Contraseña", color = VotoGrayText) },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -59,15 +68,15 @@ fun LoginTab(navController: NavHostController) {
                 val image = if (passwordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
                 val description = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña"
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                    Icon(imageVector = image, description, tint = Color(0xFF8E8E93))
+                    Icon(imageVector = image, description, tint = VotoGrayText)
                 }
             },
             shape = RoundedCornerShape(8.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFF3F51B5),
-                unfocusedBorderColor = Color(0xFFE0E0E0),
-                focusedLabelColor = Color(0xFF3F51B5),
-                cursorColor = Color(0xFF3F51B5)
+                focusedBorderColor = VotoPurple, // Actualizado
+                unfocusedBorderColor = VotoBorderGray,
+                focusedLabelColor = VotoPurple, // Actualizado
+                cursorColor = VotoPurple // Actualizado
             )
         )
 
@@ -83,21 +92,23 @@ fun LoginTab(navController: NavHostController) {
                     checked = rememberMe,
                     onCheckedChange = { rememberMe = it },
                     colors = CheckboxDefaults.colors(
-                        checkedColor = Color(0xFF3F51B5),
-                        uncheckedColor = Color(0xFF8E8E93)
+                        checkedColor = VotoPurple, // Actualizado
+                        uncheckedColor = VotoGrayText
                     )
                 )
                 Text(
                     text = "Recordar",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color(0xFF2C2C54)
+                    color = VotoDarkText
                 )
             }
             TextButton(onClick = { /* TODO */ }) {
                 Text(
                     "Olvidaste tu contraseña?",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color(0xFF3F51B5)
+                    // --- Actualizado según el diseño (negrita y oscuro) ---
+                    fontWeight = FontWeight.Bold,
+                    color = VotoDarkText
                 )
             }
         }
@@ -116,7 +127,7 @@ fun LoginTab(navController: NavHostController) {
                 .height(56.dp),
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF3F51B5)
+                containerColor = VotoPurple // Actualizado
             )
         ) {
             Text(
