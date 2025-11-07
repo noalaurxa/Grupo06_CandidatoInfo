@@ -12,7 +12,11 @@ import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,7 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.grupo06_candidatoinfo.data.repository.MockDataRepository
+import com.example.grupo06_candidatoinfo.data.repository.CandidatoRepository
 import com.example.grupo06_candidatoinfo.model.CaseTimelineEvent
 import com.example.grupo06_candidatoinfo.model.InvestigationDetail
 import com.example.grupo06_candidatoinfo.model.InvolvedParty
@@ -40,27 +44,26 @@ import com.example.grupo06_candidatoinfo.ui.theme.DividerGray1
 // FUNCIÓN PRINCIPAL: INVESTIGATIONDETAIL
 // ===========================================================
 @Composable
-fun InvestigationDetail(
+fun InvestigationDetailScreen(
     navController: NavController,
     documentId: String?
 ) {
-    val investigation: InvestigationDetail? = remember(documentId) { // Usamos remember
+    var investigationDetail: InvestigationDetail? by remember { mutableStateOf(null) }
+    val repository = remember { CandidatoRepository() }
+
+    LaunchedEffect(documentId) {
         if (documentId != null) {
-            MockDataRepository.getInvestigationDetail(documentId)
-        } else {
-            null
+            try {
+                investigationDetail = repository.getInvestigationDetail(documentId)
+            } catch (e: Exception) {
+                investigationDetail = null
+            }
         }
     }
 
     Scaffold(
-        topBar = {
-            DetailTopBar(
-                title = investigation?.caseTitle ?: "Detalle del Caso", // Título dinámico
-                onBackClick = { navController.popBackStack() }
-            )
-        },
-        containerColor = BackgroundGray1 // Color de fondo aplicado al Scaffold
     ) { paddingValues ->
+
         // Contenido principal con scroll vertical
         Column(
             modifier = Modifier
@@ -71,7 +74,7 @@ fun InvestigationDetail(
                 .padding(bottom = 16.dp),
             horizontalAlignment = Alignment.Start
         ) {
-            if (investigation == null) {
+            if (investigationDetail == null) {
                 // --- Estado de Error ---
                 ErrorState(documentId = documentId)
             } else {
@@ -90,7 +93,7 @@ fun InvestigationDetail(
                         top = 0.dp
                     )
                     )
-                TimelineSection(timeline = investigation.timeline)
+                TimelineSection(timeline = investigationDetail!!.timeline)
                 Spacer(modifier = Modifier.height(24.dp))
 
                 // Sección 2: Documentos Oficiales
@@ -105,7 +108,7 @@ fun InvestigationDetail(
                         top = 0.dp
                     )
                 )
-                DocumentSection(documents = investigation.officialDocuments)
+                DocumentSection(documents = investigationDetail!!.officialDocuments)
                 Spacer(modifier = Modifier.height(24.dp))
 
                 // Sección 3: Involucrados
@@ -119,7 +122,7 @@ fun InvestigationDetail(
                         bottom = 16.dp,
                         top = 0.dp
                     )                )
-                InvolvedPartySection(parties = investigation.involvedParties)
+                InvolvedPartySection(parties = investigationDetail!!.involvedParties)
                 Spacer(modifier = Modifier.height(24.dp))
             }
         }

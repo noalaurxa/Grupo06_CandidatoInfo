@@ -26,19 +26,18 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalUriHandler // <--- IMPORTANTE: Importación para abrir enlaces
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.grupo06_candidatoinfo.data.repository.MockDataRepository
 import com.example.grupo06_candidatoinfo.model.NewsDetail
 import coil.compose.AsyncImage
+import com.example.grupo06_candidatoinfo.data.repository.CandidatoRepository
 
 // Definición de Colores
-
 import com.example.grupo06_candidatoinfo.ui.theme.lightGrayBackground
 import com.example.grupo06_candidatoinfo.ui.theme.mainPurple
 import com.example.grupo06_candidatoinfo.ui.theme.verifiedGreen
@@ -49,18 +48,20 @@ fun NewsDetail(
     navController: NavController,
     documentId: String?
 ) {
-    val newsDetail: NewsDetail? = remember(documentId) {
+    var showImageDialog by remember { mutableStateOf(false) }
+    var newsDetail: NewsDetail? by remember { mutableStateOf(null) }
+    val repository = remember { CandidatoRepository() }
+    val uriHandler = LocalUriHandler.current
+
+    LaunchedEffect(documentId) {
         if (documentId != null) {
-            MockDataRepository.getNewsDetail(documentId)
-        } else {
-            null
+            try {
+                newsDetail = repository.getNewsDetail(documentId)
+            } catch (e: Exception) {
+                newsDetail = null
+            }
         }
     }
-
-    var showImageDialog by remember { mutableStateOf(false) }
-
-    // Obtenemos el UriHandler para abrir enlaces web
-    val uriHandler = LocalUriHandler.current
 
     Scaffold(
         containerColor = lightGrayBackground,
@@ -150,47 +151,44 @@ fun NewsDetail(
             ) {
                 item {
                     NewsHeaderBlock(
-                        title = newsDetail.title,
-                        summary = newsDetail.summary,
-                        imageUrl = newsDetail.imageUrl,
+                        title = newsDetail!!.title,
+                        summary = newsDetail!!.summary,
+                        imageUrl = newsDetail!!.imageUrl,
                         onImageClick = { showImageDialog = true }
                     )
                 }
 
                 item {
                     MetadataGrid(
-                        date = newsDetail.date,
-                        source = newsDetail.source,
-                        relatedCandidateName = newsDetail.relatedCandidateName
+                        date = newsDetail!!.date,
+                        source = newsDetail!!.source,
+                        relatedCandidateName = newsDetail!!.relatedCandidateName
                     )
                 }
 
                 item {
                     DescriptionCard(
-                        description = newsDetail.fullDescription
+                        description = newsDetail!!.fullDescription
                     )
                 }
 
-                // --- LLAMADA ACTUALIZADA ---
                 item {
                     SourceButton(
-                        source = newsDetail.source,
-                        sourceUrl = newsDetail.sourceUrl, // Pasamos el URL
+                        source = newsDetail!!.source,
+                        sourceUrl = newsDetail!!.sourceUrl,
                         onNavigate = { url ->
-                            // Lógica de navegación a la URL
                             try {
                                 if (!url.isNullOrEmpty()) {
                                     uriHandler.openUri(url)
                                 }
                             } catch (e: Exception) {
-                                // Manejar el error si no se puede abrir el URL
                                 println("Error al abrir URL: $e")
                             }
                         }
                     )
                 }
 
-                if (newsDetail.isVerified) {
+                if (newsDetail!!.isVerified) {
                     item {
                         VerificationBanner()
                     }
@@ -204,16 +202,13 @@ fun NewsDetail(
             // Diálogo para mostrar imagen en pantalla completa
             if (showImageDialog && newsDetail != null) {
                 ImageFullScreenDialog(
-                    imageUrl = newsDetail.imageUrl,
+                    imageUrl = newsDetail!!.imageUrl,
                     onDismiss = { showImageDialog = false }
                 )
             }
         }
     }
 }
-
-
-// ... (NewsHeaderBlock, MetadataGrid, MetadataCard, DescriptionCard, VerificationBanner, ImageFullScreenDialog se mantienen iguales) ...
 
 @Composable
 fun NewsHeaderBlock(

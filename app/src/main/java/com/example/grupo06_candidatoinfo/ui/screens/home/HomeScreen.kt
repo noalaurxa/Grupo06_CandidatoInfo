@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.grupo06_candidatoinfo.data.repository.MockDataRepository
+import com.example.grupo06_candidatoinfo.data.repository.CandidatoRepository
 import com.example.grupo06_candidatoinfo.model.Candidate
 import java.text.Normalizer
 
@@ -38,11 +38,43 @@ fun HomeScreen(navController: NavController) {
     var selectedPosition by remember { mutableStateOf("Todos") }
     var selectedParty by remember { mutableStateOf("Todos") }
 
-    val candidates = remember { MockDataRepository.getCandidates() }
-    val positions = remember { MockDataRepository.getPositions() }
-    val parties = remember { MockDataRepository.getPoliticalParties() }
-    val electionTypes = remember { MockDataRepository.getElectionTypes() }
-    var selectedElection by remember { mutableStateOf(electionTypes.first().name) }
+    var candidates by remember { mutableStateOf<List<Candidate>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+    var errorMessage by remember { mutableStateOf("") }
+
+    LaunchedEffect(Unit) {
+        isLoading = true
+        errorMessage = ""
+        try {
+            val repository = CandidatoRepository()
+            println("[v0] Starting API call to fetch candidates...")
+            val result = repository.getCandidatos()
+            println("[v0] Successfully fetched ${result.size} candidates from API")
+            candidates = result
+            if (result.isEmpty()) {
+                errorMessage = "No candidates found in API"
+                println("[v0] WARNING: API returned empty list")
+            }
+        } catch (e: Exception) {
+            println("[v0] ERROR fetching candidates: ${e.javaClass.simpleName} - ${e.message}")
+            e.printStackTrace()
+            errorMessage = "Error: ${e.message}"
+        } finally {
+            isLoading = false
+        }
+    }
+
+    // Extract positions and parties from candidates
+    val positions: List<String> = remember(candidates) {
+        listOf("Todos") + candidates.map { it.position }.distinct()
+    }
+
+    val parties: List<String> = remember(candidates) {
+        listOf("Todos") + candidates.map { it.party }.distinct()
+    }
+
+    val electionTypes = listOf("Elecciones Generales 2026")
+    var selectedElection by remember { mutableStateOf(electionTypes.first()) }
 
     var selectedCandidates by remember { mutableStateOf<Set<Int>>(emptySet()) }
     val selectedCount = selectedCandidates.size
@@ -185,6 +217,23 @@ fun HomeScreen(navController: NavController) {
                         }
 
                         Spacer(modifier = Modifier.height(8.dp))
+
+                        if (errorMessage.isNotEmpty()) {
+                            Surface(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp),
+                                shape = RoundedCornerShape(8.dp),
+                                color = Color(0xFFFFEBEE)
+                            ) {
+                                Text(
+                                    text = errorMessage,
+                                    fontSize = 12.sp,
+                                    color = Color(0xFFD32F2F),
+                                    modifier = Modifier.padding(12.dp)
+                                )
+                            }
+                        }
 
                         // Contador de resultados
                         Text(

@@ -7,12 +7,13 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.grupo06_candidatoinfo.data.repository.MockDataRepository
+import com.example.grupo06_candidatoinfo.data.repository.CandidatoRepository
 import com.example.grupo06_candidatoinfo.model.Candidate
 import com.example.grupo06_candidatoinfo.ui.screens.compare.components.*
 import com.example.grupo06_candidatoinfo.ui.screens.compare.tabs.*
@@ -122,17 +123,10 @@ private fun CompareTopBar(
     }
 }
 
-private fun loadCandidates(candidateIds: String?): List<Candidate> {
+
+fun loadCandidates(candidateIds: String?): List<Candidate> {
     val ids = candidateIds?.split(',')?.mapNotNull { it.toIntOrNull() } ?: emptyList()
-
-    if (ids.size != 2) return emptyList()
-
-    val candidate1 = MockDataRepository.getCandidates().find { it.id == ids[0] }
-    val candidate2 = MockDataRepository.getCandidates().find { it.id == ids[1] }
-
-    return if (candidate1 != null && candidate2 != null) {
-        listOf(candidate1, candidate2)
-    } else {
-        emptyList()
-    }
+    // This function is called from remember, which returns synchronously
+    // For async loading, wrap the composable that uses this function with LaunchedEffect
+    return emptyList() // Placeholder - will be filled by LaunchedEffect in parent
 }

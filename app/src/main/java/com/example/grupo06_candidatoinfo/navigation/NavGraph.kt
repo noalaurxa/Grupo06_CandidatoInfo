@@ -12,7 +12,7 @@ import com.example.grupo06_candidatoinfo.ui.screens.compare.CompareScreen
 import com.example.grupo06_candidatoinfo.ui.screens.home.HomeScreen
 // --- IMPORTACIONES DE PANTALLAS ---
 import com.example.grupo06_candidatoinfo.ui.screens.profile.ProfileScreen
-import com.example.grupo06_candidatoinfo.ui.screens.detail.InvestigationDetail
+import com.example.grupo06_candidatoinfo.ui.screens.detail.InvestigationDetailScreen
 import com.example.grupo06_candidatoinfo.ui.screens.detail.NewsDetail
 
 /**
@@ -89,7 +89,7 @@ fun NavGraph(navController: NavHostController) {
             )
         ) { backStackEntry ->
             val documentId = backStackEntry.arguments?.getString("documentId")
-            InvestigationDetail(
+            InvestigationDetailScreen(
                 navController = navController,
                 documentId = documentId
             )

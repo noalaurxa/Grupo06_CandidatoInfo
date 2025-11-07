@@ -3,35 +3,37 @@ package com.example.grupo06_candidatoinfo.ui.screens.profile
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import com.example.grupo06_candidatoinfo.data.repository.CandidatoRepository
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.grupo06_candidatoinfo.data.repository.MockDataRepository
+import com.example.grupo06_candidatoinfo.model.Candidate
 import com.example.grupo06_candidatoinfo.navigation.Screen
-
-// IMPORTS de la carpeta 'tabs'
+import com.example.grupo06_candidatoinfo.ui.theme.lightGrayBackground
+import com.example.grupo06_candidatoinfo.ui.theme.mainPurple
 import com.example.grupo06_candidatoinfo.ui.screens.profile.tabs.CareerTabContent
 import com.example.grupo06_candidatoinfo.ui.screens.profile.tabs.GeneralTabContent
 import com.example.grupo06_candidatoinfo.ui.screens.profile.tabs.BackgroundTabContent
 import com.example.grupo06_candidatoinfo.ui.screens.profile.tabs.CurrentTabContent
 
-
-// Colores Importados
-import com.example.grupo06_candidatoinfo.ui.theme.lightGrayBackground
-import com.example.grupo06_candidatoinfo.ui.theme.mainPurple
-
-// ==================== SCREEN PRINCIPAL ====================
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,14 +41,26 @@ fun ProfileScreen(
     navController: NavController,
     candidateId: String?
 ) {
-    // La lógica de obtención del candidato es la misma
-    val candidate = remember(candidateId) {
-        MockDataRepository.getCandidates().find {
-            it.id == candidateId?.toIntOrNull()
+    val repository = remember { CandidatoRepository() }
+
+    var candidate by remember { mutableStateOf<Candidate?>(null) }
+    var isLoading by remember { mutableStateOf(true) }
+
+    LaunchedEffect(candidateId) {
+        if (candidateId != null) {
+            try {
+                val id = candidateId.toIntOrNull()
+                if (id != null) {
+                    candidate = repository.getCandidato(id)
+                }
+                isLoading = false
+            } catch (e: Exception) {
+                e.printStackTrace()
+                isLoading = false
+            }
         }
     }
 
-    // === Mantenido: Usamos profileDetails como variable local ===
     val profileDetails = candidate?.profileDetails
 
     var selectedTabIndex by remember { mutableIntStateOf(0) }
@@ -55,7 +69,17 @@ fun ProfileScreen(
     Scaffold(
         containerColor = lightGrayBackground
     ) { paddingValues ->
-        if (candidate == null) {
+        if (isLoading) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CircularProgressIndicator()
+            }
+        } else if (candidate == null) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -77,18 +101,16 @@ fun ProfileScreen(
                     .padding(bottom = paddingValues.calculateBottomPadding()),
                 contentPadding = PaddingValues(0.dp)
             ) {
-                // Header con foto
                 item {
                     Box(modifier = Modifier
                         .padding(horizontal = 16.dp)
                         .padding(top = 16.dp)) {
-                        ProfileHeader(candidate = candidate, onBackClick = {
+                        ProfileHeader(candidate = candidate!!, onBackClick = {
                             navController.popBackStack()
                         })
                     }
                 }
 
-                // Tabs de navegación
                 item {
                     Surface(
                         color = Color.White,
@@ -136,7 +158,6 @@ fun ProfileScreen(
                     }
                 }
 
-                // Contenido dinámico según el Tab (FINAL y CORREGIDO)
                 item {
                     Box(
                         modifier = Modifier
@@ -144,37 +165,35 @@ fun ProfileScreen(
                             .padding(horizontal = 16.dp, vertical = 12.dp)
                     ) {
                         when (selectedTabIndex) {
-                            0 -> { // General (Plan de Gobierno)
+                            0 -> {
                                 if (profileDetails != null) {
                                     GeneralTabContent(
-                                        navController = navController, // <--- CORRECCIÓN CLAVE: Pasando navController
+                                        navController = navController,
                                         profile = profileDetails
                                     )
                                 } else {
                                     PlaceholderTabContent(title = "Información General no disponible")
                                 }
                             }
-                            1 -> { // Trayectoria
+                            1 -> {
                                 if (profileDetails?.careerHistory != null) {
                                     CareerTabContent(careerHistory = profileDetails.careerHistory)
                                 } else {
                                     PlaceholderTabContent(title = "Trayectoria no disponible")
                                 }
                             }
-                            2 -> { // Antecedentes (Investigación)
+                            2 -> {
                                 BackgroundTabContent(
                                     backgroundReport = profileDetails?.backgroundReport,
                                     onBackgroundClick = { documentId ->
                                         navController.navigate(Screen.InvestigationDetail.createRoute(documentId))
                                     }
                                 )
-
                             }
-                            3 -> { // Actualidad (Noticias)
+                            3 -> {
                                 CurrentTabContent(
                                     currentEvents = profileDetails?.currentEvents,
                                     onNewsClick = { documentId ->
-                                        // Navegación al Detalle de Noticias
                                         navController.navigate(Screen.NewsDetail.createRoute(documentId))
                                     }
                                 )
@@ -188,29 +207,14 @@ fun ProfileScreen(
 }
 
 
-// ==================== PLACEHOLDER ====================
 @Composable
-fun PlaceholderTabContent(title: String) {
-    Card(
+private fun PlaceholderTabContent(title: String) {
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp),
-        shape = RoundedCornerShape(8.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+            .padding(vertical = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleLarge,
-                color = Color.Gray,
-                textAlign = TextAlign.Center
-            )
-        }
+        Text(text = title)
     }
 }
