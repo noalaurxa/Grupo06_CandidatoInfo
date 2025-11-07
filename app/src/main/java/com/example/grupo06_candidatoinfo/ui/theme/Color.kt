@@ -66,3 +66,5 @@ val AccentPurple1 = Color(0xFF8B7FC7)   // Acento secundario
 val BackgroundGray1 = Color(0xFFF8F9FA) // Color de fondo general
 val DividerGray1 = Color.LightGray.copy(alpha = 0.5f) // Color suave para el divisor
 
+// Color para el botón de votar
+val voteButtonVoted = Color(0xFF10B981) // Verde para indicar que ya se votó
