@@ -10,27 +10,26 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.grupo06_candidatoinfo.ui.screens.compare.CompareScreen
 import com.example.grupo06_candidatoinfo.ui.screens.home.HomeScreen
-// --- IMPORTACIONES DE PANTALLAS ---
 import com.example.grupo06_candidatoinfo.ui.screens.profile.ProfileScreen
 import com.example.grupo06_candidatoinfo.ui.screens.detail.InvestigationDetail
 import com.example.grupo06_candidatoinfo.ui.screens.detail.NewsDetail
+import com.example.grupo06_candidatoinfo.ui.screens.auth.AuthScreen
 
 /**
  * Sealed class que define las rutas de navegación de la aplicación
  */
 sealed class Screen(val route: String) {
-    object Home: Screen("home")
-    object Profile: Screen("profile/{candidateId}") {
+    object Auth : Screen("auth")
+    object Home : Screen("home")
+    object Profile : Screen("profile/{candidateId}") {
         fun createRoute(candidateId: String) = "profile/$candidateId"
     }
-    object NewsDetail: Screen("news_detail/{documentId}") {
+    object NewsDetail : Screen("news_detail/{documentId}") {
         fun createRoute(documentId: String) = "news_detail/$documentId"
     }
-    object InvestigationDetail: Screen("investigation_detail/{documentId}") {
+    object InvestigationDetail : Screen("investigation_detail/{documentId}") {
         fun createRoute(documentId: String) = "investigation_detail/$documentId"
     }
-
-    // --- RUTA COMPARE ---
     object Compare : Screen("compare?ids={ids}") {
         fun createRoute(ids: String) = "compare?ids=$ids"
     }
@@ -44,22 +43,27 @@ sealed class Screen(val route: String) {
 fun NavGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = Screen.Home.route
+        // Comienza con la pantalla de autenticación
+        startDestination = Screen.Auth.route
     ) {
-        // Pantalla de inicio
-        composable(route = Screen.Home.route){
+
+        // --- PANTALLA DE AUTENTICACIÓN (Login / Register con pestañas) ---
+        composable(route = Screen.Auth.route) {
+            AuthScreen(navController = navController)
+        }
+
+        // --- PANTALLA PRINCIPAL ---
+        composable(route = Screen.Home.route) {
             HomeScreen(navController = navController)
         }
 
-        // Pantalla de perfil del candidato
+        // --- PERFIL DEL CANDIDATO ---
         composable(
             route = Screen.Profile.route,
             arguments = listOf(
-                navArgument("candidateId") {
-                    type = NavType.StringType
-                }
+                navArgument("candidateId") { type = NavType.StringType }
             )
-        ){ backStackEntry ->
+        ) { backStackEntry ->
             val candidateId = backStackEntry.arguments?.getString("candidateId")
             ProfileScreen(
                 navController = navController,
@@ -67,7 +71,7 @@ fun NavGraph(navController: NavHostController) {
             )
         }
 
-        // 2. Detalle de Noticias y Actividades
+        // --- DETALLE DE NOTICIAS ---
         composable(
             route = Screen.NewsDetail.route,
             arguments = listOf(
@@ -81,7 +85,7 @@ fun NavGraph(navController: NavHostController) {
             )
         }
 
-        // 3. Detalle de Investigación por Lavado de Activos
+        // --- DETALLE DE INVESTIGACIONES ---
         composable(
             route = Screen.InvestigationDetail.route,
             arguments = listOf(
@@ -95,7 +99,7 @@ fun NavGraph(navController: NavHostController) {
             )
         }
 
-        // Pantalla de Comparación
+        // --- COMPARAR CANDIDATOS ---
         composable(
             route = Screen.Compare.route,
             arguments = listOf(
