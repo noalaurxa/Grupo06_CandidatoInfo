@@ -93,7 +93,7 @@ fun InvestigationDetailScreen(
                         top = 0.dp
                     )
                     )
-                TimelineSection(timeline = investigationDetail!!.timeline)
+                TimelineSection(timeline = investigationDetail?.timeline ?: emptyList())
                 Spacer(modifier = Modifier.height(24.dp))
 
                 // Sección 2: Documentos Oficiales
@@ -108,7 +108,7 @@ fun InvestigationDetailScreen(
                         top = 0.dp
                     )
                 )
-                DocumentSection(documents = investigationDetail!!.officialDocuments)
+                DocumentSection(documents = investigationDetail?.officialDocuments ?: emptyList())
                 Spacer(modifier = Modifier.height(24.dp))
 
                 // Sección 3: Involucrados
@@ -122,7 +122,7 @@ fun InvestigationDetailScreen(
                         bottom = 16.dp,
                         top = 0.dp
                     )                )
-                InvolvedPartySection(parties = investigationDetail!!.involvedParties)
+                InvolvedPartySection(parties = investigationDetail?.involvedParties ?: emptyList())
                 Spacer(modifier = Modifier.height(24.dp))
             }
         }
