@@ -171,7 +171,6 @@ fun NewsDetail(
                     )
                 }
 
-                // --- LLAMADA ACTUALIZADA ---
                 item {
                     SourceButton(
                         source = newsDetail.source,
