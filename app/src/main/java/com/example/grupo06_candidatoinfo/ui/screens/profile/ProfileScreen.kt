@@ -107,6 +107,7 @@ fun ProfileScreen(
                             candidate = candidate,
                             onBackClick = { navController.popBackStack() },
                             onVoteClick = { showVoteDialog = true },
+                            onRankingClick = { navController.navigate(Screen.Ranking.route) }, // <-- AÑADIDO
                             hasVoted = hasVoted.value
                         )
                     }
