@@ -2,7 +2,7 @@ package com.example.grupo06_candidatoinfo.ui.screens.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.grupo06_candidatoinfo.data.remote.RetrofitClient
+import com.example.grupo06_candidatoinfo.data.remote.RetrofitCliente1
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update // Importante para la función de volver
@@ -123,7 +123,7 @@ class AuthViewModel : ViewModel() {
             _registroState.update { it.copy(isLoading = true, error = null) }
             try {
                 // Llamada a la API (como en tu código original)
-                val response = RetrofitClient.api.getDniInfo(dni)
+                val response = RetrofitCliente1.api.getDniInfo(dni)
 
                 if (response.success) {
                     // Éxito: autocompletar datos y avanzar al siguiente paso
