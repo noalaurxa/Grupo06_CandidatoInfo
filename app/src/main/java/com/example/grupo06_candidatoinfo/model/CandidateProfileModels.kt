@@ -1,5 +1,7 @@
 package com.example.grupo06_candidatoinfo.model
 
+import com.google.gson.annotations.SerializedName
+
 // ==================== MODELOS DE PERFIL (CANDIDATE PROFILE) ====================
 
 data class CandidateProfile(
@@ -86,13 +88,26 @@ data class BackgroundRecord(
 // modelo DETALLE INVESTIGACION
 
 data class InvestigationDetail(
+    @SerializedName("case_title")
     val caseTitle: String,
-    val caseEntity: String, // Entidad que investiga (Fiscalía, Congreso, etc.)
-    val caseDate: String, // Fecha de inicio o de mención
-    val status: String, // Estado actual del caso (Activo, Archivado, En Proceso, etc.)
-    val timeline: List<CaseTimelineEvent>,
-    val officialDocuments: List<OfficialDocument>,
-    val involvedParties: List<InvolvedParty>,
+
+    @SerializedName("case_entity")
+    val caseEntity: String,
+
+    @SerializedName("case_date")
+    val caseDate: String,
+
+    @SerializedName("status")
+    val status: String,
+
+    @SerializedName("timeline")
+    val timeline: List<CaseTimelineEvent> = emptyList(),
+
+    @SerializedName("official_documents")
+    val officialDocuments: List<OfficialDocument> = emptyList(), // ← clave corregida
+
+    @SerializedName("involved_parties")
+    val involvedParties: List<InvolvedParty> = emptyList() // ← clave corregida
 )
 
 /**
@@ -110,7 +125,10 @@ data class CaseTimelineEvent(
  * Modelo para un Documento Oficial relacionado al caso (ej: Carpeta Fiscal).
  */
 data class OfficialDocument(
+    @SerializedName("title")
     val title: String,
+
+    @SerializedName("documentUrl") // ← backend usa camelCase aquí
     val documentUrl: String?
 )
 
@@ -136,22 +154,43 @@ data class CurrentEventItem(
 
 
 // --- MODELO PARA DETALLE DE NOTICIAS ---
+
 data class NewsDetail(
+    @SerializedName("title")
     val title: String,
+
+    @SerializedName("summary")
     val summary: String, // Texto introductorio bajo el título
+
+    @SerializedName("date")
     val date: String,
+
+    @SerializedName("source")
     val source: String,
-    val relatedCandidateName: String,
-    val fullDescription: String, // El cuerpo del texto principal
-    val isVerified: Boolean,
-    val imageUrl: String, // Para la imagen en el detalle
-    val sourceUrl: String? // URL de la fuente original
+
+    @SerializedName("related_candidate_name")
+    val relatedCandidateName: String, // ← corregido
+
+    @SerializedName("full_description")
+    val fullDescription: String, // ← corregido
+
+    @SerializedName("is_verified")
+    val isVerified: Boolean, // ← corregido
+
+    @SerializedName("image_url")
+    val imageUrl: String, // ← corregido
+
+    @SerializedName("source_url")
+    val sourceUrl: String? // ← corregido
 )
 
 /**
  * Modelo para una Parte Involucrada en la investigación.
  */
 data class InvolvedParty(
+    @SerializedName("name")
     val name: String,
-    val role: String // Ej: "Investigada Principal", "Co-investigado", "Fiscal a cargo"
+
+    @SerializedName("role")
+    val role: String
 )
