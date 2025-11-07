@@ -6,6 +6,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.HowToVote
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,13 +22,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.grupo06_candidatoinfo.model.Candidate
+
 //colores
 import com.example.grupo06_candidatoinfo.ui.theme.ProfileMainPurple
 import com.example.grupo06_candidatoinfo.ui.theme.ProfileLighterPurpleCard
+import com.example.grupo06_candidatoinfo.ui.theme.voteButtonVoted
 
 // ==================== HEADER ====================
 @Composable
-fun ProfileHeader(candidate: Candidate, onBackClick: () -> Unit) {
+fun ProfileHeader(
+    candidate: Candidate,
+    onBackClick: () -> Unit,
+    onVoteClick: () -> Unit, // Callback para el botón de votar
+    hasVoted: Boolean // Estado para saber si ya se votó
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -174,6 +182,27 @@ fun ProfileHeader(candidate: Candidate, onBackClick: () -> Unit) {
                             contentDescription = "Volver",
                             tint = Color.White,
                             modifier = Modifier.size(20.dp)
+                        )
+                    }
+                }
+
+                // Botón para VOTAR
+                Surface(
+                    onClick = onVoteClick,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(16.dp)
+                        .size(48.dp),
+                    shape = CircleShape,
+                    color = if (hasVoted) voteButtonVoted else Color.White,
+                    shadowElevation = 8.dp
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = Icons.Default.HowToVote,
+                            contentDescription = "Votar",
+                            tint = if (hasVoted) Color.White else ProfileMainPurple,
+                            modifier = Modifier.size(24.dp)
                         )
                     }
                 }
