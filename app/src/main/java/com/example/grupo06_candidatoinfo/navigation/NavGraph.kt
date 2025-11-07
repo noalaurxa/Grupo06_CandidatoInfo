@@ -14,6 +14,7 @@ import com.example.grupo06_candidatoinfo.ui.screens.profile.ProfileScreen
 import com.example.grupo06_candidatoinfo.ui.screens.detail.InvestigationDetail
 import com.example.grupo06_candidatoinfo.ui.screens.detail.NewsDetail
 import com.example.grupo06_candidatoinfo.ui.screens.auth.AuthScreen
+import com.example.grupo06_candidatoinfo.ui.screens.ranking.RankingScreen // <-- IMPORTACIÓN AÑADIDA
 
 /**
  * Sealed class que define las rutas de navegación de la aplicación
@@ -33,6 +34,7 @@ sealed class Screen(val route: String) {
     object Compare : Screen("compare?ids={ids}") {
         fun createRoute(ids: String) = "compare?ids=$ids"
     }
+    object Ranking : Screen("ranking")
 }
 
 /**
@@ -43,21 +45,17 @@ sealed class Screen(val route: String) {
 fun NavGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
-        // Comienza con la pantalla de autenticación
         startDestination = Screen.Auth.route
     ) {
 
-        // --- PANTALLA DE AUTENTICACIÓN (Login / Register con pestañas) ---
         composable(route = Screen.Auth.route) {
             AuthScreen(navController = navController)
         }
 
-        // --- PANTALLA PRINCIPAL ---
         composable(route = Screen.Home.route) {
             HomeScreen(navController = navController)
         }
 
-        // --- PERFIL DEL CANDIDATO ---
         composable(
             route = Screen.Profile.route,
             arguments = listOf(
@@ -71,7 +69,6 @@ fun NavGraph(navController: NavHostController) {
             )
         }
 
-        // --- DETALLE DE NOTICIAS ---
         composable(
             route = Screen.NewsDetail.route,
             arguments = listOf(
@@ -85,7 +82,6 @@ fun NavGraph(navController: NavHostController) {
             )
         }
 
-        // --- DETALLE DE INVESTIGACIONES ---
         composable(
             route = Screen.InvestigationDetail.route,
             arguments = listOf(
@@ -99,7 +95,6 @@ fun NavGraph(navController: NavHostController) {
             )
         }
 
-        // --- COMPARAR CANDIDATOS ---
         composable(
             route = Screen.Compare.route,
             arguments = listOf(
@@ -115,6 +110,10 @@ fun NavGraph(navController: NavHostController) {
                 navController = navController,
                 candidateIds = candidateIds
             )
+        }
+        
+        composable(route = Screen.Ranking.route) { 
+            RankingScreen(navController = navController)
         }
     }
 }

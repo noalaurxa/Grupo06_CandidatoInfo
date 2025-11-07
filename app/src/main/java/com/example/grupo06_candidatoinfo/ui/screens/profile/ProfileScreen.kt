@@ -19,38 +19,60 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.grupo06_candidatoinfo.data.repository.MockDataRepository
 import com.example.grupo06_candidatoinfo.navigation.Screen
-
-// IMPORTS de la carpeta 'tabs'
 import com.example.grupo06_candidatoinfo.ui.screens.profile.tabs.CareerTabContent
 import com.example.grupo06_candidatoinfo.ui.screens.profile.tabs.GeneralTabContent
 import com.example.grupo06_candidatoinfo.ui.screens.profile.tabs.BackgroundTabContent
 import com.example.grupo06_candidatoinfo.ui.screens.profile.tabs.CurrentTabContent
-
-
-// Colores Importados
 import com.example.grupo06_candidatoinfo.ui.theme.lightGrayBackground
 import com.example.grupo06_candidatoinfo.ui.theme.mainPurple
+import com.example.grupo06_candidatoinfo.ui.viewmodel.VoteViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
 
-// ==================== SCREEN PRINCIPAL ====================
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
     navController: NavController,
-    candidateId: String?
+    candidateId: String?,
+    voteViewModel: VoteViewModel = viewModel()
 ) {
-    // La lógica de obtención del candidato es la misma
     val candidate = remember(candidateId) {
         MockDataRepository.getCandidates().find {
             it.id == candidateId?.toIntOrNull()
         }
     }
-
-    // === Mantenido: Usamos profileDetails como variable local ===
     val profileDetails = candidate?.profileDetails
 
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val tabs = listOf("General", "Trayectoria", "Antecedentes", "Actualidad")
+
+    var showVoteDialog by remember { mutableStateOf(false) }
+    val hasVoted = voteViewModel.hasVoted(candidate?.id ?: -1).collectAsState(initial = false)
+    val context = LocalContext.current
+
+    if (showVoteDialog) {
+        AlertDialog(
+            onDismissRequest = { showVoteDialog = false },
+            title = { Text("Confirmar Voto") },
+            text = { Text("¿Votarías por este candidato?") },
+            confirmButton = {
+                Button(onClick = {
+                    candidate?.id?.let { voteViewModel.vote(it) }
+                    showVoteDialog = false
+                    Toast.makeText(context, "Tu voto ha sido registrado", Toast.LENGTH_SHORT).show()
+                }) {
+                    Text("Sí")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showVoteDialog = false }) {
+                    Text("Cancelar")
+                }
+            }
+        )
+    }
 
     Scaffold(
         containerColor = lightGrayBackground
@@ -77,18 +99,19 @@ fun ProfileScreen(
                     .padding(bottom = paddingValues.calculateBottomPadding()),
                 contentPadding = PaddingValues(0.dp)
             ) {
-                // Header con foto
                 item {
                     Box(modifier = Modifier
                         .padding(horizontal = 16.dp)
                         .padding(top = 16.dp)) {
-                        ProfileHeader(candidate = candidate, onBackClick = {
-                            navController.popBackStack()
-                        })
+                        ProfileHeader(
+                            candidate = candidate,
+                            onBackClick = { navController.popBackStack() },
+                            onVoteClick = { showVoteDialog = true },
+                            onRankingClick = { navController.navigate(Screen.Ranking.route) }, // <-- AÑADIDO
+                            hasVoted = hasVoted.value
+                        )
                     }
                 }
-
-                // Tabs de navegación
                 item {
                     Surface(
                         color = Color.White,
@@ -135,8 +158,6 @@ fun ProfileScreen(
                         }
                     }
                 }
-
-                // Contenido dinámico según el Tab (FINAL y CORREGIDO)
                 item {
                     Box(
                         modifier = Modifier
@@ -144,37 +165,35 @@ fun ProfileScreen(
                             .padding(horizontal = 16.dp, vertical = 12.dp)
                     ) {
                         when (selectedTabIndex) {
-                            0 -> { // General (Plan de Gobierno)
+                            0 -> {
                                 if (profileDetails != null) {
                                     GeneralTabContent(
-                                        navController = navController, // <--- CORRECCIÓN CLAVE: Pasando navController
+                                        navController = navController,
                                         profile = profileDetails
                                     )
                                 } else {
                                     PlaceholderTabContent(title = "Información General no disponible")
                                 }
                             }
-                            1 -> { // Trayectoria
+                            1 -> {
                                 if (profileDetails?.careerHistory != null) {
                                     CareerTabContent(careerHistory = profileDetails.careerHistory)
                                 } else {
                                     PlaceholderTabContent(title = "Trayectoria no disponible")
                                 }
                             }
-                            2 -> { // Antecedentes (Investigación)
+                            2 -> {
                                 BackgroundTabContent(
                                     backgroundReport = profileDetails?.backgroundReport,
                                     onBackgroundClick = { documentId ->
                                         navController.navigate(Screen.InvestigationDetail.createRoute(documentId))
                                     }
                                 )
-
                             }
-                            3 -> { // Actualidad (Noticias)
+                            3 -> {
                                 CurrentTabContent(
                                     currentEvents = profileDetails?.currentEvents,
                                     onNewsClick = { documentId ->
-                                        // Navegación al Detalle de Noticias
                                         navController.navigate(Screen.NewsDetail.createRoute(documentId))
                                     }
                                 )
@@ -187,8 +206,6 @@ fun ProfileScreen(
     }
 }
 
-
-// ==================== PLACEHOLDER ====================
 @Composable
 fun PlaceholderTabContent(title: String) {
     Card(
