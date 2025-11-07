@@ -19,10 +19,10 @@ import com.example.grupo06_candidatoinfo.model.CurrentEvents
 import com.example.grupo06_candidatoinfo.model.CurrentEventItem
 import com.example.grupo06_candidatoinfo.model.InvestigationDetail
 import com.example.grupo06_candidatoinfo.model.InvolvedParty
-import com.example.grupo06_candidatoinfo.model.NewsDetail // Modelo para Detalle de Noticias
+import com.example.grupo06_candidatoinfo.model.NewsDetail
 import com.example.grupo06_candidatoinfo.model.OfficialDocument
 
-/**
+/*
  * Repositorio que proporciona datos simulados (Mock Data) para la aplicación.
  * Contiene la lógica para obtener la lista de candidatos, tipos de elección
  * y el detalle de noticias/eventos.
@@ -40,7 +40,7 @@ object MockDataRepository {
 
     fun getCandidates(): List<Candidate> {
         return listOf(
-            // --- CANDIDATO 1: Rafael López Aliaga (MOCK DETALLADO COMPLETO) ---
+            // --- CANDIDATO 1: Rafael López Aliaga  ---
             Candidate(
                 id = 1,
                 name = "Rafael López Aliaga",
@@ -73,7 +73,7 @@ object MockDataRepository {
                             )
                         ),
                         documentId = "plan_gobierno_1",
-                        documentUrl = "https://declara.jne.gob.pe/ASSETS/PLANGOBIERNO/FILEPLANGOBIERNO/16482.pdf" // <-- ADDED
+                        documentUrl = "https://declara.jne.gob.pe/ASSETS/PLANGOBIERNO/FILEPLANGOBIERNO/16482.pdf"
                     ),
                     academicFormation = AcademicFormation(
                         listOf(
@@ -611,14 +611,9 @@ object MockDataRepository {
             else -> null
         }
     }
-
-
-
-
     // --------------------------------------------------------------------
     // --- FILTROS ---
     // --------------------------------------------------------------------
-
     fun getPositions(): List<String> {
         return listOf("Todos", "Presidencia", "Congreso", "Alcaldía", "Gobernador")
     }
