@@ -14,7 +14,10 @@ import com.example.grupo06_candidatoinfo.ui.screens.profile.ProfileScreen
 import com.example.grupo06_candidatoinfo.ui.screens.detail.InvestigationDetail
 import com.example.grupo06_candidatoinfo.ui.screens.detail.NewsDetail
 import com.example.grupo06_candidatoinfo.ui.screens.auth.AuthScreen
-import com.example.grupo06_candidatoinfo.ui.screens.ranking.RankingScreen // <-- IMPORTACIÓN AÑADIDA
+import com.example.grupo06_candidatoinfo.ui.screens.ranking.RankingScreen
+// === NUEVA IMPORTACIÓN ===
+import com.example.grupo06_candidatoinfo.ui.screens.tramites.TramitesCivicosScreen
+// =========================
 
 /**
  * Sealed class que define las rutas de navegación de la aplicación
@@ -35,6 +38,9 @@ sealed class Screen(val route: String) {
         fun createRoute(ids: String) = "compare?ids=$ids"
     }
     object Ranking : Screen("ranking")
+    // === NUEVA RUTA: Consulta Cívica (Usa el mismo nombre que en HomeScreen) ===
+    object TramitesCivicos : Screen("tramites_civicos_route")
+    // =========================================================================
 }
 
 /**
@@ -111,9 +117,15 @@ fun NavGraph(navController: NavHostController) {
                 candidateIds = candidateIds
             )
         }
-        
-        composable(route = Screen.Ranking.route) { 
+
+        composable(route = Screen.Ranking.route) {
             RankingScreen(navController = navController)
         }
+
+        // === NUEVO COMPOSABLE para la pantalla de Trámites Cívicos ===
+        composable(route = Screen.TramitesCivicos.route) {
+            TramitesCivicosScreen(navController = navController)
+        }
+        // =============================================================
     }
 }

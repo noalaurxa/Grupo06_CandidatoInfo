@@ -13,6 +13,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Search
+// === NUEVO: Importamos el icono para la nueva funcionalidad ===
+import androidx.compose.material.icons.filled.WhereToVote
+// =============================================================
 import androidx.compose.material.icons.outlined.Circle
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -59,217 +62,243 @@ fun HomeScreen(navController: NavController) {
         matchesSearch && matchesPosition && matchesParty
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            Color(0xFF5B4B8A),
-                            Color(0xFF3C3472)
-                        )
-                    )
+    // Usaremos un Scaffold que envuelve el Box para poder usar el FAB
+    Scaffold(
+        // === NUEVA INTEGRACIÓN: FAB para la consulta cívica ===
+        floatingActionButton = {
+            if (selectedCount == 0) { // Solo mostrar el FAB si no está en modo comparación
+                ExtendedFloatingActionButton(
+                    onClick = {
+                        // Navega a la nueva ruta
+                        navController.navigate("tramites_civicos_route")
+                    },
+                    icon = { Icon(Icons.Filled.WhereToVote, contentDescription = "Trámites") },
+                    text = { Text("Consulta Cívica") },
+                    containerColor = Color(0xFFFF5722), // Un color vibrante para destacarse (Naranja)
+                    contentColor = Color.White
                 )
-        ) {
-            // Header
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        brush = Brush.horizontalGradient(
-                            colors = listOf(Color(0xFF5B4B8A), Color(0xFF3C3472))
-                        )
-                    )
-                    .padding(horizontal = 20.dp, vertical = 24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "CandidatoInfo",
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = Color.White,
-                    fontWeight = FontWeight.ExtraBold,
-                    fontSize = 32.sp
-                )
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                // Selector de elección
-                Surface(
-                    color = Color.White,
-                    shape = RoundedCornerShape(16.dp),
-                    shadowElevation = 8.dp,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        Text(
-                            text = selectedElection,
-                            fontSize = 18.sp,
-                            color = Color(0xFF3C3472),
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
             }
-
-            // Main Content
-            Surface(
+        },
+        // =====================================================
+        content = { scaffoldPadding ->
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-                shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
-                color = Color(0xFFF8F9FA)
+                    .fillMaxSize()
+                    .padding(scaffoldPadding) // Aplicar el padding del Scaffold
             ) {
-                Box(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    Color(0xFF5B4B8A),
+                                    Color(0xFF3C3472)
+                                )
+                            )
+                        )
+                ) {
+                    // Header
                     Column(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(20.dp)
+                            .fillMaxWidth()
+                            .background(
+                                brush = Brush.horizontalGradient(
+                                    colors = listOf(Color(0xFF5B4B8A), Color(0xFF3C3472))
+                                )
+                            )
+                            .padding(horizontal = 20.dp, vertical = 24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        // Búsqueda minimalista
-                        OutlinedTextField(
-                            value = searchQuery,
-                            onValueChange = { searchQuery = it },
-                            modifier = Modifier.fillMaxWidth(),
-                            placeholder = {
-                                Text(
-                                    "Buscar por nombre",
-                                    color = Color(0xFF999999)
-                                )
-                            },
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.Search,
-                                    contentDescription = null,
-                                    tint = Color(0xFF3C3472)
-                                )
-                            },
-                            shape = RoundedCornerShape(12.dp),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                unfocusedBorderColor = Color(0xFFE0E0E0),
-                                focusedBorderColor = Color(0xFF3C3472),
-                                unfocusedContainerColor = Color.White,
-                                focusedContainerColor = Color.White
-                            ),
-                            singleLine = true
-                        )
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        // Filtros en fila
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            Box(modifier = Modifier.weight(1f)) {
-                                DropdownSelector(
-                                    label = "Cargo",
-                                    value = selectedPosition,
-                                    options = positions,
-                                    onValueChange = { selectedPosition = it }
-                                )
-                            }
-
-                            Box(modifier = Modifier.weight(1f)) {
-                                DropdownSelector(
-                                    label = "Partido",
-                                    value = selectedParty,
-                                    options = parties,
-                                    onValueChange = { selectedParty = it }
-                                )
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        // Contador de resultados
                         Text(
-                            text = "${filteredCandidates.size} candidatos encontrados",
-                            fontSize = 14.sp,
-                            color = Color.Gray,
-                            fontWeight = FontWeight.Medium,
-                            modifier = Modifier.padding(vertical = 8.dp)
+                            text = "CandidatoInfo",
+                            style = MaterialTheme.typography.headlineLarge,
+                            color = Color.White,
+                            fontWeight = FontWeight.ExtraBold,
+                            fontSize = 32.sp
                         )
 
-                        // Lista de candidatos con cards mejoradas
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.spacedBy(12.dp),
-                            contentPadding = PaddingValues(bottom = if (selectedCount > 0) 88.dp else 16.dp)
-                        ) {
-                            items(filteredCandidates, key = { it.id }) { candidate ->
-                                val isSelected = selectedCandidates.contains(candidate.id)
-                                val canSelectMore = selectedCount < 2
+                        Spacer(modifier = Modifier.height(20.dp))
 
-                                CandidateCard(
-                                    candidate = candidate,
-                                    isSelected = isSelected,
-                                    canSelect = isSelected || canSelectMore,
-                                    onSelectToggle = {
-                                        selectedCandidates = if (isSelected) {
-                                            selectedCandidates - candidate.id
-                                        } else if (canSelectMore) {
-                                            selectedCandidates + candidate.id
-                                        } else {
-                                            selectedCandidates
-                                        }
-                                    },
-                                    onClick = {
-                                        navController.navigate("profile/${candidate.id}")
-                                    }
+                        // Selector de elección
+                        Surface(
+                            color = Color.White,
+                            shape = RoundedCornerShape(16.dp),
+                            shadowElevation = 8.dp,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(16.dp)
+                            ) {
+                                Text(
+                                    text = selectedElection,
+                                    fontSize = 18.sp,
+                                    color = Color(0xFF3C3472),
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Center
                                 )
                             }
                         }
                     }
 
-                    // Botón de comparar
-                    if (selectedCount > 0) {
-                        Box(
-                            modifier = Modifier
-                                .align(Alignment.BottomCenter)
-                                .fillMaxWidth()
-                                .background(
-                                    Color.White.copy(alpha = 0.95f)
-                                )
-                                .padding(16.dp)
-                        ) {
-                            Button(
-                                onClick = {
-                                    if (selectedCount == 2) {
-                                        val ids = selectedCandidates.joinToString(",")
-                                        navController.navigate("compare?ids=$ids")
-                                    }
-                                },
+                    // Main Content
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
+                        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+                        color = Color(0xFFF8F9FA)
+                    ) {
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            Column(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(56.dp),
-                                enabled = selectedCount == 2,
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color(0xFF3C3472),
-                                    disabledContainerColor = Color(0xFFE0E0E0),
-                                    disabledContentColor = Color(0xFF999999)
-                                ),
-                                shape = RoundedCornerShape(12.dp)
+                                    .fillMaxSize()
+                                    .padding(20.dp)
                             ) {
-                                Text(
-                                    text = if (selectedCount == 2)
-                                        "Comparar candidatos"
-                                    else
-                                        "Selecciona $selectedCount de 2",
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.SemiBold
+                                // Búsqueda minimalista
+                                OutlinedTextField(
+                                    value = searchQuery,
+                                    onValueChange = { searchQuery = it },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    placeholder = {
+                                        Text(
+                                            "Buscar por nombre",
+                                            color = Color(0xFF999999)
+                                        )
+                                    },
+                                    leadingIcon = {
+                                        Icon(
+                                            imageVector = Icons.Default.Search,
+                                            contentDescription = null,
+                                            tint = Color(0xFF3C3472)
+                                        )
+                                    },
+                                    shape = RoundedCornerShape(12.dp),
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        unfocusedBorderColor = Color(0xFFE0E0E0),
+                                        focusedBorderColor = Color(0xFF3C3472),
+                                        unfocusedContainerColor = Color.White,
+                                        focusedContainerColor = Color.White
+                                    ),
+                                    singleLine = true
                                 )
+
+                                Spacer(modifier = Modifier.height(16.dp))
+
+                                // Filtros en fila
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    Box(modifier = Modifier.weight(1f)) {
+                                        DropdownSelector(
+                                            label = "Cargo",
+                                            value = selectedPosition,
+                                            options = positions,
+                                            onValueChange = { selectedPosition = it }
+                                        )
+                                    }
+
+                                    Box(modifier = Modifier.weight(1f)) {
+                                        DropdownSelector(
+                                            label = "Partido",
+                                            value = selectedParty,
+                                            options = parties,
+                                            onValueChange = { selectedParty = it }
+                                        )
+                                    }
+                                }
+
+                                Spacer(modifier = Modifier.height(8.dp))
+
+                                // Contador de resultados
+                                Text(
+                                    text = "${filteredCandidates.size} candidatos encontrados",
+                                    fontSize = 14.sp,
+                                    color = Color.Gray,
+                                    fontWeight = FontWeight.Medium,
+                                    modifier = Modifier.padding(vertical = 8.dp)
+                                )
+
+                                // Lista de candidatos con cards mejoradas
+                                LazyColumn(
+                                    modifier = Modifier.fillMaxSize(),
+                                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                                    // Ajustar el padding inferior para el botón de comparar y el FAB
+                                    contentPadding = PaddingValues(bottom = if (selectedCount > 0) 88.dp else 72.dp)
+                                ) {
+                                    items(filteredCandidates, key = { it.id }) { candidate ->
+                                        val isSelected = selectedCandidates.contains(candidate.id)
+                                        val canSelectMore = selectedCount < 2
+
+                                        CandidateCard(
+                                            candidate = candidate,
+                                            isSelected = isSelected,
+                                            canSelect = isSelected || canSelectMore,
+                                            onSelectToggle = {
+                                                selectedCandidates = if (isSelected) {
+                                                    selectedCandidates - candidate.id
+                                                } else if (canSelectMore) {
+                                                    selectedCandidates + candidate.id
+                                                } else {
+                                                    selectedCandidates
+                                                }
+                                            },
+                                            onClick = {
+                                                navController.navigate("profile/${candidate.id}")
+                                            }
+                                        )
+                                    }
+                                }
+                            }
+
+                            // Botón de comparar (se mantiene)
+                            if (selectedCount > 0) {
+                                Box(
+                                    modifier = Modifier
+                                        .align(Alignment.BottomCenter)
+                                        .fillMaxWidth()
+                                        .background(
+                                            Color.White.copy(alpha = 0.95f)
+                                        )
+                                        .padding(16.dp)
+                                ) {
+                                    Button(
+                                        onClick = {
+                                            if (selectedCount == 2) {
+                                                val ids = selectedCandidates.joinToString(",")
+                                                navController.navigate("compare?ids=$ids")
+                                            }
+                                        },
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(56.dp),
+                                        enabled = selectedCount == 2,
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = Color(0xFF3C3472),
+                                            disabledContainerColor = Color(0xFFE0E0E0),
+                                            disabledContentColor = Color(0xFF999999)
+                                        ),
+                                        shape = RoundedCornerShape(12.dp)
+                                    ) {
+                                        Text(
+                                            text = if (selectedCount == 2)
+                                                "Comparar candidatos"
+                                            else
+                                                "Selecciona $selectedCount de 2",
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
         }
-    }
+    )
 }
 
 @Composable
